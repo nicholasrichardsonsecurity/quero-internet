@@ -85,20 +85,20 @@ model Tenant {
 }
 
 model Organization {
-  id             String                 @id @default(uuid()) @db.Uuid
-  legalName      String
-  tradeName      String?
-  documentNumber String?
-  type           OrganizationType
-  status         OrganizationStatus     @default(ONBOARDING)
-  createdAt      DateTime               @default(now())
-  updatedAt      DateTime               @updatedAt
-  tenantLinks    TenantOrganization[]
-  units          OrganizationalUnit[]
-  memberships    Membership[]
-  participations ProgramParticipation[]
-  municipalPrograms Program[]           @relation("MunicipalityPrograms")
-  auditLogs      AuditLog[]
+  id                String                 @id @default(uuid()) @db.Uuid
+  legalName         String
+  tradeName         String?
+  documentNumber    String?
+  type              OrganizationType
+  status            OrganizationStatus     @default(ONBOARDING)
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  tenantLinks       TenantOrganization[]
+  units             OrganizationalUnit[]
+  memberships       Membership[]
+  participations    ProgramParticipation[]
+  municipalPrograms Program[]              @relation("MunicipalityPrograms")
+  auditLogs         AuditLog[]
 
   @@index([type, status])
 }
@@ -129,20 +129,20 @@ model OrganizationalUnit {
 }
 
 model Program {
-  id                       String                 @id @default(uuid()) @db.Uuid
-  tenantId                 String                 @db.Uuid
-  municipalityOrganizationId String               @db.Uuid
-  name                     String
-  slug                     String
-  status                   ProgramStatus          @default(DRAFT)
-  startsAt                 DateTime?
-  endsAt                   DateTime?
-  createdAt                DateTime               @default(now())
-  updatedAt                DateTime               @updatedAt
-  tenant                   Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Restrict)
-  municipalityOrganization Organization           @relation("MunicipalityPrograms", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
-  participations           ProgramParticipation[]
-  auditLogs                AuditLog[]
+  id                         String                 @id @default(uuid()) @db.Uuid
+  tenantId                   String                 @db.Uuid
+  municipalityOrganizationId String                 @db.Uuid
+  name                       String
+  slug                       String
+  status                     ProgramStatus          @default(DRAFT)
+  startsAt                   DateTime?
+  endsAt                     DateTime?
+  createdAt                  DateTime               @default(now())
+  updatedAt                  DateTime               @updatedAt
+  tenant                     Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  municipalityOrganization   Organization           @relation("MunicipalityPrograms", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
+  participations             ProgramParticipation[]
+  auditLogs                  AuditLog[]
 
   @@unique([tenantId, slug])
   @@index([tenantId, status])
@@ -167,15 +167,16 @@ model ProgramParticipation {
 }
 
 model User {
-  id            String       @id @default(uuid()) @db.Uuid
-  email         String       @unique
-  displayName   String?
-  active        Boolean      @default(true)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  memberships   Membership[]
-  sessions      Session[]
-  auditLogs     AuditLog[]
+  id           String       @id @default(uuid()) @db.Uuid
+  email        String       @unique
+  displayName  String?
+  passwordHash String?
+  active       Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  memberships  Membership[]
+  sessions     Session[]
+  auditLogs    AuditLog[]
 }
 
 model Membership {
