@@ -12,6 +12,10 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
+    "db:generate": "pnpm --filter @quero-internet/database db:generate",
+    "db:validate": "pnpm --filter @quero-internet/database db:validate",
+    "db:migrate:dev": "pnpm --filter @quero-internet/database db:migrate:dev",
+    "db:migrate:deploy": "pnpm --filter @quero-internet/database db:migrate:deploy",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
