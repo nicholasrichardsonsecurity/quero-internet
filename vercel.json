@@ -1,6 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
   "installCommand": "corepack pnpm@10.14.0 install --frozen-lockfile=false",
-  "buildCommand": "corepack pnpm@10.14.0 --filter @quero-internet/web... build",
-  "framework": "nextjs"
+  "buildCommand": "corepack pnpm@10.14.0 --filter @quero-internet/web build",
+  "outputDirectory": "apps/web/.next"
 }
