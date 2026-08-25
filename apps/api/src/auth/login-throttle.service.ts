@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { Injectable, TooManyRequestsException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 
 const WINDOW_MS = 15 * 60 * 1000;
@@ -32,7 +32,10 @@ export class LoginThrottleService {
 
     const row = rows[0];
     if (row?.blockedUntil && row.blockedUntil > now) {
-      throw new TooManyRequestsException('Muitas tentativas de acesso. Tente novamente mais tarde.');
+      throw new HttpException(
+        'Muitas tentativas de acesso. Tente novamente mais tarde.',
+        HttpStatus.TOO_MANY_REQUESTS
+      );
     }
   }
 
