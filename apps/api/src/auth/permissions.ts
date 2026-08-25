@@ -1,0 +1,107 @@
+import type { MembershipRole } from '@prisma/client';
+
+export const PERMISSIONS = {
+  SESSION_READ: 'session:read',
+  SESSION_REVOKE: 'session:revoke',
+  ORGANIZATION_SWITCH: 'organization:switch',
+  MUNICIPALITY_READ: 'municipality:read',
+  MUNICIPALITY_WRITE: 'municipality:write',
+  PROGRAM_READ: 'program:read',
+  PROGRAM_WRITE: 'program:write',
+  BENEFICIARY_READ: 'beneficiary:read',
+  BENEFICIARY_WRITE: 'beneficiary:write',
+  PROVIDER_READ: 'provider:read',
+  PROVIDER_WRITE: 'provider:write',
+  AUDIT_READ: 'audit:read'
+} as const;
+
+export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
+
+const commonSession: Permission[] = [
+  PERMISSIONS.SESSION_READ,
+  PERMISSIONS.SESSION_REVOKE,
+  PERMISSIONS.ORGANIZATION_SWITCH
+];
+
+export const ROLE_PERMISSIONS: Record<MembershipRole, readonly Permission[]> = {
+  ORGANIZATION_OWNER: [
+    ...commonSession,
+    PERMISSIONS.MUNICIPALITY_READ,
+    PERMISSIONS.MUNICIPALITY_WRITE,
+    PERMISSIONS.PROGRAM_READ,
+    PERMISSIONS.PROGRAM_WRITE,
+    PERMISSIONS.BENEFICIARY_READ,
+    PERMISSIONS.BENEFICIARY_WRITE,
+    PERMISSIONS.PROVIDER_READ,
+    PERMISSIONS.PROVIDER_WRITE,
+    PERMISSIONS.AUDIT_READ
+  ],
+  ORGANIZATION_ADMIN: [
+    ...commonSession,
+    PERMISSIONS.MUNICIPALITY_READ,
+    PERMISSIONS.MUNICIPALITY_WRITE,
+    PERMISSIONS.PROGRAM_READ,
+    PERMISSIONS.PROGRAM_WRITE,
+    PERMISSIONS.BENEFICIARY_READ,
+    PERMISSIONS.BENEFICIARY_WRITE,
+    PERMISSIONS.PROVIDER_READ,
+    PERMISSIONS.PROVIDER_WRITE,
+    PERMISSIONS.AUDIT_READ
+  ],
+  MUNICIPAL_MANAGER: [
+    ...commonSession,
+    PERMISSIONS.MUNICIPALITY_READ,
+    PERMISSIONS.MUNICIPALITY_WRITE,
+    PERMISSIONS.PROGRAM_READ,
+    PERMISSIONS.PROGRAM_WRITE,
+    PERMISSIONS.BENEFICIARY_READ,
+    PERMISSIONS.BENEFICIARY_WRITE,
+    PERMISSIONS.PROVIDER_READ,
+    PERMISSIONS.AUDIT_READ
+  ],
+  MUNICIPAL_OPERATOR: [
+    ...commonSession,
+    PERMISSIONS.MUNICIPALITY_READ,
+    PERMISSIONS.PROGRAM_READ,
+    PERMISSIONS.BENEFICIARY_READ,
+    PERMISSIONS.BENEFICIARY_WRITE,
+    PERMISSIONS.PROVIDER_READ
+  ],
+  PROVIDER_MANAGER: [
+    ...commonSession,
+    PERMISSIONS.PROGRAM_READ,
+    PERMISSIONS.BENEFICIARY_READ,
+    PERMISSIONS.PROVIDER_READ,
+    PERMISSIONS.PROVIDER_WRITE,
+    PERMISSIONS.AUDIT_READ
+  ],
+  PROVIDER_OPERATOR: [
+    ...commonSession,
+    PERMISSIONS.PROGRAM_READ,
+    PERMISSIONS.BENEFICIARY_READ,
+    PERMISSIONS.PROVIDER_READ
+  ],
+  AUDITOR: [
+    ...commonSession,
+    PERMISSIONS.MUNICIPALITY_READ,
+    PERMISSIONS.PROGRAM_READ,
+    PERMISSIONS.BENEFICIARY_READ,
+    PERMISSIONS.PROVIDER_READ,
+    PERMISSIONS.AUDIT_READ
+  ],
+  SUPPORT: [
+    ...commonSession,
+    PERMISSIONS.MUNICIPALITY_READ,
+    PERMISSIONS.PROGRAM_READ,
+    PERMISSIONS.PROVIDER_READ
+  ]
+};
+
+export function permissionsForRoles(roles: readonly MembershipRole[]): Set<Permission> {
+  return new Set(roles.flatMap((role) => ROLE_PERMISSIONS[role] ?? []));
+}
+
+export function hasAllPermissions(roles: readonly MembershipRole[], required: readonly Permission[]): boolean {
+  const granted = permissionsForRoles(roles);
+  return required.every((permission) => granted.has(permission));
+}
