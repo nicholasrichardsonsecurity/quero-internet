@@ -1,0 +1,18 @@
+{
+  "name": "@quero-internet/database",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:validate": "prisma validate",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "test": "node -e \"console.log('database tests pending')\""
+  },
+  "dependencies": {
+    "@prisma/client": "^6.14.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.14.0"
+  }
+}
