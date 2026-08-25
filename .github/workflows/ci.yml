@@ -8,6 +8,20 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: quero_internet
+          POSTGRES_PASSWORD: change_me
+          POSTGRES_DB: quero_internet
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U quero_internet -d quero_internet"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
     env:
       DATABASE_URL: postgresql://quero_internet:change_me@localhost:5432/quero_internet
     steps:
@@ -21,6 +35,7 @@ jobs:
       - run: pnpm install --frozen-lockfile=false
       - run: pnpm db:validate
       - run: pnpm db:generate
+      - run: pnpm db:migrate:deploy
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
