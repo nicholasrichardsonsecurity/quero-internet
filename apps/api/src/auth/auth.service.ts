@@ -4,6 +4,8 @@ import { PrismaService } from '../database/prisma.service';
 import { resolveOrganizationContext } from './context-policy';
 import { verifyPassword } from './password';
 import { createSessionToken, extractBearerToken, hashSessionToken } from './session-token';
+import { LoginThrottleService } from './login-throttle.service';
+import { AuthAuditService } from './auth-audit.service';
 
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
 
@@ -26,7 +28,11 @@ export type LoginResult = AuthenticatedSession & {
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly throttle: LoginThrottleService,
+    private readonly audit: AuthAuditService
+  ) {}
 
   private membershipSnapshot(user: {
     memberships: Array<{
@@ -50,6 +56,8 @@ export class AuthService {
 
   async login(email: string, password: string, organizationId?: string): Promise<LoginResult> {
     const normalizedEmail = email.trim().toLowerCase();
+    await this.throttle.assertAllowed(normalizedEmail);
+
     const user = await this.prisma.user.findUnique({
       where: { email: normalizedEmail },
       include: {
@@ -61,7 +69,15 @@ export class AuthService {
       }
     });
 
-    if (!user || !user.active || !user.passwordHash || !(await verifyPassword(password, user.passwordHash))) {
+    const credentialsValid = Boolean(
+      user && user.active && user.passwordHash && (await verifyPassword(password, user.passwordHash))
+    );
+
+    if (!credentialsValid || !user) {
+      await Promise.allSettled([
+        this.throttle.registerFailure(normalizedEmail),
+        this.audit.loginFailed(normalizedEmail)
+      ]);
       throw new UnauthorizedException('E-mail ou senha inválidos.');
     }
 
@@ -78,6 +94,7 @@ export class AuthService {
     }
 
     if (!context) {
+      await this.audit.loginFailed(normalizedEmail).catch(() => undefined);
       throw new ForbiddenException('Usuário sem vínculo organizacional ativo.');
     }
 
@@ -91,6 +108,11 @@ export class AuthService {
         expiresAt
       }
     });
+
+    await Promise.allSettled([
+      this.throttle.reset(normalizedEmail),
+      this.audit.loginSucceeded(user.id, context.organizationId, context.tenantIds[0])
+    ]);
 
     return {
       token,
@@ -179,6 +201,8 @@ export class AuthService {
       data: { activeOrganizationContextId: organizationId }
     });
 
+    await this.audit.contextSwitched(session.user.id, context.organizationId, context.tenantIds[0]).catch(() => undefined);
+
     return {
       sessionId: session.id,
       user: { id: session.user.id, email: session.user.email, displayName: session.user.displayName },
@@ -192,9 +216,25 @@ export class AuthService {
     const token = extractBearerToken(authorization);
     if (!token) return;
 
+    let context: AuthenticatedSession | null = null;
+    try {
+      context = await this.resolveAuthorization(authorization);
+    } catch {
+      context = null;
+    }
+
     await this.prisma.session.updateMany({
       where: { tokenHash: hashSessionToken(token), revokedAt: null },
       data: { revokedAt: new Date() }
     });
+
+    if (context) {
+      await this.audit.logout(
+        context.user.id,
+        context.organizationId,
+        context.sessionId,
+        context.tenantIds[0]
+      ).catch(() => undefined);
+    }
   }
 }
