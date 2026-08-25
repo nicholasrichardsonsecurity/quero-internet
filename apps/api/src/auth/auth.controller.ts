@@ -5,6 +5,15 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Post('login')
+  async login(@Body() body: { email?: string; password?: string; organizationId?: string }) {
+    if (!body.email || !body.password) {
+      throw new BadRequestException('E-mail e senha são obrigatórios.');
+    }
+
+    return this.authService.login(body.email, body.password, body.organizationId);
+  }
+
   @Get('me')
   me(@Headers('authorization') authorization?: string) {
     return this.authService.resolveAuthorization(authorization);
