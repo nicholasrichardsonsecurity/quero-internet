@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, HttpCode, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Headers, HttpCode, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -16,7 +16,7 @@ export class AuthController {
     @Body() body: { organizationId?: string }
   ) {
     if (!body.organizationId) {
-      return Promise.reject(new Error('organizationId é obrigatório.'));
+      throw new BadRequestException('organizationId é obrigatório.');
     }
 
     return this.authService.switchOrganization(authorization, body.organizationId);
