@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
-import { loadEnvironment } from '@quero-internet/config';
+import { loadEnvironment } from './config/environment';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
