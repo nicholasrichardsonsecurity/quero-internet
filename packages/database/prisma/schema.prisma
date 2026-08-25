@@ -1,0 +1,234 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TenantStatus {
+  ACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+enum OrganizationType {
+  MUNICIPALITY
+  INTERNET_PROVIDER
+  PLATFORM_OPERATOR
+  AUDIT_ORGANIZATION
+  FINANCIAL_OPERATOR
+  SERVICE_PROVIDER
+}
+
+enum OrganizationStatus {
+  ONBOARDING
+  ACTIVE
+  RESTRICTED
+  SUSPENDED
+  OFFBOARDING
+  TERMINATED
+}
+
+enum ProgramStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  CLOSED
+}
+
+enum ParticipationType {
+  MUNICIPAL_MANAGER
+  INTERNET_PROVIDER
+  AUDITOR
+  FINANCIAL_OPERATOR
+  SERVICE_PROVIDER
+}
+
+enum ParticipationStatus {
+  PENDING
+  ACTIVE
+  RESTRICTED
+  SUSPENDED
+  TERMINATED
+}
+
+enum MembershipRole {
+  ORGANIZATION_OWNER
+  ORGANIZATION_ADMIN
+  MUNICIPAL_MANAGER
+  MUNICIPAL_OPERATOR
+  PROVIDER_MANAGER
+  PROVIDER_OPERATOR
+  AUDITOR
+  SUPPORT
+}
+
+enum MembershipStatus {
+  INVITED
+  ACTIVE
+  SUSPENDED
+  REVOKED
+}
+
+model Tenant {
+  id            String               @id @default(uuid()) @db.Uuid
+  slug          String               @unique
+  name          String
+  status        TenantStatus         @default(ACTIVE)
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  organizations TenantOrganization[]
+  programs      Program[]
+  auditLogs     AuditLog[]
+}
+
+model Organization {
+  id             String                 @id @default(uuid()) @db.Uuid
+  legalName      String
+  tradeName      String?
+  documentNumber String?
+  type           OrganizationType
+  status         OrganizationStatus     @default(ONBOARDING)
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  tenantLinks    TenantOrganization[]
+  units          OrganizationalUnit[]
+  memberships    Membership[]
+  participations ProgramParticipation[]
+  municipalPrograms Program[]           @relation("MunicipalityPrograms")
+  auditLogs      AuditLog[]
+
+  @@index([type, status])
+}
+
+model TenantOrganization {
+  tenantId       String       @db.Uuid
+  organizationId String       @db.Uuid
+  createdAt      DateTime     @default(now())
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@id([tenantId, organizationId])
+  @@index([organizationId])
+}
+
+model OrganizationalUnit {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  name           String
+  code           String?
+  active         Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, code])
+  @@index([organizationId, active])
+}
+
+model Program {
+  id                       String                 @id @default(uuid()) @db.Uuid
+  tenantId                 String                 @db.Uuid
+  municipalityOrganizationId String               @db.Uuid
+  name                     String
+  slug                     String
+  status                   ProgramStatus          @default(DRAFT)
+  startsAt                 DateTime?
+  endsAt                   DateTime?
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
+  tenant                   Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  municipalityOrganization Organization           @relation("MunicipalityPrograms", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
+  participations           ProgramParticipation[]
+  auditLogs                AuditLog[]
+
+  @@unique([tenantId, slug])
+  @@index([tenantId, status])
+  @@index([municipalityOrganizationId])
+}
+
+model ProgramParticipation {
+  id             String              @id @default(uuid()) @db.Uuid
+  programId      String              @db.Uuid
+  organizationId String              @db.Uuid
+  type           ParticipationType
+  status         ParticipationStatus @default(PENDING)
+  validFrom      DateTime?
+  validUntil     DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  program        Program             @relation(fields: [programId], references: [id], onDelete: Cascade)
+  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+
+  @@unique([programId, organizationId, type])
+  @@index([organizationId, status])
+}
+
+model User {
+  id            String       @id @default(uuid()) @db.Uuid
+  email         String       @unique
+  displayName   String?
+  active        Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  memberships   Membership[]
+  sessions      Session[]
+  auditLogs     AuditLog[]
+}
+
+model Membership {
+  id             String           @id @default(uuid()) @db.Uuid
+  userId         String           @db.Uuid
+  organizationId String           @db.Uuid
+  role           MembershipRole
+  status         MembershipStatus @default(INVITED)
+  validFrom      DateTime?
+  validUntil     DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId, role])
+  @@index([organizationId, status])
+  @@index([userId, status])
+}
+
+model Session {
+  id                          String   @id @default(uuid()) @db.Uuid
+  userId                      String   @db.Uuid
+  tokenHash                   String   @unique
+  activeOrganizationContextId String?  @db.Uuid
+  expiresAt                   DateTime
+  revokedAt                   DateTime?
+  createdAt                   DateTime @default(now())
+  user                        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+}
+
+model AuditLog {
+  id             String        @id @default(uuid()) @db.Uuid
+  tenantId       String?       @db.Uuid
+  organizationId String?       @db.Uuid
+  programId      String?       @db.Uuid
+  actorUserId    String?       @db.Uuid
+  action         String
+  entityType     String
+  entityId       String?
+  correlationId  String?
+  createdAt      DateTime      @default(now())
+  tenant         Tenant?       @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  program        Program?      @relation(fields: [programId], references: [id], onDelete: SetNull)
+  actorUser      User?         @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, createdAt])
+  @@index([organizationId, createdAt])
+  @@index([programId, createdAt])
+  @@index([actorUserId, createdAt])
+  @@index([entityType, entityId])
+  @@index([correlationId])
+}
