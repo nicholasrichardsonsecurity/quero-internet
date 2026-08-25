@@ -54,6 +54,10 @@ O símbolo oficial combina **Q + conectividade + cidade + inclusão**, usando az
   <img src="assets/brand/quero-internet-symbol-official.svg" alt="Símbolo oficial Quero Internet" width="260" />
 </p>
 
+<p align="center">
+  <img src="assets/brand/quero-internet-brand-board.svg" alt="Brand Board Quero Internet GovTech" width="100%" />
+</p>
+
 - Fonte operacional: **Inter**
 - Ícones: **Lucide Icons**
 - Sidebar institucional: `#081D3A`
