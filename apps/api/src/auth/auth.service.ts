@@ -1,8 +1,11 @@
-import { Injectable, UnauthorizedException, ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import type { MembershipRole } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
-import { extractBearerToken, hashSessionToken } from './session-token';
 import { resolveOrganizationContext } from './context-policy';
+import { verifyPassword } from './password';
+import { createSessionToken, extractBearerToken, hashSessionToken } from './session-token';
+
+const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
 
 export type AuthenticatedSession = {
   sessionId: string;
@@ -16,9 +19,89 @@ export type AuthenticatedSession = {
   roles: MembershipRole[];
 };
 
+export type LoginResult = AuthenticatedSession & {
+  token: string;
+  expiresAt: Date;
+};
+
 @Injectable()
 export class AuthService {
   constructor(private readonly prisma: PrismaService) {}
+
+  private membershipSnapshot(user: {
+    memberships: Array<{
+      organizationId: string;
+      role: MembershipRole;
+      status: 'INVITED' | 'ACTIVE' | 'SUSPENDED' | 'REVOKED';
+      validFrom: Date | null;
+      validUntil: Date | null;
+      organization: { tenantLinks: Array<{ tenantId: string }> };
+    }>;
+  }) {
+    return user.memberships.map((membership) => ({
+      organizationId: membership.organizationId,
+      role: membership.role,
+      status: membership.status,
+      validFrom: membership.validFrom,
+      validUntil: membership.validUntil,
+      tenantIds: membership.organization.tenantLinks.map((link) => link.tenantId)
+    }));
+  }
+
+  async login(email: string, password: string, organizationId?: string): Promise<LoginResult> {
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await this.prisma.user.findUnique({
+      where: { email: normalizedEmail },
+      include: {
+        memberships: {
+          include: {
+            organization: { include: { tenantLinks: true } }
+          }
+        }
+      }
+    });
+
+    if (!user || !user.active || !user.passwordHash || !(await verifyPassword(password, user.passwordHash))) {
+      throw new UnauthorizedException('E-mail ou senha inválidos.');
+    }
+
+    const memberships = this.membershipSnapshot(user);
+    const now = new Date();
+    let context = organizationId ? resolveOrganizationContext(organizationId, memberships, now) : null;
+
+    if (!context) {
+      const candidateOrganizations = Array.from(new Set(memberships.map((membership) => membership.organizationId)));
+      for (const candidate of candidateOrganizations) {
+        context = resolveOrganizationContext(candidate, memberships, now);
+        if (context) break;
+      }
+    }
+
+    if (!context) {
+      throw new ForbiddenException('Usuário sem vínculo organizacional ativo.');
+    }
+
+    const token = createSessionToken();
+    const expiresAt = new Date(now.getTime() + SESSION_TTL_MS);
+    const session = await this.prisma.session.create({
+      data: {
+        userId: user.id,
+        tokenHash: hashSessionToken(token),
+        activeOrganizationContextId: context.organizationId,
+        expiresAt
+      }
+    });
+
+    return {
+      token,
+      expiresAt,
+      sessionId: session.id,
+      user: { id: user.id, email: user.email, displayName: user.displayName },
+      organizationId: context.organizationId,
+      tenantIds: context.tenantIds,
+      roles: context.roles
+    };
+  }
 
   async resolveAuthorization(authorization?: string): Promise<AuthenticatedSession> {
     const token = extractBearerToken(authorization);
@@ -31,9 +114,7 @@ export class AuthService {
           include: {
             memberships: {
               include: {
-                organization: {
-                  include: { tenantLinks: true }
-                }
+                organization: { include: { tenantLinks: true } }
               }
             }
           }
@@ -48,14 +129,7 @@ export class AuthService {
 
     const context = resolveOrganizationContext(
       session.activeOrganizationContextId,
-      session.user.memberships.map((membership) => ({
-        organizationId: membership.organizationId,
-        role: membership.role,
-        status: membership.status,
-        validFrom: membership.validFrom,
-        validUntil: membership.validUntil,
-        tenantIds: membership.organization.tenantLinks.map((link) => link.tenantId)
-      })),
+      this.membershipSnapshot(session.user),
       now
     );
 
@@ -65,11 +139,7 @@ export class AuthService {
 
     return {
       sessionId: session.id,
-      user: {
-        id: session.user.id,
-        email: session.user.email,
-        displayName: session.user.displayName
-      },
+      user: { id: session.user.id, email: session.user.email, displayName: session.user.displayName },
       organizationId: context.organizationId,
       tenantIds: context.tenantIds,
       roles: context.roles
@@ -101,19 +171,7 @@ export class AuthService {
       throw new UnauthorizedException('Sessão expirada, revogada ou inválida.');
     }
 
-    const context = resolveOrganizationContext(
-      organizationId,
-      session.user.memberships.map((membership) => ({
-        organizationId: membership.organizationId,
-        role: membership.role,
-        status: membership.status,
-        validFrom: membership.validFrom,
-        validUntil: membership.validUntil,
-        tenantIds: membership.organization.tenantLinks.map((link) => link.tenantId)
-      })),
-      now
-    );
-
+    const context = resolveOrganizationContext(organizationId, this.membershipSnapshot(session.user), now);
     if (!context) throw new ForbiddenException('Organização não autorizada para esta sessão.');
 
     await this.prisma.session.update({
