@@ -1,0 +1,23 @@
+{
+  "name": "quero-internet",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Quero Internet GovTech — plataforma pública multiempresa para programas de conectividade e inclusão digital.",
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@10.14.0",
+  "engines": {"node": ">=22 <25", "pnpm": ">=10.14 <11"},
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.5",
+    "typescript": "^5.8.3"
+  }
+}
