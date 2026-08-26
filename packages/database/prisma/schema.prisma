@@ -87,6 +87,13 @@ enum ApplicationStatus {
   CANCELLED
 }
 
+enum ProviderReferralStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  CANCELLED
+}
+
 model Tenant {
   id            String               @id @default(uuid()) @db.Uuid
   slug          String               @unique
@@ -98,27 +105,30 @@ model Tenant {
   programs      Program[]
   beneficiaries Beneficiary[]
   applications  Application[]
+  referrals     ProviderReferral[]
   auditLogs     AuditLog[]
 }
 
 model Organization {
-  id                    String                 @id @default(uuid()) @db.Uuid
-  legalName             String
-  tradeName             String?
-  documentNumber        String?
-  type                  OrganizationType
-  status                OrganizationStatus     @default(ONBOARDING)
-  createdAt             DateTime               @default(now())
-  updatedAt             DateTime               @updatedAt
-  tenantLinks           TenantOrganization[]
-  units                 OrganizationalUnit[]
-  memberships           Membership[]
-  participations        ProgramParticipation[]
-  municipalPrograms     Program[]              @relation("MunicipalityPrograms")
-  municipalBeneficiaries Beneficiary[]         @relation("MunicipalityBeneficiaries")
-  municipalApplications Application[]          @relation("MunicipalityApplications")
-  activeSessions        Session[]              @relation("ActiveOrganizationContext")
-  auditLogs             AuditLog[]
+  id                     String                 @id @default(uuid()) @db.Uuid
+  legalName              String
+  tradeName              String?
+  documentNumber         String?
+  type                   OrganizationType
+  status                 OrganizationStatus     @default(ONBOARDING)
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
+  tenantLinks            TenantOrganization[]
+  units                  OrganizationalUnit[]
+  memberships            Membership[]
+  participations         ProgramParticipation[]
+  municipalPrograms      Program[]              @relation("MunicipalityPrograms")
+  municipalBeneficiaries Beneficiary[]          @relation("MunicipalityBeneficiaries")
+  municipalApplications  Application[]          @relation("MunicipalityApplications")
+  municipalReferrals     ProviderReferral[]     @relation("MunicipalityReferrals")
+  providerReferrals      ProviderReferral[]     @relation("ProviderReferrals")
+  activeSessions         Session[]              @relation("ActiveOrganizationContext")
+  auditLogs              AuditLog[]
 
   @@index([type, status])
 }
@@ -163,6 +173,7 @@ model Program {
   municipalityOrganization   Organization           @relation("MunicipalityPrograms", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
   participations             ProgramParticipation[]
   applications               Application[]
+  referrals                  ProviderReferral[]
   auditLogs                  AuditLog[]
 
   @@unique([tenantId, slug])
@@ -225,11 +236,37 @@ model Application {
   municipalityOrganization   Organization      @relation("MunicipalityApplications", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
   program                    Program           @relation(fields: [programId], references: [id], onDelete: Restrict)
   beneficiary                Beneficiary       @relation(fields: [beneficiaryId], references: [id], onDelete: Restrict)
+  referrals                  ProviderReferral[]
 
   @@unique([programId, beneficiaryId])
   @@index([tenantId, status, submittedAt])
   @@index([municipalityOrganizationId, status])
   @@index([beneficiaryId, createdAt])
+}
+
+model ProviderReferral {
+  id                         String                 @id @default(uuid()) @db.Uuid
+  tenantId                   String                 @db.Uuid
+  municipalityOrganizationId String                 @db.Uuid
+  providerOrganizationId     String                 @db.Uuid
+  programId                  String                 @db.Uuid
+  applicationId              String                 @db.Uuid
+  status                     ProviderReferralStatus @default(PENDING)
+  referredAt                 DateTime               @default(now())
+  respondedAt                DateTime?
+  responseReason             String?
+  createdAt                  DateTime               @default(now())
+  updatedAt                  DateTime               @updatedAt
+  tenant                     Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  municipalityOrganization   Organization           @relation("MunicipalityReferrals", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
+  providerOrganization       Organization           @relation("ProviderReferrals", fields: [providerOrganizationId], references: [id], onDelete: Restrict)
+  program                    Program                @relation(fields: [programId], references: [id], onDelete: Restrict)
+  application                Application            @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+
+  @@index([tenantId, status, referredAt])
+  @@index([municipalityOrganizationId, status])
+  @@index([providerOrganizationId, status, referredAt])
+  @@index([applicationId, createdAt])
 }
 
 model User {
