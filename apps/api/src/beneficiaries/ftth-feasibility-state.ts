@@ -5,14 +5,17 @@ export function isFtthFeasibilityResult(value: string): value is FtthFeasibility
   return FTTH_FEASIBILITY_RESULTS.includes(value as FtthFeasibilityResult);
 }
 
-export function validateFtthAssessment(input: {
-  result: FtthFeasibilityResult;
-  coverageConfirmed: boolean;
-  availablePorts?: number;
-  estimatedDropMeters?: number;
-  technicalReason?: string;
-  estimatedReadyAt?: Date;
-}): string | null {
+export function validateFtthAssessment(
+  input: {
+    result: FtthFeasibilityResult;
+    coverageConfirmed: boolean;
+    availablePorts?: number;
+    estimatedDropMeters?: number;
+    technicalReason?: string;
+    estimatedReadyAt?: Date;
+  },
+  now: Date = new Date()
+): string | null {
   if (input.availablePorts !== undefined && (!Number.isInteger(input.availablePorts) || input.availablePorts < 0)) {
     return 'availablePorts deve ser um inteiro maior ou igual a zero.';
   }
@@ -29,6 +32,7 @@ export function validateFtthAssessment(input: {
   if (input.result === 'EXPANSION_REQUIRED') {
     if (!reason || reason.length < 12) return 'Expansão exige justificativa técnica descritiva.';
     if (!input.estimatedReadyAt) return 'Expansão exige previsão técnica de disponibilidade.';
+    if (input.estimatedReadyAt.getTime() <= now.getTime()) return 'A previsão de expansão deve estar no futuro.';
   }
 
   if (input.result === 'NOT_FEASIBLE' && (!reason || reason.length < 12)) {
