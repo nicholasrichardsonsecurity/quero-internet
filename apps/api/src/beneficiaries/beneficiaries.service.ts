@@ -27,10 +27,12 @@ export class BeneficiariesService {
       select: { type: true, status: true }
     });
 
+    const allowedStatuses: OrganizationStatus[] = [OrganizationStatus.ACTIVE, OrganizationStatus.ONBOARDING];
+
     if (
       !organization ||
       organization.type !== OrganizationType.MUNICIPALITY ||
-      ![OrganizationStatus.ACTIVE, OrganizationStatus.ONBOARDING].includes(organization.status)
+      !allowedStatuses.includes(organization.status)
     ) {
       throw new ForbiddenException('Operação disponível apenas no contexto municipal autorizado.');
     }
