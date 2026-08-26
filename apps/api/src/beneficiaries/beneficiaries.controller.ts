@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { PERMISSIONS } from '../auth/permissions';
 import { PermissionsGuard } from '../auth/permissions.guard';
@@ -51,13 +51,12 @@ export class BeneficiariesController {
   @RequirePermissions(PERMISSIONS.BENEFICIARY_WRITE)
   async submitApplication(
     @Headers('authorization') authorization: string | undefined,
-    @Body() body: { programId?: string },
-    @Query('beneficiaryId') _unused?: string
+    @Param('beneficiaryId') beneficiaryId: string,
+    @Body() body: { programId?: string }
   ) {
-    // Route params are handled in a dedicated applications controller below; retained only to avoid accidental exposure.
-    void authorization;
-    void body;
-    void _unused;
-    return undefined;
+    const context = await this.authService.resolveAuthorization(authorization);
+    return this.beneficiariesService.createApplication(context, beneficiaryId, {
+      programId: body.programId ?? ''
+    });
   }
 }
