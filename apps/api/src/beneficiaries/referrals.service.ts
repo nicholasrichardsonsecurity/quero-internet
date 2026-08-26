@@ -10,6 +10,7 @@ import {
 } from '@prisma/client';
 import type { AuthenticatedSession } from '../auth/auth.service';
 import { PrismaService } from '../database/prisma.service';
+import { isProviderResponseStatus, referralResponseReasonIsValid } from './provider-referral-state';
 
 @Injectable()
 export class ReferralsService {
@@ -46,11 +47,7 @@ export class ReferralsService {
     }
   }
 
-  async referApplication(
-    context: AuthenticatedSession,
-    applicationId: string,
-    providerOrganizationId: string
-  ) {
+  async referApplication(context: AuthenticatedSession, applicationId: string, providerOrganizationId: string) {
     await this.assertMunicipalContext(context);
     if (!providerOrganizationId) throw new BadRequestException('providerOrganizationId é obrigatório.');
 
@@ -63,10 +60,7 @@ export class ReferralsService {
       },
       select: { id: true, tenantId: true, programId: true, status: true }
     });
-
-    if (!application) {
-      throw new NotFoundException('Solicitação elegível não encontrada no contexto autorizado.');
-    }
+    if (!application) throw new NotFoundException('Solicitação elegível não encontrada no contexto autorizado.');
 
     const now = new Date();
     const participation = await this.prisma.programParticipation.findFirst({
@@ -133,7 +127,6 @@ export class ReferralsService {
             correlationId: application.id
           }
         });
-
         return referral;
       });
     } catch (error) {
@@ -146,7 +139,6 @@ export class ReferralsService {
 
   async listProviderReferrals(context: AuthenticatedSession, status?: string) {
     await this.assertProviderContext(context);
-
     const parsedStatus = status && Object.values(ProviderReferralStatus).includes(status as ProviderReferralStatus)
       ? (status as ProviderReferralStatus)
       : undefined;
@@ -170,14 +162,7 @@ export class ReferralsService {
         application: {
           select: {
             id: true,
-            beneficiary: {
-              select: {
-                fullName: true,
-                documentLast4: true,
-                phone: true,
-                email: true
-              }
-            }
+            beneficiary: { select: { fullName: true, documentLast4: true, phone: true, email: true } }
           }
         }
       }
@@ -191,12 +176,12 @@ export class ReferralsService {
     reason?: string
   ) {
     await this.assertProviderContext(context);
-    if (![ProviderReferralStatus.ACCEPTED, ProviderReferralStatus.DECLINED].includes(targetStatus)) {
+    if (!isProviderResponseStatus(targetStatus)) {
       throw new BadRequestException('Resposta de encaminhamento inválida.');
     }
 
     const normalizedReason = reason?.trim();
-    if (targetStatus === ProviderReferralStatus.DECLINED && (!normalizedReason || normalizedReason.length < 8)) {
+    if (!referralResponseReasonIsValid(targetStatus, normalizedReason)) {
       throw new BadRequestException('Motivo da recusa é obrigatório e deve ser suficientemente descritivo.');
     }
 
@@ -214,11 +199,7 @@ export class ReferralsService {
     return this.prisma.$transaction(async (tx) => {
       const changed = await tx.providerReferral.updateMany({
         where: { id: referral.id, status: ProviderReferralStatus.PENDING },
-        data: {
-          status: targetStatus,
-          respondedAt: new Date(),
-          responseReason: normalizedReason || null
-        }
+        data: { status: targetStatus, respondedAt: new Date(), responseReason: normalizedReason || null }
       });
       if (changed.count !== 1) {
         throw new ConflictException('O encaminhamento foi alterado por outro processo. Recarregue e tente novamente.');
