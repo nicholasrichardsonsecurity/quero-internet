@@ -14,10 +14,15 @@ export class EligibilityReviewService {
       select: { type: true, status: true }
     });
 
+    const allowedStatuses: OrganizationStatus[] = [
+      OrganizationStatus.ACTIVE,
+      OrganizationStatus.ONBOARDING
+    ];
+
     if (
       !organization ||
       organization.type !== OrganizationType.MUNICIPALITY ||
-      ![OrganizationStatus.ACTIVE, OrganizationStatus.ONBOARDING].includes(organization.status as OrganizationStatus)
+      !allowedStatuses.includes(organization.status)
     ) {
       throw new ForbiddenException('Revisão disponível apenas no contexto municipal autorizado.');
     }
