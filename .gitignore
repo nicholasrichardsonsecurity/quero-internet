@@ -16,3 +16,4 @@ Thumbs.db
 *.pfx
 secrets/
 infra/docker/data/
+.vercel/

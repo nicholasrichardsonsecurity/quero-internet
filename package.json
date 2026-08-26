@@ -19,6 +19,12 @@
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
+  "pnpm": {
+    "overrides": {
+      "postcss": "8.5.18",
+      "deepmerge-ts": "8.0.0"
+    }
+  },
   "devDependencies": {
     "prettier": "^3.6.2",
     "turbo": "^2.5.5",
