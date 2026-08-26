@@ -18,7 +18,22 @@ CREATE TABLE "FtthFeasibilityAssessment" (
   "updatedAt" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "FtthFeasibilityAssessment_pkey" PRIMARY KEY ("id"),
   CONSTRAINT "FtthFeasibilityAssessment_availablePorts_check" CHECK ("availablePorts" IS NULL OR "availablePorts" >= 0),
-  CONSTRAINT "FtthFeasibilityAssessment_estimatedDropMeters_check" CHECK ("estimatedDropMeters" IS NULL OR "estimatedDropMeters" >= 0)
+  CONSTRAINT "FtthFeasibilityAssessment_estimatedDropMeters_check" CHECK ("estimatedDropMeters" IS NULL OR "estimatedDropMeters" >= 0),
+  CONSTRAINT "FtthFeasibilityAssessment_expansionFlag_check" CHECK ("expansionRequired" = ("result" = 'EXPANSION_REQUIRED'::"FtthFeasibilityResult")),
+  CONSTRAINT "FtthFeasibilityAssessment_feasibleCoverage_check" CHECK ("result" <> 'FEASIBLE'::"FtthFeasibilityResult" OR "coverageConfirmed" = true),
+  CONSTRAINT "FtthFeasibilityAssessment_feasiblePorts_check" CHECK ("result" <> 'FEASIBLE'::"FtthFeasibilityResult" OR "availablePorts" IS NULL OR "availablePorts" > 0),
+  CONSTRAINT "FtthFeasibilityAssessment_expansionDetails_check" CHECK (
+    "result" <> 'EXPANSION_REQUIRED'::"FtthFeasibilityResult"
+    OR (
+      "technicalReason" IS NOT NULL
+      AND char_length(btrim("technicalReason")) >= 12
+      AND "estimatedReadyAt" IS NOT NULL
+    )
+  ),
+  CONSTRAINT "FtthFeasibilityAssessment_infeasibleReason_check" CHECK (
+    "result" <> 'NOT_FEASIBLE'::"FtthFeasibilityResult"
+    OR ("technicalReason" IS NOT NULL AND char_length(btrim("technicalReason")) >= 12)
+  )
 );
 
 CREATE UNIQUE INDEX "FtthFeasibilityAssessment_referralId_key" ON "FtthFeasibilityAssessment"("referralId");
