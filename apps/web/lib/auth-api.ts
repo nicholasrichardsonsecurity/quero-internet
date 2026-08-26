@@ -6,6 +6,10 @@ export function authApiUrl(path: string): string {
 }
 
 export async function parseApiError(response: Response): Promise<string> {
+  if (response.status >= 500) {
+    return 'O serviço de autenticação está temporariamente indisponível.';
+  }
+
   try {
     const body = (await response.json()) as { message?: string | string[] };
     if (Array.isArray(body.message)) return body.message.join(' ');
