@@ -13,7 +13,7 @@ export class FtthFeasibilityController {
   constructor(private readonly authService: AuthService, private readonly service: FtthFeasibilityService) {}
 
   @Post()
-  @RequirePermissions(PERMISSIONS.REFERRAL_WRITE)
+  @RequirePermissions(PERMISSIONS.FEASIBILITY_WRITE)
   async assess(
     @Headers('authorization') authorization: string | undefined,
     @Param('referralId') referralId: string,
@@ -44,7 +44,7 @@ export class FtthFeasibilityController {
   }
 
   @Get()
-  @RequirePermissions(PERMISSIONS.REFERRAL_READ)
+  @RequirePermissions(PERMISSIONS.FEASIBILITY_READ)
   async get(@Headers('authorization') authorization: string | undefined, @Param('referralId') referralId: string) {
     const context = await this.authService.resolveAuthorization(authorization);
     return this.service.getForReferral(context, referralId);
