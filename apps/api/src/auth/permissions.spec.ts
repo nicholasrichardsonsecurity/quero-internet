@@ -13,12 +13,20 @@ describe('RBAC permission matrix', () => {
     expect(hasAllPermissions(roles, [PERMISSIONS.AUDIT_READ])).toBe(false);
   });
 
-  it('keeps provider operator read-only for provider context', () => {
+  it('allows provider operator to assess feasibility without referral write privileges', () => {
     const roles: MembershipRole[] = ['PROVIDER_OPERATOR'];
     const granted = permissionsForRoles(roles);
     expect(granted.has(PERMISSIONS.PROVIDER_READ)).toBe(true);
     expect(granted.has(PERMISSIONS.PROVIDER_WRITE)).toBe(false);
-    expect(granted.has(PERMISSIONS.MUNICIPALITY_WRITE)).toBe(false);
+    expect(granted.has(PERMISSIONS.REFERRAL_WRITE)).toBe(false);
+    expect(granted.has(PERMISSIONS.FEASIBILITY_READ)).toBe(true);
+    expect(granted.has(PERMISSIONS.FEASIBILITY_WRITE)).toBe(true);
+  });
+
+  it('allows municipality to read feasibility without technical write permission', () => {
+    const roles: MembershipRole[] = ['MUNICIPAL_MANAGER'];
+    expect(hasAllPermissions(roles, [PERMISSIONS.FEASIBILITY_READ])).toBe(true);
+    expect(hasAllPermissions(roles, [PERMISSIONS.FEASIBILITY_WRITE])).toBe(false);
   });
 
   it('allows auditor to read audit data without write permissions', () => {
