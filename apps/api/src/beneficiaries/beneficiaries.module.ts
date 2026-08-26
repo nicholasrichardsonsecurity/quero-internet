@@ -3,10 +3,11 @@ import { AuthModule } from '../auth/auth.module';
 import { ApplicationsController } from './applications.controller';
 import { BeneficiariesController } from './beneficiaries.controller';
 import { BeneficiariesService } from './beneficiaries.service';
+import { EligibilityReviewService } from './eligibility-review.service';
 
 @Module({
   imports: [AuthModule],
   controllers: [BeneficiariesController, ApplicationsController],
-  providers: [BeneficiariesService]
+  providers: [BeneficiariesService, EligibilityReviewService]
 })
 export class BeneficiariesModule {}
