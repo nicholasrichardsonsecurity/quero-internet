@@ -72,6 +72,21 @@ enum MembershipStatus {
   REVOKED
 }
 
+enum BeneficiaryStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum ApplicationStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  ELIGIBLE
+  INELIGIBLE
+  REFERRED
+  CANCELLED
+}
+
 model Tenant {
   id            String               @id @default(uuid()) @db.Uuid
   slug          String               @unique
@@ -81,25 +96,29 @@ model Tenant {
   updatedAt     DateTime             @updatedAt
   organizations TenantOrganization[]
   programs      Program[]
+  beneficiaries Beneficiary[]
+  applications  Application[]
   auditLogs     AuditLog[]
 }
 
 model Organization {
-  id                String                 @id @default(uuid()) @db.Uuid
-  legalName         String
-  tradeName         String?
-  documentNumber    String?
-  type              OrganizationType
-  status            OrganizationStatus     @default(ONBOARDING)
-  createdAt         DateTime               @default(now())
-  updatedAt         DateTime               @updatedAt
-  tenantLinks       TenantOrganization[]
-  units             OrganizationalUnit[]
-  memberships       Membership[]
-  participations    ProgramParticipation[]
-  municipalPrograms Program[]              @relation("MunicipalityPrograms")
-  activeSessions    Session[]              @relation("ActiveOrganizationContext")
-  auditLogs         AuditLog[]
+  id                    String                 @id @default(uuid()) @db.Uuid
+  legalName             String
+  tradeName             String?
+  documentNumber        String?
+  type                  OrganizationType
+  status                OrganizationStatus     @default(ONBOARDING)
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  tenantLinks           TenantOrganization[]
+  units                 OrganizationalUnit[]
+  memberships           Membership[]
+  participations        ProgramParticipation[]
+  municipalPrograms     Program[]              @relation("MunicipalityPrograms")
+  municipalBeneficiaries Beneficiary[]         @relation("MunicipalityBeneficiaries")
+  municipalApplications Application[]          @relation("MunicipalityApplications")
+  activeSessions        Session[]              @relation("ActiveOrganizationContext")
+  auditLogs             AuditLog[]
 
   @@index([type, status])
 }
@@ -143,6 +162,7 @@ model Program {
   tenant                     Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Restrict)
   municipalityOrganization   Organization           @relation("MunicipalityPrograms", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
   participations             ProgramParticipation[]
+  applications               Application[]
   auditLogs                  AuditLog[]
 
   @@unique([tenantId, slug])
@@ -165,6 +185,51 @@ model ProgramParticipation {
 
   @@unique([programId, organizationId, type])
   @@index([organizationId, status])
+}
+
+model Beneficiary {
+  id                         String            @id @default(uuid()) @db.Uuid
+  tenantId                   String            @db.Uuid
+  municipalityOrganizationId String            @db.Uuid
+  fullName                   String
+  documentHash               String
+  documentLast4              String            @db.VarChar(4)
+  birthDate                  DateTime?
+  phone                      String?
+  email                      String?
+  status                     BeneficiaryStatus @default(ACTIVE)
+  createdAt                  DateTime          @default(now())
+  updatedAt                  DateTime          @updatedAt
+  tenant                     Tenant            @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  municipalityOrganization   Organization      @relation("MunicipalityBeneficiaries", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
+  applications               Application[]
+
+  @@unique([tenantId, documentHash])
+  @@index([municipalityOrganizationId, status])
+  @@index([tenantId, createdAt])
+}
+
+model Application {
+  id                         String            @id @default(uuid()) @db.Uuid
+  tenantId                   String            @db.Uuid
+  municipalityOrganizationId String            @db.Uuid
+  programId                  String            @db.Uuid
+  beneficiaryId              String            @db.Uuid
+  status                     ApplicationStatus @default(SUBMITTED)
+  submittedAt                DateTime          @default(now())
+  reviewedAt                 DateTime?
+  decisionReason             String?
+  createdAt                  DateTime          @default(now())
+  updatedAt                  DateTime          @updatedAt
+  tenant                     Tenant            @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  municipalityOrganization   Organization      @relation("MunicipalityApplications", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
+  program                    Program           @relation(fields: [programId], references: [id], onDelete: Restrict)
+  beneficiary                Beneficiary       @relation(fields: [beneficiaryId], references: [id], onDelete: Restrict)
+
+  @@unique([programId, beneficiaryId])
+  @@index([tenantId, status, submittedAt])
+  @@index([municipalityOrganizationId, status])
+  @@index([beneficiaryId, createdAt])
 }
 
 model User {
