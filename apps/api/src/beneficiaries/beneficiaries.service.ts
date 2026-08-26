@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ApplicationStatus, OrganizationStatus, OrganizationType, Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import type { AuthenticatedSession } from '../auth/auth.service';
@@ -56,9 +56,14 @@ export class BeneficiariesService {
       throw new BadRequestException('Nome completo inválido.');
     }
 
+    const pepper = process.env.BENEFICIARY_IDENTITY_PEPPER;
+    if (!pepper || pepper.length < 32) {
+      throw new InternalServerErrorException('Proteção de identificadores não configurada.');
+    }
+
     let fingerprint: { hash: string; last4: string };
     try {
-      fingerprint = identityFingerprint(input.identityDocument ?? '');
+      fingerprint = identityFingerprint(input.identityDocument ?? '', pepper);
     } catch {
       throw new BadRequestException('Documento de identificação inválido.');
     }
