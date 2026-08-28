@@ -10,6 +10,8 @@ import { InstallationController } from './installation.controller';
 import { InstallationService } from './installation.service';
 import { ReferralsController } from './referrals.controller';
 import { ReferralsService } from './referrals.service';
+import { ServiceLifecycleController } from './service-lifecycle.controller';
+import { ServiceLifecycleService } from './service-lifecycle.service';
 
 @Module({
   imports: [AuthModule],
@@ -18,8 +20,16 @@ import { ReferralsService } from './referrals.service';
     ApplicationsController,
     ReferralsController,
     FtthFeasibilityController,
-    InstallationController
+    InstallationController,
+    ServiceLifecycleController
   ],
-  providers: [BeneficiariesService, EligibilityReviewService, ReferralsService, FtthFeasibilityService, InstallationService]
+  providers: [
+    BeneficiariesService,
+    EligibilityReviewService,
+    ReferralsService,
+    FtthFeasibilityService,
+    InstallationService,
+    ServiceLifecycleService
+  ]
 })
 export class BeneficiariesModule {}
