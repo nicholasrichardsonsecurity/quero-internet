@@ -29,6 +29,18 @@ describe('RBAC permission matrix', () => {
     expect(hasAllPermissions(roles, [PERMISSIONS.FEASIBILITY_WRITE])).toBe(false);
   });
 
+  it('allows provider operator to execute installation without referral write privileges', () => {
+    const roles: MembershipRole[] = ['PROVIDER_OPERATOR'];
+    expect(hasAllPermissions(roles, [PERMISSIONS.INSTALLATION_READ, PERMISSIONS.INSTALLATION_WRITE])).toBe(true);
+    expect(hasAllPermissions(roles, [PERMISSIONS.REFERRAL_WRITE])).toBe(false);
+  });
+
+  it('allows municipality to read installation without installation write permission', () => {
+    const roles: MembershipRole[] = ['MUNICIPAL_MANAGER'];
+    expect(hasAllPermissions(roles, [PERMISSIONS.INSTALLATION_READ])).toBe(true);
+    expect(hasAllPermissions(roles, [PERMISSIONS.INSTALLATION_WRITE])).toBe(false);
+  });
+
   it('allows auditor to read audit data without write permissions', () => {
     const roles: MembershipRole[] = ['AUDITOR'];
     expect(hasAllPermissions(roles, [PERMISSIONS.AUDIT_READ])).toBe(true);

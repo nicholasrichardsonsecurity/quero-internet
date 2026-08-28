@@ -100,6 +100,16 @@ enum FtthFeasibilityResult {
   NOT_FEASIBLE
 }
 
+enum InstallationStatus {
+  INSTALLATION_PENDING
+  SCHEDULED
+  IN_PROGRESS
+  INSTALLED
+  ACTIVATED
+  FAILED
+  CANCELLED
+}
+
 model Tenant {
   id String @id @default(uuid()) @db.Uuid
   slug String @unique
@@ -113,6 +123,7 @@ model Tenant {
   applications Application[]
   referrals ProviderReferral[]
   feasibilityAssessments FtthFeasibilityAssessment[]
+  installationOrders InstallationOrder[]
   auditLogs AuditLog[]
 }
 
@@ -135,6 +146,8 @@ model Organization {
   municipalReferrals ProviderReferral[] @relation("MunicipalityReferrals")
   providerReferrals ProviderReferral[] @relation("ProviderReferrals")
   providerFeasibilityAssessments FtthFeasibilityAssessment[] @relation("ProviderFeasibilityAssessments")
+  municipalInstallationOrders InstallationOrder[] @relation("MunicipalityInstallationOrders")
+  providerInstallationOrders InstallationOrder[] @relation("ProviderInstallationOrders")
   activeSessions Session[] @relation("ActiveOrganizationContext")
   auditLogs AuditLog[]
   @@index([type, status])
@@ -179,6 +192,7 @@ model Program {
   participations ProgramParticipation[]
   applications Application[]
   referrals ProviderReferral[]
+  installationOrders InstallationOrder[]
   auditLogs AuditLog[]
   @@unique([tenantId, slug])
   @@index([tenantId, status])
@@ -264,6 +278,7 @@ model ProviderReferral {
   program Program @relation(fields: [programId], references: [id], onDelete: Restrict)
   application Application @relation(fields: [applicationId], references: [id], onDelete: Restrict)
   feasibilityAssessment FtthFeasibilityAssessment?
+  installationOrder InstallationOrder?
   @@index([tenantId, status, referredAt])
   @@index([municipalityOrganizationId, status])
   @@index([providerOrganizationId, status, referredAt])
@@ -291,6 +306,35 @@ model FtthFeasibilityAssessment {
   referral ProviderReferral @relation(fields: [referralId], references: [id], onDelete: Restrict)
   @@index([tenantId, result, assessedAt])
   @@index([providerOrganizationId, result, assessedAt])
+}
+
+model InstallationOrder {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  municipalityOrganizationId String @db.Uuid
+  providerOrganizationId String @db.Uuid
+  programId String @db.Uuid
+  referralId String @unique @db.Uuid
+  status InstallationStatus @default(INSTALLATION_PENDING)
+  scheduledAt DateTime?
+  startedAt DateTime?
+  installedAt DateTime?
+  activatedAt DateTime?
+  failureReason String?
+  cancellationReason String?
+  externalServiceReference String?
+  installationSummary String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  municipalityOrganization Organization @relation("MunicipalityInstallationOrders", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
+  providerOrganization Organization @relation("ProviderInstallationOrders", fields: [providerOrganizationId], references: [id], onDelete: Restrict)
+  program Program @relation(fields: [programId], references: [id], onDelete: Restrict)
+  referral ProviderReferral @relation(fields: [referralId], references: [id], onDelete: Restrict)
+  @@index([tenantId, status, createdAt])
+  @@index([municipalityOrganizationId, status, createdAt])
+  @@index([providerOrganizationId, status, createdAt])
+  @@index([programId, status, createdAt])
 }
 
 model User {
