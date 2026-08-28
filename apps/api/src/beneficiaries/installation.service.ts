@@ -4,6 +4,8 @@ import {
   InstallationStatus,
   OrganizationStatus,
   OrganizationType,
+  ParticipationStatus,
+  ParticipationType,
   Prisma,
   ProviderReferralStatus
 } from '@prisma/client';
@@ -58,7 +60,16 @@ export class InstallationService {
         providerOrganizationId: context.organizationId,
         tenantId: { in: context.tenantIds },
         status: ProviderReferralStatus.ACCEPTED,
-        feasibilityAssessment: { result: FtthFeasibilityResult.FEASIBLE }
+        feasibilityAssessment: { result: FtthFeasibilityResult.FEASIBLE },
+        program: {
+          participations: {
+            some: {
+              organizationId: context.organizationId,
+              type: ParticipationType.INTERNET_PROVIDER,
+              status: ParticipationStatus.ACTIVE
+            }
+          }
+        }
       },
       select: {
         id: true,
@@ -71,7 +82,7 @@ export class InstallationService {
     });
 
     if (!referral) {
-      throw new NotFoundException('Encaminhamento aceito e tecnicamente viável não encontrado no contexto autorizado.');
+      throw new NotFoundException('Encaminhamento aceito, tecnicamente viável e com participação ativa não encontrado no contexto autorizado.');
     }
 
     try {
@@ -126,7 +137,16 @@ export class InstallationService {
       where: {
         referralId,
         providerOrganizationId: context.organizationId,
-        tenantId: { in: context.tenantIds }
+        tenantId: { in: context.tenantIds },
+        program: {
+          participations: {
+            some: {
+              organizationId: context.organizationId,
+              type: ParticipationType.INTERNET_PROVIDER,
+              status: ParticipationStatus.ACTIVE
+            }
+          }
+        }
       },
       select: {
         id: true,
@@ -142,7 +162,7 @@ export class InstallationService {
       }
     });
 
-    if (!order) throw new NotFoundException('Ordem de instalação não encontrada no contexto autorizado.');
+    if (!order) throw new NotFoundException('Ordem de instalação com participação ativa não encontrada no contexto autorizado.');
 
     const validationError = validateInstallationTransition({
       current: order.status,
@@ -269,8 +289,6 @@ export class InstallationService {
           startedAt: true,
           installedAt: true,
           activatedAt: true,
-          failureReason: true,
-          cancellationReason: true,
           createdAt: true,
           updatedAt: true
         }
