@@ -27,7 +27,7 @@ jobs:
     env:
       DATABASE_URL: postgresql://quero_internet:change_me@localhost:5432/quero_internet
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.14.0
