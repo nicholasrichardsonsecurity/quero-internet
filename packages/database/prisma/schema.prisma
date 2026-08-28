@@ -94,150 +94,151 @@ enum ProviderReferralStatus {
   CANCELLED
 }
 
+enum FtthFeasibilityResult {
+  FEASIBLE
+  EXPANSION_REQUIRED
+  NOT_FEASIBLE
+}
+
 model Tenant {
-  id            String               @id @default(uuid()) @db.Uuid
-  slug          String               @unique
-  name          String
-  status        TenantStatus         @default(ACTIVE)
-  createdAt     DateTime             @default(now())
-  updatedAt     DateTime             @updatedAt
+  id String @id @default(uuid()) @db.Uuid
+  slug String @unique
+  name String
+  status TenantStatus @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   organizations TenantOrganization[]
-  programs      Program[]
+  programs Program[]
   beneficiaries Beneficiary[]
-  applications  Application[]
-  referrals     ProviderReferral[]
-  auditLogs     AuditLog[]
+  applications Application[]
+  referrals ProviderReferral[]
+  feasibilityAssessments FtthFeasibilityAssessment[]
+  auditLogs AuditLog[]
 }
 
 model Organization {
-  id                     String                 @id @default(uuid()) @db.Uuid
-  legalName              String
-  tradeName              String?
-  documentNumber         String?
-  type                   OrganizationType
-  status                 OrganizationStatus     @default(ONBOARDING)
-  createdAt              DateTime               @default(now())
-  updatedAt              DateTime               @updatedAt
-  tenantLinks            TenantOrganization[]
-  units                  OrganizationalUnit[]
-  memberships            Membership[]
-  participations         ProgramParticipation[]
-  municipalPrograms      Program[]              @relation("MunicipalityPrograms")
-  municipalBeneficiaries Beneficiary[]          @relation("MunicipalityBeneficiaries")
-  municipalApplications  Application[]          @relation("MunicipalityApplications")
-  municipalReferrals     ProviderReferral[]     @relation("MunicipalityReferrals")
-  providerReferrals      ProviderReferral[]     @relation("ProviderReferrals")
-  activeSessions         Session[]              @relation("ActiveOrganizationContext")
-  auditLogs              AuditLog[]
-
+  id String @id @default(uuid()) @db.Uuid
+  legalName String
+  tradeName String?
+  documentNumber String?
+  type OrganizationType
+  status OrganizationStatus @default(ONBOARDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenantLinks TenantOrganization[]
+  units OrganizationalUnit[]
+  memberships Membership[]
+  participations ProgramParticipation[]
+  municipalPrograms Program[] @relation("MunicipalityPrograms")
+  municipalBeneficiaries Beneficiary[] @relation("MunicipalityBeneficiaries")
+  municipalApplications Application[] @relation("MunicipalityApplications")
+  municipalReferrals ProviderReferral[] @relation("MunicipalityReferrals")
+  providerReferrals ProviderReferral[] @relation("ProviderReferrals")
+  providerFeasibilityAssessments FtthFeasibilityAssessment[] @relation("ProviderFeasibilityAssessments")
+  activeSessions Session[] @relation("ActiveOrganizationContext")
+  auditLogs AuditLog[]
   @@index([type, status])
 }
 
 model TenantOrganization {
-  tenantId       String       @db.Uuid
-  organizationId String       @db.Uuid
-  createdAt      DateTime     @default(now())
-  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
+  tenantId String @db.Uuid
+  organizationId String @db.Uuid
+  createdAt DateTime @default(now())
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   @@id([tenantId, organizationId])
   @@index([organizationId])
 }
 
 model OrganizationalUnit {
-  id             String       @id @default(uuid()) @db.Uuid
-  organizationId String       @db.Uuid
-  name           String
-  code           String?
-  active         Boolean      @default(true)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
+  id String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  name String
+  code String?
+  active Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   @@unique([organizationId, code])
   @@index([organizationId, active])
 }
 
 model Program {
-  id                         String                 @id @default(uuid()) @db.Uuid
-  tenantId                   String                 @db.Uuid
-  municipalityOrganizationId String                 @db.Uuid
-  name                       String
-  slug                       String
-  status                     ProgramStatus          @default(DRAFT)
-  startsAt                   DateTime?
-  endsAt                     DateTime?
-  createdAt                  DateTime               @default(now())
-  updatedAt                  DateTime               @updatedAt
-  tenant                     Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Restrict)
-  municipalityOrganization   Organization           @relation("MunicipalityPrograms", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
-  participations             ProgramParticipation[]
-  applications               Application[]
-  referrals                  ProviderReferral[]
-  auditLogs                  AuditLog[]
-
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  municipalityOrganizationId String @db.Uuid
+  name String
+  slug String
+  status ProgramStatus @default(DRAFT)
+  startsAt DateTime?
+  endsAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  municipalityOrganization Organization @relation("MunicipalityPrograms", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
+  participations ProgramParticipation[]
+  applications Application[]
+  referrals ProviderReferral[]
+  auditLogs AuditLog[]
   @@unique([tenantId, slug])
   @@index([tenantId, status])
   @@index([municipalityOrganizationId])
 }
 
 model ProgramParticipation {
-  id             String              @id @default(uuid()) @db.Uuid
-  programId      String              @db.Uuid
-  organizationId String              @db.Uuid
-  type           ParticipationType
-  status         ParticipationStatus @default(PENDING)
-  validFrom      DateTime?
-  validUntil     DateTime?
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
-  program        Program             @relation(fields: [programId], references: [id], onDelete: Cascade)
-  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Restrict)
-
+  id String @id @default(uuid()) @db.Uuid
+  programId String @db.Uuid
+  organizationId String @db.Uuid
+  type ParticipationType
+  status ParticipationStatus @default(PENDING)
+  validFrom DateTime?
+  validUntil DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  program Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
   @@unique([programId, organizationId, type])
   @@index([organizationId, status])
 }
 
 model Beneficiary {
-  id                         String            @id @default(uuid()) @db.Uuid
-  tenantId                   String            @db.Uuid
-  municipalityOrganizationId String            @db.Uuid
-  fullName                   String
-  documentHash               String
-  documentLast4              String            @db.VarChar(4)
-  birthDate                  DateTime?
-  phone                      String?
-  email                      String?
-  status                     BeneficiaryStatus @default(ACTIVE)
-  createdAt                  DateTime          @default(now())
-  updatedAt                  DateTime          @updatedAt
-  tenant                     Tenant            @relation(fields: [tenantId], references: [id], onDelete: Restrict)
-  municipalityOrganization   Organization      @relation("MunicipalityBeneficiaries", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
-  applications               Application[]
-
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  municipalityOrganizationId String @db.Uuid
+  fullName String
+  documentHash String
+  documentLast4 String @db.VarChar(4)
+  birthDate DateTime?
+  phone String?
+  email String?
+  status BeneficiaryStatus @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  municipalityOrganization Organization @relation("MunicipalityBeneficiaries", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
+  applications Application[]
   @@unique([tenantId, documentHash])
   @@index([municipalityOrganizationId, status])
   @@index([tenantId, createdAt])
 }
 
 model Application {
-  id                         String            @id @default(uuid()) @db.Uuid
-  tenantId                   String            @db.Uuid
-  municipalityOrganizationId String            @db.Uuid
-  programId                  String            @db.Uuid
-  beneficiaryId              String            @db.Uuid
-  status                     ApplicationStatus @default(SUBMITTED)
-  submittedAt                DateTime          @default(now())
-  reviewedAt                 DateTime?
-  decisionReason             String?
-  createdAt                  DateTime          @default(now())
-  updatedAt                  DateTime          @updatedAt
-  tenant                     Tenant            @relation(fields: [tenantId], references: [id], onDelete: Restrict)
-  municipalityOrganization   Organization      @relation("MunicipalityApplications", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
-  program                    Program           @relation(fields: [programId], references: [id], onDelete: Restrict)
-  beneficiary                Beneficiary       @relation(fields: [beneficiaryId], references: [id], onDelete: Restrict)
-  referrals                  ProviderReferral[]
-
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  municipalityOrganizationId String @db.Uuid
+  programId String @db.Uuid
+  beneficiaryId String @db.Uuid
+  status ApplicationStatus @default(SUBMITTED)
+  submittedAt DateTime @default(now())
+  reviewedAt DateTime?
+  decisionReason String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  municipalityOrganization Organization @relation("MunicipalityApplications", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
+  program Program @relation(fields: [programId], references: [id], onDelete: Restrict)
+  beneficiary Beneficiary @relation(fields: [beneficiaryId], references: [id], onDelete: Restrict)
+  referrals ProviderReferral[]
   @@unique([programId, beneficiaryId])
   @@index([tenantId, status, submittedAt])
   @@index([municipalityOrganizationId, status])
@@ -245,92 +246,112 @@ model Application {
 }
 
 model ProviderReferral {
-  id                         String                 @id @default(uuid()) @db.Uuid
-  tenantId                   String                 @db.Uuid
-  municipalityOrganizationId String                 @db.Uuid
-  providerOrganizationId     String                 @db.Uuid
-  programId                  String                 @db.Uuid
-  applicationId              String                 @db.Uuid
-  status                     ProviderReferralStatus @default(PENDING)
-  referredAt                 DateTime               @default(now())
-  respondedAt                DateTime?
-  responseReason             String?
-  createdAt                  DateTime               @default(now())
-  updatedAt                  DateTime               @updatedAt
-  tenant                     Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Restrict)
-  municipalityOrganization   Organization           @relation("MunicipalityReferrals", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
-  providerOrganization       Organization           @relation("ProviderReferrals", fields: [providerOrganizationId], references: [id], onDelete: Restrict)
-  program                    Program                @relation(fields: [programId], references: [id], onDelete: Restrict)
-  application                Application            @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  municipalityOrganizationId String @db.Uuid
+  providerOrganizationId String @db.Uuid
+  programId String @db.Uuid
+  applicationId String @db.Uuid
+  status ProviderReferralStatus @default(PENDING)
+  referredAt DateTime @default(now())
+  respondedAt DateTime?
+  responseReason String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  municipalityOrganization Organization @relation("MunicipalityReferrals", fields: [municipalityOrganizationId], references: [id], onDelete: Restrict)
+  providerOrganization Organization @relation("ProviderReferrals", fields: [providerOrganizationId], references: [id], onDelete: Restrict)
+  program Program @relation(fields: [programId], references: [id], onDelete: Restrict)
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  feasibilityAssessment FtthFeasibilityAssessment?
   @@index([tenantId, status, referredAt])
   @@index([municipalityOrganizationId, status])
   @@index([providerOrganizationId, status, referredAt])
   @@index([applicationId, createdAt])
 }
 
+model FtthFeasibilityAssessment {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  providerOrganizationId String @db.Uuid
+  referralId String @unique @db.Uuid
+  result FtthFeasibilityResult
+  coverageConfirmed Boolean
+  infrastructureReference String?
+  availablePorts Int?
+  estimatedDropMeters Int?
+  expansionRequired Boolean @default(false)
+  technicalReason String?
+  estimatedReadyAt DateTime?
+  assessedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  providerOrganization Organization @relation("ProviderFeasibilityAssessments", fields: [providerOrganizationId], references: [id], onDelete: Restrict)
+  referral ProviderReferral @relation(fields: [referralId], references: [id], onDelete: Restrict)
+  @@index([tenantId, result, assessedAt])
+  @@index([providerOrganizationId, result, assessedAt])
+}
+
 model User {
-  id           String       @id @default(uuid()) @db.Uuid
-  email        String       @unique
-  displayName  String?
+  id String @id @default(uuid()) @db.Uuid
+  email String @unique
+  displayName String?
   passwordHash String?
-  active       Boolean      @default(true)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  memberships  Membership[]
-  sessions     Session[]
-  auditLogs    AuditLog[]
+  active Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  memberships Membership[]
+  sessions Session[]
+  auditLogs AuditLog[]
 }
 
 model Membership {
-  id             String           @id @default(uuid()) @db.Uuid
-  userId         String           @db.Uuid
-  organizationId String           @db.Uuid
-  role           MembershipRole
-  status         MembershipStatus @default(INVITED)
-  validFrom      DateTime?
-  validUntil     DateTime?
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
+  id String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  organizationId String @db.Uuid
+  role MembershipRole
+  status MembershipStatus @default(INVITED)
+  validFrom DateTime?
+  validUntil DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   @@unique([userId, organizationId, role])
   @@index([organizationId, status])
   @@index([userId, status])
 }
 
 model Session {
-  id                          String        @id @default(uuid()) @db.Uuid
-  userId                      String        @db.Uuid
-  tokenHash                   String        @unique
-  activeOrganizationContextId String?       @db.Uuid
-  expiresAt                   DateTime
-  revokedAt                   DateTime?
-  createdAt                   DateTime      @default(now())
-  user                        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  activeOrganizationContext   Organization? @relation("ActiveOrganizationContext", fields: [activeOrganizationContextId], references: [id], onDelete: Restrict)
-
+  id String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  tokenHash String @unique
+  activeOrganizationContextId String? @db.Uuid
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activeOrganizationContext Organization? @relation("ActiveOrganizationContext", fields: [activeOrganizationContextId], references: [id], onDelete: Restrict)
   @@index([userId, expiresAt])
   @@index([activeOrganizationContextId])
 }
 
 model AuditLog {
-  id             String        @id @default(uuid()) @db.Uuid
-  tenantId       String?       @db.Uuid
-  organizationId String?       @db.Uuid
-  programId      String?       @db.Uuid
-  actorUserId    String?       @db.Uuid
-  action         String
-  entityType     String
-  entityId       String?
-  correlationId  String?
-  createdAt      DateTime      @default(now())
-  tenant         Tenant?       @relation(fields: [tenantId], references: [id], onDelete: SetNull)
-  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
-  program        Program?      @relation(fields: [programId], references: [id], onDelete: SetNull)
-  actorUser      User?         @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
-
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String? @db.Uuid
+  organizationId String? @db.Uuid
+  programId String? @db.Uuid
+  actorUserId String? @db.Uuid
+  action String
+  entityType String
+  entityId String?
+  correlationId String?
+  createdAt DateTime @default(now())
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  program Program? @relation(fields: [programId], references: [id], onDelete: SetNull)
+  actorUser User? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
   @@index([tenantId, createdAt])
   @@index([organizationId, createdAt])
   @@index([programId, createdAt])
