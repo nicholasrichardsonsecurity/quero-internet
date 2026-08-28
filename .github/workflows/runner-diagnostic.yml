@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   ping:
-    runs-on: [self-hosted, qi-runner]
+    runs-on: self-hosted
     steps:
       - name: Runner started
         run: echo "runner-ok"
