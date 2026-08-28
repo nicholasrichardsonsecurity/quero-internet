@@ -80,6 +80,8 @@ export class ServiceLifecycleService {
       throw new NotFoundException('Instalação ativada e com participação ativa não encontrada no contexto autorizado.');
     }
 
+    const activatedAt = installation.activatedAt;
+
     try {
       return await this.prisma.$transaction(async (tx) => {
         const service = await tx.activeService.create({
@@ -89,7 +91,7 @@ export class ServiceLifecycleService {
             providerOrganizationId: installation.providerOrganizationId,
             programId: installation.programId,
             installationOrderId: installation.id,
-            activatedAt: installation.activatedAt,
+            activatedAt,
             externalServiceReference: installation.externalServiceReference
           },
           select: {
