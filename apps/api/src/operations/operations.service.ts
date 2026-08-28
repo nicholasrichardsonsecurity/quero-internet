@@ -51,7 +51,7 @@ export class OperationsService {
 
     if (
       organization.type === OrganizationType.MUNICIPALITY &&
-      [OrganizationStatus.ACTIVE, OrganizationStatus.ONBOARDING].includes(organization.status)
+      (organization.status === OrganizationStatus.ACTIVE || organization.status === OrganizationStatus.ONBOARDING)
     ) {
       return 'municipality';
     }
