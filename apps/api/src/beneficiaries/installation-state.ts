@@ -9,7 +9,21 @@ export interface InstallationTransitionInput {
   now?: Date;
 }
 
+const INSTALLATION_STATUSES: InstallationStatus[] = [
+  'INSTALLATION_PENDING',
+  'SCHEDULED',
+  'IN_PROGRESS',
+  'INSTALLED',
+  'ACTIVATED',
+  'FAILED',
+  'CANCELLED'
+];
+
 const TERMINAL: InstallationStatus[] = ['ACTIVATED', 'FAILED', 'CANCELLED'];
+
+export function isInstallationStatus(value: string): value is InstallationStatus {
+  return INSTALLATION_STATUSES.includes(value as InstallationStatus);
+}
 
 export function canTransitionInstallation(current: InstallationStatus, next: InstallationStatus): boolean {
   if (TERMINAL.includes(current)) return false;
