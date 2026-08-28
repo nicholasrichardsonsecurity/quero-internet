@@ -5,11 +5,13 @@ on:
   push:
     branches:
       - main
-      - 'mission/**'
+
+permissions:
+  contents: read
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     services:
       postgres:
         image: postgres:16-alpine
@@ -28,12 +30,14 @@ jobs:
       DATABASE_URL: postgresql://quero_internet:change_me@localhost:5432/quero_internet
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v6
-        with:
-          version: 10.14.0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Enable pnpm with Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.14.0 --activate
+          pnpm --version
       - run: pnpm install --frozen-lockfile=false
       - run: pnpm db:validate
       - run: pnpm db:generate

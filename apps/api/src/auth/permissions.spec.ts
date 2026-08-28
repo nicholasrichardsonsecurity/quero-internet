@@ -53,6 +53,17 @@ describe('RBAC permission matrix', () => {
     expect(hasAllPermissions(roles, [PERMISSIONS.SERVICE_WRITE])).toBe(false);
   });
 
+  it('allows municipal and provider operators to read operational overview without audit access', () => {
+    expect(hasAllPermissions(['MUNICIPAL_OPERATOR'], [PERMISSIONS.OPERATION_READ])).toBe(true);
+    expect(hasAllPermissions(['PROVIDER_OPERATOR'], [PERMISSIONS.OPERATION_READ])).toBe(true);
+    expect(hasAllPermissions(['MUNICIPAL_OPERATOR'], [PERMISSIONS.AUDIT_READ])).toBe(false);
+  });
+
+  it('does not grant operational overview to auditor or support by default', () => {
+    expect(hasAllPermissions(['AUDITOR'], [PERMISSIONS.OPERATION_READ])).toBe(false);
+    expect(hasAllPermissions(['SUPPORT'], [PERMISSIONS.OPERATION_READ])).toBe(false);
+  });
+
   it('allows auditor to read audit data without write permissions', () => {
     const roles: MembershipRole[] = ['AUDITOR'];
     expect(hasAllPermissions(roles, [PERMISSIONS.AUDIT_READ])).toBe(true);
