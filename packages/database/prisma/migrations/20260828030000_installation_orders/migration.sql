@@ -45,9 +45,6 @@ CREATE TABLE "InstallationOrder" (
   CONSTRAINT "InstallationOrder_cancellation_reason_check" CHECK (
     "status" <> 'CANCELLED' OR ("cancellationReason" IS NOT NULL AND char_length(btrim("cancellationReason")) >= 12)
   ),
-  CONSTRAINT "InstallationOrder_started_after_schedule_check" CHECK (
-    "startedAt" IS NULL OR "scheduledAt" IS NULL OR "startedAt" >= "scheduledAt"
-  ),
   CONSTRAINT "InstallationOrder_installed_after_started_check" CHECK (
     "installedAt" IS NULL OR "startedAt" IS NULL OR "installedAt" >= "startedAt"
   ),
