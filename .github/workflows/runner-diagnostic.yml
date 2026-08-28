@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   ping:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, qi-runner]
     steps:
       - name: Runner started
         run: echo "runner-ok"
