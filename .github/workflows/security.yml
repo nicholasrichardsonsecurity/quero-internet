@@ -14,7 +14,7 @@ permissions:
 jobs:
   dependency-audit:
     name: Production dependency audit
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, qi-runner]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -31,7 +31,7 @@ jobs:
 
   sast:
     name: SAST and secret patterns
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, qi-runner]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
