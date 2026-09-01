@@ -180,6 +180,7 @@ model Organization {
   activeSessions Session[] @relation("ActiveOrganizationContext")
   auditLogs AuditLog[]
   evidenceDocuments EvidenceDocument[]
+  integrationSyncRuns IntegrationSyncRun[]
   @@index([type, status])
 }
 
