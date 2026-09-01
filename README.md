@@ -70,6 +70,7 @@ Implementado até aqui:
 - CI com validação Prisma, migrations PostgreSQL, typecheck, testes e build;
 - Security Gate com auditoria de dependências e SAST/segredos;
 - branding oficial v1.1;
+- DMS mínimo de evidências com hash, classificação, finalidade, retenção e escopo por tenant;
 - núcleo multiempresa: `Tenant`, `Organization`, `Program`, `ProgramParticipation`, `User`, `Membership`, `Session`, `AuditLog`;
 - autenticação com sessão opaca e contexto organizacional;
 - RBAC no backend;
