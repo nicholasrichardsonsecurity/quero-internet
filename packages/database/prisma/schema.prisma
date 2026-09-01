@@ -446,7 +446,6 @@ model AuditLog {
   organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
   program Program? @relation(fields: [programId], references: [id], onDelete: SetNull)
   actorUser User? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
-  evidenceDocuments EvidenceDocument[]
   @@index([tenantId, createdAt])
   @@index([organizationId, createdAt])
   @@index([programId, createdAt])
