@@ -68,7 +68,7 @@ Implementado até aqui:
 - API NestJS, Web Next.js e Worker inicial;
 - PostgreSQL/Prisma, Redis e MinIO/S3 local;
 - CI com validação Prisma, migrations PostgreSQL, typecheck, testes e build;
-- gate formal de piloto controlado, runbook de incidentes e procedimento de backup/restauração;
+- gate formal de piloto controlado, runbook de incidentes, política de dados sintéticos e procedimento de backup/restauração;
 - Security Gate com auditoria de dependências e SAST/segredos;
 - branding oficial v1.1;
 - DMS mínimo de evidências com hash, classificação, finalidade, retenção e escopo por tenant;
@@ -83,6 +83,10 @@ Implementado até aqui:
 O projeto ainda **não está aprovado para piloto público ou produção**. Esse gate depende de segurança, privacidade, observabilidade, backup/restore, acessibilidade, operação, homologação e evidências externas.
 
 Documentos centrais:
+
+- [`docs/operations/PILOT-GATE.md`](docs/operations/PILOT-GATE.md)
+- [`docs/operations/HOMOLOGATION-ENVIRONMENT.md`](docs/operations/HOMOLOGATION-ENVIRONMENT.md)
+- [`docs/operations/E2E-SMOKE-SPEC.md`](docs/operations/E2E-SMOKE-SPEC.md)
 
 - [`docs/architecture/FOUNDATION.md`](docs/architecture/FOUNDATION.md)
 - [`docs/architecture/IMPLEMENTATION-STATUS.md`](docs/architecture/IMPLEMENTATION-STATUS.md)
