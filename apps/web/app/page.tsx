@@ -80,11 +80,12 @@ export default function HomePage() {
   const loadDashboard = useCallback(async () => {
     setErrorMessage(null);
     setStatus((current) => (current === 'loading-session' ? current : 'loading-dashboard'));
+    let sessionData: SessionSummary | null = null;
 
     try {
       const sessionResponse = await fetch('/api/auth/me', { cache: 'no-store' });
       if (!sessionResponse.ok) throw new Error('unauthorized');
-      const sessionData = (await sessionResponse.json()) as SessionSummary;
+      sessionData = (await sessionResponse.json()) as SessionSummary;
       setSession(sessionData);
 
       const dashboardResponse = await fetch('/api/dashboard/operational', { cache: 'no-store' });
@@ -101,12 +102,12 @@ export default function HomePage() {
         return;
       }
 
-      const fallback = buildReferenceOperationalDashboard(session);
+      const fallback = buildReferenceOperationalDashboard(sessionData);
       setDashboard(fallback);
       setErrorMessage(error instanceof Error ? error.message : 'Falha inesperada ao carregar os dados reais.');
       setStatus('fallback');
     }
-  }, [router, session]);
+  }, [router]);
 
   useEffect(() => {
     void loadDashboard();
