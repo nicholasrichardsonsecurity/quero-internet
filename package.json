@@ -22,7 +22,13 @@
   "pnpm": {
     "overrides": {
       "postcss": "8.5.18",
-      "deepmerge-ts": "8.0.0"
+      "deepmerge-ts": "8.0.0",
+      "next": "15.5.24",
+      "react": "19.1.2",
+      "react-dom": "19.1.2",
+      "@nestjs/common": "^11.1.22",
+      "@nestjs/core": "^11.1.22",
+      "@nestjs/platform-express": "^11.1.22"
     }
   },
   "devDependencies": {
