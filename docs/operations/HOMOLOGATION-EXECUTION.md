@@ -8,10 +8,12 @@
 4. executar scripts/verify-homologation-config.sh;
 5. iniciar os serviços com o compose de homologação;
 6. aplicar migrations pela pipeline ou por operador autorizado;
-7. conectar a API somente à rede interna;
-8. executar o E2E definido em E2E-SMOKE-SPEC.md;
-9. executar o exercício de backup/restauração;
-10. preencher PILOT-EVIDENCE-RECORD.md.
+7. executar `APP_ENV=homolog ALLOW_SYNTHETIC_SEED=true pnpm --filter @quero-internet/database db:seed:homolog` com senha fornecida por secret manager;
+8. executar `HOMOLOG_API_URL=https://... scripts/homologation-smoke.sh`;
+9. conectar a API somente à rede interna;
+10. executar o E2E definido em E2E-SMOKE-SPEC.md;
+11. executar o exercício de backup/restauração;
+12. preencher PILOT-EVIDENCE-RECORD.md;
 
 ## Restrições
 
