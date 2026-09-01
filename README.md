@@ -68,6 +68,7 @@ Implementado até aqui:
 - API NestJS, Web Next.js e Worker inicial;
 - PostgreSQL/Prisma, Redis e MinIO/S3 local;
 - CI com validação Prisma, migrations PostgreSQL, typecheck, testes e build;
+- gate formal de piloto controlado, runbook de incidentes e procedimento de backup/restauração;
 - Security Gate com auditoria de dependências e SAST/segredos;
 - branding oficial v1.1;
 - DMS mínimo de evidências com hash, classificação, finalidade, retenção e escopo por tenant;
@@ -210,7 +211,7 @@ Controles materializados ou exigidos pela fundação:
 - CI e Security Gate obrigatórios antes de merge;
 - baseline alinhado a boas práticas OWASP/ASVS, sem declarar conformidade formal antes da auditoria correspondente.
 
-Política: [`docs/security/SECURITY-BASELINE.md`](docs/security/SECURITY-BASELINE.md)
+Política: [`docs/security/BASELINE.md`](docs/security/SECURITY-BASELINE.md)
 
 ---
 
@@ -232,7 +233,7 @@ Diretrizes centrais:
 
 > A plataforma não usa o termo “LGPD compliant” como selo automático. Conformidade depende de processos, contratos, governança, operação e evidências além do código.
 
-Princípios: [`docs/privacy/PRIVACY-PRINCIPLES.md`](docs/privacy/PRIVACY-PRINCIPLES.md)
+Princípios: [`docs/privacy/PRINCIPLES.md`](docs/privacy/PRIVACY-PRINCIPLES.md)
 
 ---
 
