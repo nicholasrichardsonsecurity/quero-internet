@@ -1,6 +1,19 @@
 import { randomUUID } from 'node:crypto';
-import type { NextFunction, Request, Response } from 'express';
 import { ObservabilityService } from './observability.service';
+
+interface RequestLike {
+  headers: Record<string, string | string[] | undefined>;
+  method: string;
+  path: string;
+}
+
+interface ResponseLike {
+  statusCode: number;
+  setHeader(name: string, value: string): void;
+  on(event: 'finish', listener: () => void): void;
+}
+
+type NextFunction = () => void;
 
 const SAFE_ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 
@@ -10,7 +23,7 @@ function headerValue(value: string | string[] | undefined): string | undefined {
 }
 
 export function observabilityMiddleware(observability: ObservabilityService) {
-  return (request: Request, response: Response, next: NextFunction): void => {
+  return (request: RequestLike, response: ResponseLike, next: NextFunction): void => {
     const requestId = headerValue(request.headers['x-request-id']) ?? randomUUID();
     const correlationId = headerValue(request.headers['x-correlation-id']) ?? requestId;
     const startedAt = process.hrtime.bigint();
