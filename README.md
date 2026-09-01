@@ -71,6 +71,7 @@ Implementado até aqui:
 - Security Gate com auditoria de dependências e SAST/segredos;
 - branding oficial v1.1;
 - DMS mínimo de evidências com hash, classificação, finalidade, retenção e escopo por tenant;
+- integração IXC/SGP em modo simulado somente leitura, com prévia idempotente, hash de resultado e auditoria;
 - núcleo multiempresa: `Tenant`, `Organization`, `Program`, `ProgramParticipation`, `User`, `Membership`, `Session`, `AuditLog`;
 - autenticação com sessão opaca e contexto organizacional;
 - RBAC no backend;
@@ -185,7 +186,7 @@ Prioridade futura:
 - SMS, e-mail e WhatsApp transacional;
 - webhooks com autenticação, deduplicação e reconciliação.
 
-No estado atual, **não há escrita real automatizada em IXC/SGP**. Qualquer avanço nessa área precisa ser supervisionado, idempotente, auditável e reversível operacionalmente quando possível.
+A Missão 1.12 entrega adapters simulados somente leitura, health check e `sync-preview` idempotente para validar o contrato antes da homologação. **Não há escrita real automatizada em IXC/SGP**. Qualquer avanço nessa área precisa ser supervisionado, idempotente, auditável e reversível operacionalmente quando possível.
 
 ---
 

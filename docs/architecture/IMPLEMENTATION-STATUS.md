@@ -30,7 +30,7 @@
 | Agregações do dashboard | Implementado inicial | Endpoint `GET /dashboard/operational` com contagens reais, RBAC, tenant isolation e minimização por perfil. |
 | UX de dados reais | Implementado inicial | Loading, erro, botão de recarga, selo `DADOS DO BANCO` e fallback explicitamente rotulado. |
 | Evidências/documentos | Implementado inicial | Registro de metadados, SHA-256, classificação, finalidade, retenção e escopo multiempresa; upload binário completo ainda pendente. |
-| Integrações IXC/SGP | Arquitetura aprovada, não implementado real | Somente adapters futuros; sem escrita externa real no MVP atual. |
+| Integrações IXC/SGP | Implementado inicial | Adapters simulados somente leitura, prévia idempotente, hash de resultado e auditoria; sem escrita externa real. |
 | DMS/evidências | Arquitetura aprovada, não implementado completo | Uploads, hashes, OCR e assinaturas ficam para fase própria. |
 | Notificações | Pendente | Sem SMS/e-mail/WhatsApp transacional. |
 | Relatórios oficiais | Pendente | Sem prestação de contas final. |
@@ -112,7 +112,7 @@ Programa municipal ativo
 ## Próximos gates recomendados
 
 1. **Gate 1.11 — Evidências/documentos:** DMS mínimo, hash, classificação e privacidade — implementado inicialmente; upload seguro completo permanece como evolução.
-2. **Gate 1.12 — Integrações supervisionadas:** adapters IXC/SGP ainda sem automação plena.
+2. **Gate 1.12 — Integrações supervisionadas:** contrato comum IXC/SGP, health check e sync preview simulado — implementado inicialmente; homologação e leitura real permanecem pendentes.
 3. **Gate 1.13 — Notificações transacionais:** SMS/e-mail/WhatsApp com consentimento, templates e auditoria.
 4. **Gate 1.14 — Observabilidade operacional:** telemetria, métricas, logs estruturados e alertas.
 5. **Gate de piloto:** segurança, privacidade, backup/restore, observabilidade, acessibilidade e operação.

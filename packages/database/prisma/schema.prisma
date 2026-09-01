@@ -124,6 +124,16 @@ enum EvidenceClassification {
   SENSITIVE
 }
 
+enum IntegrationProvider {
+  IXC
+  SGP
+}
+
+enum IntegrationSyncStatus {
+  COMPLETED
+  REUSED
+}
+
 model Tenant {
   id String @id @default(uuid()) @db.Uuid
   slug String @unique
@@ -141,6 +151,7 @@ model Tenant {
   activeServices ActiveService[]
   auditLogs AuditLog[]
   evidenceDocuments EvidenceDocument[]
+  integrationSyncRuns IntegrationSyncRun[]
 }
 
 model Organization {
@@ -454,6 +465,24 @@ model AuditLog {
   @@index([correlationId])
 }
 
+
+model IntegrationSyncRun {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  organizationId String @db.Uuid
+  provider IntegrationProvider
+  idempotencyKey String
+  status IntegrationSyncStatus @default(COMPLETED)
+  mode String
+  recordCount Int @default(0)
+  resultHash String @db.VarChar(64)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  @@unique([tenantId, provider, idempotencyKey])
+  @@index([organizationId, provider, createdAt])
+}
 
 model EvidenceDocument {
   id String @id @default(uuid()) @db.Uuid
