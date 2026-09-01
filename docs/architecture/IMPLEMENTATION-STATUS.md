@@ -35,7 +35,7 @@
 | Notificações | Implementado inicial | Templates, consentimento/opt-out, prévia idempotente e auditoria; nenhum fornecedor externo acionado. |
 | Relatórios oficiais | Pendente | Sem prestação de contas final. |
 | Observabilidade operacional | Implementado inicial | Request/correlation ID, logs JSON sanitizados, métricas básicas e endpoint `/metrics`; retenção centralizada, OpenTelemetry e alertas persistentes ainda pendentes. |
-| Piloto público | Não aprovado | Depende de gate de segurança, privacidade, operação e homologação. |
+| Piloto controlado | Não aprovado | Gate formal criado; depende de evidências de segurança, privacidade, backup/restauração, acessibilidade, operação e homologação. |
 
 ## Linha operacional atual do MVP
 
@@ -109,10 +109,18 @@ Programa municipal ativo
 9. Branding ainda precisa de revisão gráfica final antes de campanhas públicas, materiais impressos e uso institucional com órgão específico.
 10. O DMS atual registra metadados e referências de storage, mas ainda não possui upload, antivírus, presigned URLs ou política automatizada de expiração.
 
+## Gate de piloto
+
+- Registro formal: docs/operations/PILOT-GATE.md.
+- Checklist de release: docs/operations/PILOT-RELEASE-CHECKLIST.md.
+- Exercício de continuidade: docs/operations/BACKUP-RESTORE-DRILL.md.
+- Resposta a incidentes: docs/operations/INCIDENT-RUNBOOK.md.
+- Estado atual: não aprovado; documentação não é evidência de execução.
+
 ## Próximos gates recomendados
 
 1. **Gate 1.11 — Evidências/documentos:** DMS mínimo, hash, classificação e privacidade — implementado inicialmente; upload seguro completo permanece como evolução.
 2. **Gate 1.12 — Integrações supervisionadas:** contrato comum IXC/SGP, health check e sync preview simulado — implementado inicialmente; homologação e leitura real permanecem pendentes.
 3. **Gate 1.13 — Notificações transacionais:** base governada implementada inicialmente; conexão com fornecedor e envio real permanecem pendentes.
 4. **Gate 1.14 — Observabilidade operacional:** baseline implementado inicialmente; retenção centralizada, OpenTelemetry e alertas persistentes permanecem pendentes.
-5. **Gate de piloto:** segurança, privacidade, backup/restore, observabilidade, acessibilidade e operação.
+5. **Gate de piloto:** segurança, privacidade, backup/restore, observabilidade, acessibilidade e operação — em avaliação, não aprovado.
