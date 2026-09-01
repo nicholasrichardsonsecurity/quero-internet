@@ -73,6 +73,7 @@ Implementado até aqui:
 - DMS mínimo de evidências com hash, classificação, finalidade, retenção e escopo por tenant;
 - integração IXC/SGP em modo simulado somente leitura, com prévia idempotente, hash de resultado e auditoria;
 - base de notificações com templates, consentimento/opt-out, prévia idempotente e auditoria, sem envio externo;
+- observabilidade operacional inicial com request/correlation ID, logs JSON sanitizados e métricas em `/metrics`;
 - núcleo multiempresa: `Tenant`, `Organization`, `Program`, `ProgramParticipation`, `User`, `Membership`, `Session`, `AuditLog`;
 - autenticação com sessão opaca e contexto organizacional;
 - RBAC no backend;
@@ -170,7 +171,7 @@ Estratégia: **monólito modular + workers assíncronos + adapters de integraç�
 | Assíncrono | Worker e filas futuras |
 | Monorepo | pnpm + Turborepo |
 | Contratos | OpenAPI e schemas versionados futuramente |
-| Observabilidade | logs estruturados, correlation ID e evolução para OpenTelemetry |
+| Observabilidade | logs JSON sanitizados, request/correlation ID, métricas básicas e evolução para OpenTelemetry |
 | CI | GitHub Actions |
 | Segurança SDLC | dependency audit + SAST/secret patterns |
 
