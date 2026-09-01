@@ -34,7 +34,7 @@
 | DMS/evidências | Arquitetura aprovada, não implementado completo | Uploads, hashes, OCR e assinaturas ficam para fase própria. |
 | Notificações | Implementado inicial | Templates, consentimento/opt-out, prévia idempotente e auditoria; nenhum fornecedor externo acionado. |
 | Relatórios oficiais | Pendente | Sem prestação de contas final. |
-| Observabilidade avançada | Pendente | Logs básicos; OpenTelemetry e dashboards ainda futuros. |
+| Observabilidade operacional | Implementado inicial | Request/correlation ID, logs JSON sanitizados, métricas básicas e endpoint `/metrics`; retenção centralizada, OpenTelemetry e alertas persistentes ainda pendentes. |
 | Piloto público | Não aprovado | Depende de gate de segurança, privacidade, operação e homologação. |
 
 ## Linha operacional atual do MVP
@@ -114,5 +114,5 @@ Programa municipal ativo
 1. **Gate 1.11 — Evidências/documentos:** DMS mínimo, hash, classificação e privacidade — implementado inicialmente; upload seguro completo permanece como evolução.
 2. **Gate 1.12 — Integrações supervisionadas:** contrato comum IXC/SGP, health check e sync preview simulado — implementado inicialmente; homologação e leitura real permanecem pendentes.
 3. **Gate 1.13 — Notificações transacionais:** base governada implementada inicialmente; conexão com fornecedor e envio real permanecem pendentes.
-4. **Gate 1.14 — Observabilidade operacional:** telemetria, métricas, logs estruturados e alertas.
+4. **Gate 1.14 — Observabilidade operacional:** baseline implementado inicialmente; retenção centralizada, OpenTelemetry e alertas persistentes permanecem pendentes.
 5. **Gate de piloto:** segurança, privacidade, backup/restore, observabilidade, acessibilidade e operação.
