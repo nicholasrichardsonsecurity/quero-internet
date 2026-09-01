@@ -35,7 +35,7 @@
 | Notificações | Implementado inicial | Templates, consentimento/opt-out, prévia idempotente e auditoria; nenhum fornecedor externo acionado. |
 | Relatórios oficiais | Pendente | Sem prestação de contas final. |
 | Observabilidade operacional | Implementado inicial | Request/correlation ID, logs JSON sanitizados, métricas básicas e endpoint `/metrics`; retenção centralizada, OpenTelemetry e alertas persistentes ainda pendentes. |
-| Piloto controlado | Não aprovado | Gate formal criado; depende de evidências de segurança, privacidade, backup/restauração, acessibilidade, operação e homologação. |
+| Piloto controlado | Não aprovado | Gate formal e especificação E2E criados; depende de evidências executadas de segurança, privacidade, backup/restauração, acessibilidade, operação e homologação. |
 
 ## Linha operacional atual do MVP
 
