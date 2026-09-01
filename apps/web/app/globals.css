@@ -78,6 +78,20 @@ a { color: inherit; text-decoration: none; }
 .heading-row p { margin:0; color:var(--slate-500); font-size:14px; }
 .eyebrow { display:inline-flex; margin-bottom:10px; color:#93c5fd; font-size:11px; font-weight:800; letter-spacing:.12em; }
 .demo-badge { padding:8px 10px; border-radius:999px; background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; font-size:11px; font-weight:700; letter-spacing:.04em; }
+.source-badge { width:max-content; padding:8px 10px; border-radius:999px; font-size:11px; font-weight:800; letter-spacing:.04em; }
+.source-badge.database { background:#dcfce7; border:1px solid #86efac; color:#166534; }
+.source-badge.reference { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; }
+.refresh-button { display:inline-flex; align-items:center; justify-content:center; gap:8px; width:max-content; border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.12); color:white; border-radius:999px; padding:9px 12px; font-size:12px; font-weight:800; cursor:pointer; }
+.refresh-button:disabled { cursor:wait; opacity:.72; }
+.status-alert { display:flex; align-items:flex-start; gap:12px; padding:14px 16px; border:1px solid #fed7aa; background:#fff7ed; color:#9a3412; border-radius:16px; box-shadow:var(--shadow-card); }
+.status-alert.loading { border-color:#bfdbfe; background:#eff6ff; color:#1d4ed8; }
+.status-alert strong { display:block; font-size:13px; margin-bottom:3px; }
+.status-alert span { display:block; font-size:12px; line-height:1.4; }
+.spin { animation: spin .9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.skeleton-soft { position:relative; overflow:hidden; }
+.skeleton-soft::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent); transform:translateX(-100%); animation:skeleton 1.35s ease-in-out infinite; }
+@keyframes skeleton { to { transform:translateX(100%); } }
 .kpi-grid { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px; }
 .card { background:white; border:1px solid var(--slate-200); border-radius:var(--radius-lg); box-shadow:var(--shadow-card); }
 .kpi { padding:18px; min-height:142px; display:flex; flex-direction:column; justify-content:space-between; }
@@ -156,4 +170,5 @@ a { color: inherit; text-decoration: none; }
   .hero-panel { padding:20px; }
   .hero-panel h1 { font-size:26px; }
   .privacy-grid { grid-template-columns:1fr; }
+  .refresh-button { width:100%; }
 }
