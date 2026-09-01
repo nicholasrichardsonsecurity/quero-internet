@@ -28,11 +28,15 @@ export type WorkQueueItem = {
   priority: 'Alta' | 'Média' | 'Baixa';
 };
 
+export type DashboardDataSource = 'database' | 'reference';
+
 export type OperationalDashboard = {
   persona: DashboardPersona;
   title: string;
   subtitle: string;
   scopeLabel: string;
+  dataSource: DashboardDataSource;
+  generatedAt: string;
   kpis: OperationalKpi[];
   stages: OperationalStage[];
   queues: WorkQueueItem[];
@@ -55,7 +59,7 @@ export function resolveDashboardPersona(roles: readonly string[] = []): Dashboar
   return 'support';
 }
 
-export function buildOperationalDashboard(session: SessionSummary | null): OperationalDashboard {
+export function buildReferenceOperationalDashboard(session: SessionSummary | null): OperationalDashboard {
   const persona = resolveDashboardPersona(session?.roles ?? []);
   const org = session?.organizationId ? session.organizationId.slice(0, 8) : 'sessão';
 
@@ -74,6 +78,8 @@ export function buildOperationalDashboard(session: SessionSummary | null): Opera
       title: 'Painel executivo GovTech',
       subtitle: 'Visão consolidada da operação multi-organização, com foco em risco, adoção e gargalos.',
       scopeLabel: `Organização ${org} • Visão global autorizada`,
+      dataSource: 'reference',
+      generatedAt: new Date().toISOString(),
       kpis: [
         { label: 'Municípios em implantação', value: '4', detail: '2 prontos para homologação', tone: 'blue' },
         { label: 'Provedores participantes', value: '11', detail: '8 ativos na operação', tone: 'violet' },
@@ -94,6 +100,8 @@ export function buildOperationalDashboard(session: SessionSummary | null): Opera
       title: 'Operação municipal',
       subtitle: 'Fila diária do programa público: cadastros, elegibilidade humana, encaminhamentos e ativações.',
       scopeLabel: `Organização ${org} • Prefeitura/gestão municipal`,
+      dataSource: 'reference',
+      generatedAt: new Date().toISOString(),
       kpis: [
         { label: 'Solicitações abertas', value: '126', detail: '38 aguardam primeira análise', tone: 'blue' },
         { label: 'Elegíveis para encaminhar', value: '88', detail: 'Decisão humana registrada', tone: 'green' },
@@ -114,6 +122,8 @@ export function buildOperationalDashboard(session: SessionSummary | null): Opera
       title: 'Operação do provedor',
       subtitle: 'Fila técnica FTTH: aceite, viabilidade, instalação, ativação e serviço ativo.',
       scopeLabel: `Organização ${org} • Provedor participante`,
+      dataSource: 'reference',
+      generatedAt: new Date().toISOString(),
       kpis: [
         { label: 'Encaminhamentos pendentes', value: '18', detail: 'Aguardam aceite ou recusa justificada', tone: 'amber' },
         { label: 'Viabilidades favoráveis', value: '61', detail: 'Cobertura confirmada tecnicamente', tone: 'green' },
@@ -134,6 +144,8 @@ export function buildOperationalDashboard(session: SessionSummary | null): Opera
       title: 'Painel de auditoria',
       subtitle: 'Visão de conformidade: decisões humanas, trilha de eventos e separação entre arquitetura e produção.',
       scopeLabel: `Organização ${org} • Auditoria`,
+      dataSource: 'reference',
+      generatedAt: new Date().toISOString(),
       kpis: [
         { label: 'Decisões auditáveis', value: '88', detail: 'Elegibilidade com motivo obrigatório', tone: 'green' },
         { label: 'Eventos operacionais', value: '349', detail: 'Trilha append-only no backend', tone: 'blue' },
@@ -154,6 +166,8 @@ export function buildOperationalDashboard(session: SessionSummary | null): Opera
       title: 'Suporte operacional',
       subtitle: 'Acompanhamento seguro de contexto, saúde operacional e orientação sem acesso sensível ampliado.',
       scopeLabel: `Organização ${org} • Suporte`,
+      dataSource: 'reference',
+      generatedAt: new Date().toISOString(),
       kpis: [
         { label: 'Chamados abertos', value: '14', detail: 'Triagem sem dado pessoal bruto', tone: 'amber' },
         { label: 'Ambientes acompanhados', value: '3', detail: 'Homologação e preparação', tone: 'blue' },
@@ -173,3 +187,5 @@ export function buildOperationalDashboard(session: SessionSummary | null): Opera
 
   return dashboards[persona];
 }
+
+export const buildOperationalDashboard = buildReferenceOperationalDashboard;
