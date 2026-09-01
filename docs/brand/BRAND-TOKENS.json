@@ -1,0 +1,76 @@
+{
+  "brand": {
+    "name": "Quero Internet GovTech",
+    "shortName": "Quero Internet",
+    "tagline": "Conectando pessoas, transformando cidades.",
+    "version": "1.1",
+    "updatedAt": "2026-09-01"
+  },
+  "colors": {
+    "qiNavy950": "#081D3A",
+    "qiNavy900": "#0B1730",
+    "qiBlue700": "#0D47C7",
+    "qiBlue600": "#1D4ED8",
+    "qiBlue500": "#2563EB",
+    "qiBlue400": "#60A5FA",
+    "qiGreen600": "#16A34A",
+    "qiGreen500": "#22C55E",
+    "qiGreen300": "#86EFAC",
+    "qiAmber500": "#F59E0B",
+    "qiRed600": "#DC2626",
+    "qiSlate950": "#07111F",
+    "qiSlate900": "#0F172A",
+    "qiSlate800": "#1E293B",
+    "qiSlate700": "#334155",
+    "qiSlate600": "#475569",
+    "qiSlate500": "#64748B",
+    "qiSlate300": "#CBD5E1",
+    "qiSlate200": "#E2E8F0",
+    "qiSlate100": "#F1F5F9",
+    "qiSlate50": "#F8FAFC",
+    "qiWhite": "#FFFFFF"
+  },
+  "gradients": {
+    "institutional": ["#071B35", "#0B2C5E", "#1D4ED8"],
+    "action": ["#2563EB", "#22C55E"],
+    "highlight": ["#0D47C7", "#6D5DFC"]
+  },
+  "typography": {
+    "productPrimary": "Inter",
+    "marketingSecondary": "Poppins",
+    "scale": {
+      "hero": { "weight": 800, "tracking": "-0.045em" },
+      "h1": { "weight": 750, "tracking": "-0.035em" },
+      "h2": { "weight": 700, "tracking": "-0.015em" },
+      "body": { "weight": 400 },
+      "label": { "weight": 700 },
+      "kpi": { "weight": 800, "tracking": "-0.04em" }
+    }
+  },
+  "spacing": {
+    "base": 8,
+    "micro": 4,
+    "xs": 8,
+    "sm": 12,
+    "md": 16,
+    "lg": 24,
+    "xl": 32,
+    "2xl": 48,
+    "3xl": 64
+  },
+  "radius": {
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 22
+  },
+  "iconography": {
+    "library": "Lucide Icons",
+    "style": "outline",
+    "stroke": 2
+  },
+  "accessibility": {
+    "target": "WCAG 2.2 AA",
+    "note": "Não declarar conformidade pública antes de auditoria formal."
+  }
+}
