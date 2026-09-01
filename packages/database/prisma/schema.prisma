@@ -194,6 +194,8 @@ model Organization {
   auditLogs AuditLog[]
   evidenceDocuments EvidenceDocument[]
   integrationSyncRuns IntegrationSyncRun[]
+  notificationConsents NotificationConsent[]
+  notificationDeliveries NotificationDelivery[]
   @@index([type, status])
 }
 
