@@ -1,9 +1,17 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
-import type { Request, Response } from 'express';
 import { API_CONTRACT, errorCodeForStatus, safeErrorMessage, type ApiErrorEnvelope } from './api-contract';
 
 interface HttpExceptionResponseBody {
   message?: unknown;
+}
+
+interface HttpRequestLike {
+  url: string;
+  headers: Record<string, string | string[] | undefined>;
+}
+
+interface HttpResponseLike {
+  status(statusCode: number): { json(body: ApiErrorEnvelope): void };
 }
 
 function exceptionStatus(exception: unknown): number {
@@ -31,8 +39,8 @@ function firstHeaderValue(value: string | string[] | undefined): string | undefi
 export class ApiExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const response = ctx.getResponse<HttpResponseLike>();
+    const request = ctx.getRequest<HttpRequestLike>();
     const statusCode = exceptionStatus(exception);
     const requestId = firstHeaderValue(request.headers[API_CONTRACT.requestIdHeader]);
 
