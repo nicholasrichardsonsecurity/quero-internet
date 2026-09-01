@@ -69,7 +69,7 @@ Implementado até aqui:
 - PostgreSQL/Prisma, Redis e MinIO/S3 local;
 - CI com validação Prisma, migrations PostgreSQL, typecheck, testes e build;
 - Security Gate com auditoria de dependências e SAST/segredos;
-- identidade visual oficial;
+- branding oficial v1.1;
 - núcleo multiempresa: `Tenant`, `Organization`, `Program`, `ProgramParticipation`, `User`, `Membership`, `Session`, `AuditLog`;
 - autenticação com sessão opaca e contexto organizacional;
 - RBAC no backend;
@@ -87,9 +87,15 @@ Documentos centrais:
 
 ---
 
-## Identidade visual oficial
+## Branding oficial
 
-O símbolo oficial combina **Q + conectividade + cidade + inclusão**, usando azul institucional, verde de conectividade e um acento brasileiro discreto. A identidade foi projetada para comunicar GovTech, telecom, confiança e escala nacional sem aparência de protótipo.
+A marca oficial é **Quero Internet GovTech**.
+
+**Slogan:** Conectando pessoas, transformando cidades.
+
+**Posicionamento:** GovTech/SaaS para gestão operacional, segura e auditável de programas públicos de conectividade, conectando prefeitura, cidadão elegível e provedor participante.
+
+O símbolo oficial combina **Q + conectividade + cidade + inclusão**, usando azul institucional, verde de conectividade e linguagem visual de plataforma pública moderna.
 
 <p align="center">
   <img src="assets/brand/quero-internet-symbol-official.svg" alt="Símbolo oficial Quero Internet" width="260" />
@@ -99,6 +105,8 @@ O símbolo oficial combina **Q + conectividade + cidade + inclusão**, usando az
   <img src="assets/brand/quero-internet-brand-board.svg" alt="Brand Board Quero Internet GovTech" width="100%" />
 </p>
 
+Diretrizes principais:
+
 - Fonte operacional: **Inter**.
 - Ícones: **Lucide Icons**.
 - Sidebar institucional: `#081D3A`.
@@ -106,8 +114,15 @@ O símbolo oficial combina **Q + conectividade + cidade + inclusão**, usando az
 - Verde positivo/conectividade: `#22C55E`.
 - Sistema de espaçamento: base de **8 px**.
 - Meta de acessibilidade: **WCAG 2.2 AA**, sujeita a auditoria antes de qualquer declaração de conformidade.
+- Comunicação sem promessa de aprovação automática, internet garantida ou decisão por IA.
 
-Documentação completa: [`docs/design/BRAND-GUIDELINES.md`](docs/design/BRAND-GUIDELINES.md)
+Documentação de marca:
+
+- [`docs/brand/BRAND-BOOK.md`](docs/brand/BRAND-BOOK.md)
+- [`docs/brand/BRAND-TOKENS.json`](docs/brand/BRAND-TOKENS.json)
+- [`docs/brand/MESSAGING.md`](docs/brand/MESSAGING.md)
+- [`docs/brand/VISUAL-SYSTEM.md`](docs/brand/VISUAL-SYSTEM.md)
+- [`docs/design/BRAND-GUIDELINES.md`](docs/design/BRAND-GUIDELINES.md)
 
 ---
 
@@ -221,100 +236,46 @@ Princípios: [`docs/privacy/PRIVACY-PRINCIPLES.md`](docs/privacy/PRIVACY-PRINCIP
 
 ```text
 apps/
-  api/             API NestJS
-  web/             aplicação web / shells por contexto
-  worker/          processamento assíncrono
+  api/        API NestJS
+  web/        Aplicação web Next.js
+  worker/     Worker inicial
 packages/
-  config/          configuração e validação de ambiente
-  database/        Prisma e persistência
-  domain/          conceitos compartilhados quando justificados
-  authorization/   políticas de autorização
-  integrations/    contratos/adapters de integração
-  observability/   telemetria e correlação
-  security/        primitivas e controles compartilhados
-infra/
-  docker/          infraestrutura local
+  database/   Prisma, schema e migrations
 docs/
-  adr/             Architecture Decision Records
-  architecture/    arquitetura consolidada e status real
-  design/          Brand & Design System
-  missions/        missões versionadas
-  privacy/         privacidade e LGPD
-  security/        segurança
-  operations/      runbooks e operação
+  agents/     Playbooks especializados
+  architecture/
+  brand/      Branding oficial, mensagens e tokens
+  design/
+  missions/
+  privacy/
+  product/
+  security/
 ```
 
 ---
 
-## Desenvolvimento local
-
-Pré-requisitos: Node.js suportado pelo workspace, pnpm 10.14.x e Docker.
+## Execução local
 
 ```bash
 pnpm install
-
-docker compose -f infra/docker/docker-compose.yml up -d
-
 pnpm db:generate
-pnpm typecheck
+pnpm db:validate
 pnpm test
 pnpm build
+```
+
+Com Docker local:
+
+```bash
+docker compose up -d postgres redis minio
+pnpm db:migrate:deploy
 pnpm dev
 ```
 
-Endpoints fundamentais:
-
-```text
-GET /health
-GET /ready
-```
-
-`/health` indica vida do processo. `/ready` representa prontidão das dependências necessárias; os dois conceitos não devem ser confundidos.
-
 ---
 
-## Regras para contribuição e agentes
+## Licença
 
-Agentes de programação podem auxiliar em implementação, revisão, testes e documentação, mas não são autoridade arquitetural nem decisória.
+Software proprietário. Ver [`LICENSE.md`](LICENSE.md).
 
-Regras obrigatórias: [`AGENTS.md`](AGENTS.md)
-
-Resumo dos gates antes de merge:
-
-- documentação atualizada;
-- migrations reais quando houver banco;
-- testes de domínio/autorização;
-- typecheck;
-- testes;
-- build;
-- Security Gate;
-- revisão de isolamento multiempresa, LGPD e autorização deny-by-default.
-
----
-
-## Licença e propriedade intelectual
-
-**Software proprietário — All Rights Reserved.**
-
-Copyright © 2026 **Nicholas Richardson**.
-
-Sem autorização prévia, expressa e escrita do proprietário, é proibido copiar, reproduzir, modificar, distribuir, sublicenciar, vender, revender, comercializar, oferecer como SaaS/serviço, criar derivados ou explorar economicamente o software, documentação, arquitetura e identidade visual.
-
-O acesso a este repositório privado não implica concessão de licença.
-
-Componentes de terceiros permanecem sujeitos às respectivas licenças.
-
-Leia os termos completos em [`LICENSE`](LICENSE).
-
----
-
-<div align="center">
-
-<img src="assets/brand/quero-internet-symbol-official.svg" alt="Quero Internet" width="90" />
-
-**Quero Internet GovTech**  
-*Conectando pessoas, transformando cidades.*
-
-2026 · Todos os direitos reservados.
-
-</div>
+Nenhum direito é concedido para copiar, distribuir, sublicenciar, revender, hospedar, modificar ou explorar comercialmente este projeto sem autorização expressa e formal do titular.
