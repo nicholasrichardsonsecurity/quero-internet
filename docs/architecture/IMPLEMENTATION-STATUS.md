@@ -29,6 +29,7 @@
 | Dashboard operacional | Implementado inicial | Tela por persona operacional conectada ao BFF de dados reais com fallback controlado. |
 | Agregações do dashboard | Implementado inicial | Endpoint `GET /dashboard/operational` com contagens reais, RBAC, tenant isolation e minimização por perfil. |
 | UX de dados reais | Implementado inicial | Loading, erro, botão de recarga, selo `DADOS DO BANCO` e fallback explicitamente rotulado. |
+| Evidências/documentos | Implementado inicial | Registro de metadados, SHA-256, classificação, finalidade, retenção e escopo multiempresa; upload binário completo ainda pendente. |
 | Integrações IXC/SGP | Arquitetura aprovada, não implementado real | Somente adapters futuros; sem escrita externa real no MVP atual. |
 | DMS/evidências | Arquitetura aprovada, não implementado completo | Uploads, hashes, OCR e assinaturas ficam para fase própria. |
 | Notificações | Pendente | Sem SMS/e-mail/WhatsApp transacional. |
@@ -106,10 +107,11 @@ Programa municipal ativo
 7. Paginação/cursor ainda não foi padronizada em todas as listagens.
 8. Falhas de dashboard ainda não emitem telemetria estruturada.
 9. Branding ainda precisa de revisão gráfica final antes de campanhas públicas, materiais impressos e uso institucional com órgão específico.
+10. O DMS atual registra metadados e referências de storage, mas ainda não possui upload, antivírus, presigned URLs ou política automatizada de expiração.
 
 ## Próximos gates recomendados
 
-1. **Gate 1.11 — Evidências/documentos:** DMS mínimo, hash, classificação e privacidade.
+1. **Gate 1.11 — Evidências/documentos:** DMS mínimo, hash, classificação e privacidade — implementado inicialmente; upload seguro completo permanece como evolução.
 2. **Gate 1.12 — Integrações supervisionadas:** adapters IXC/SGP ainda sem automação plena.
 3. **Gate 1.13 — Notificações transacionais:** SMS/e-mail/WhatsApp com consentimento, templates e auditoria.
 4. **Gate 1.14 — Observabilidade operacional:** telemetria, métricas, logs estruturados e alertas.

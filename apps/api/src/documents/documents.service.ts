@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
-import { EvidenceClassification, Prisma } from '@prisma/client';
+import { EvidenceClassification } from '@prisma/client';
 import type { AuthenticatedSession } from '../auth/auth.service';
 import { PrismaService } from '../database/prisma.service';
 

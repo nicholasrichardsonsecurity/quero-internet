@@ -140,6 +140,7 @@ model Tenant {
   installationOrders InstallationOrder[]
   activeServices ActiveService[]
   auditLogs AuditLog[]
+  evidenceDocuments EvidenceDocument[]
 }
 
 model Organization {
@@ -167,6 +168,7 @@ model Organization {
   providerActiveServices ActiveService[] @relation("ProviderActiveServices")
   activeSessions Session[] @relation("ActiveOrganizationContext")
   auditLogs AuditLog[]
+  evidenceDocuments EvidenceDocument[]
   @@index([type, status])
 }
 
