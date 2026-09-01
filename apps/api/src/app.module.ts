@@ -4,11 +4,12 @@ import { BeneficiariesModule } from './beneficiaries/beneficiaries.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { DocumentsModule } from './documents/documents.module';
 import { IntegrationsModule } from './integrations/integrations.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { DatabaseModule } from './database/database.module';
 import { HealthController } from './health/health.controller';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, BeneficiariesModule, DashboardModule, DocumentsModule, IntegrationsModule],
+  imports: [DatabaseModule, AuthModule, BeneficiariesModule, DashboardModule, DocumentsModule, IntegrationsModule, NotificationsModule],
   controllers: [HealthController]
 })
 export class AppModule {}

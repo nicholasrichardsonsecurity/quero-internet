@@ -72,6 +72,7 @@ Implementado até aqui:
 - branding oficial v1.1;
 - DMS mínimo de evidências com hash, classificação, finalidade, retenção e escopo por tenant;
 - integração IXC/SGP em modo simulado somente leitura, com prévia idempotente, hash de resultado e auditoria;
+- base de notificações com templates, consentimento/opt-out, prévia idempotente e auditoria, sem envio externo;
 - núcleo multiempresa: `Tenant`, `Organization`, `Program`, `ProgramParticipation`, `User`, `Membership`, `Session`, `AuditLog`;
 - autenticação com sessão opaca e contexto organizacional;
 - RBAC no backend;
@@ -183,7 +184,7 @@ Prioridade futura:
 
 - **IXC** para provedores participantes;
 - **SGP** para provedores participantes;
-- SMS, e-mail e WhatsApp transacional;
+- SMS, e-mail e WhatsApp transacional, após homologação de fornecedor e consentimento;
 - webhooks com autenticação, deduplicação e reconciliação.
 
 A Missão 1.12 entrega adapters simulados somente leitura, health check e `sync-preview` idempotente para validar o contrato antes da homologação. **Não há escrita real automatizada em IXC/SGP**. Qualquer avanço nessa área precisa ser supervisionado, idempotente, auditável e reversível operacionalmente quando possível.
