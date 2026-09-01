@@ -2,6 +2,22 @@ import type { MembershipRole } from '@prisma/client';
 import { hasAllPermissions, PERMISSIONS, permissionsForRoles } from './permissions';
 
 describe('RBAC permission matrix', () => {
+  it('allows all active operational roles to read the dashboard', () => {
+    const roles: MembershipRole[] = [
+      'ORGANIZATION_OWNER',
+      'ORGANIZATION_ADMIN',
+      'MUNICIPAL_MANAGER',
+      'MUNICIPAL_OPERATOR',
+      'PROVIDER_MANAGER',
+      'PROVIDER_OPERATOR',
+      'AUDITOR',
+      'SUPPORT'
+    ];
+    for (const role of roles) {
+      expect(hasAllPermissions([role], [PERMISSIONS.DASHBOARD_READ])).toBe(true);
+    }
+  });
+
   it('allows municipal manager to manage programs and beneficiaries', () => {
     const roles: MembershipRole[] = ['MUNICIPAL_MANAGER'];
     expect(hasAllPermissions(roles, [PERMISSIONS.PROGRAM_WRITE, PERMISSIONS.BENEFICIARY_WRITE])).toBe(true);

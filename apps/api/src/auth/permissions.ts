@@ -4,6 +4,7 @@ export const PERMISSIONS = {
   SESSION_READ: 'session:read',
   SESSION_REVOKE: 'session:revoke',
   ORGANIZATION_SWITCH: 'organization:switch',
+  DASHBOARD_READ: 'dashboard:read',
   MUNICIPALITY_READ: 'municipality:read',
   MUNICIPALITY_WRITE: 'municipality:write',
   PROGRAM_READ: 'program:read',
@@ -28,7 +29,8 @@ export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
 const commonSession: Permission[] = [
   PERMISSIONS.SESSION_READ,
   PERMISSIONS.SESSION_REVOKE,
-  PERMISSIONS.ORGANIZATION_SWITCH
+  PERMISSIONS.ORGANIZATION_SWITCH,
+  PERMISSIONS.DASHBOARD_READ
 ];
 
 export const ROLE_PERMISSIONS: Record<MembershipRole, readonly Permission[]> = {
