@@ -25,6 +25,7 @@
 | Instalação/ativação | Implementado inicial | Ordem operacional e máquina de estados até `ACTIVATED`. |
 | Serviço ativo | Implementado inicial | Ciclo básico após ativação, separado de ERP e benefício automático. |
 | Contratos HTTP internos | Implementado inicial | Envelope de erro, códigos estáveis, request id e política de versionamento inicial. |
+| Dashboard operacional | Implementado inicial | Tela por persona operacional com dados de referência rotulados; agregações reais ainda pendentes. |
 | Integrações IXC/SGP | Arquitetura aprovada, não implementado real | Somente adapters futuros; sem escrita externa real no MVP atual. |
 | DMS/evidências | Arquitetura aprovada, não implementado completo | Uploads, hashes, OCR e assinaturas ficam para fase própria. |
 | Notificações | Pendente | Sem SMS/e-mail/WhatsApp transacional. |
@@ -58,6 +59,14 @@ Programa municipal ativo
 - Header de rastreio recomendado: `x-request-id`.
 - Erros seguem envelope único em `error.code`, `error.message`, `error.statusCode`, `error.path`, `error.timestamp` e `error.requestId` quando fornecido.
 
+## Dashboard operacional atual
+
+- Resolve persona pela sessão autenticada.
+- Exibe KPIs, esteira, filas e próximos passos por perfil.
+- Mantém avisos de privacidade e minimização.
+- Ainda usa dados operacionais de referência rotulados.
+- Próxima fase deve criar endpoints agregadores reais no backend.
+
 ## Segurança atual da trilha
 
 - Security Gate com auditoria de dependências de produção.
@@ -68,7 +77,7 @@ Programa municipal ativo
 ## Débitos controlados
 
 1. Não há lockfile persistido no repositório; o pipeline usa instalação sem frozen lockfile e depende de overrides explícitos para reduzir deriva.
-2. A camada web ainda é shell inicial; muitas operações existem primeiro na API.
+2. A camada web ainda usa dados de referência em alguns painéis; dados reais dependem de endpoints agregadores.
 3. Não há ambiente de homologação descrito por infraestrutura imutável.
 4. Não há seed completo de demonstração governamental.
 5. Não há testes E2E de jornada completa município → provedor → serviço ativo.
@@ -77,8 +86,8 @@ Programa municipal ativo
 
 ## Próximos gates recomendados
 
-1. **Gate 1.8 — Dashboard operacional:** telas reais por perfil com dados do domínio já implementado.
-2. **Gate 1.9 — Evidências/documentos:** DMS mínimo, hash, classificação e privacidade.
-3. **Gate 1.10 — Integrações supervisionadas:** adapters IXC/SGP ainda sem automação plena.
-4. **Gate 1.11 — Notificações transacionais:** SMS/e-mail/WhatsApp com consentimento, templates e auditoria.
+1. **Gate 1.9 — Agregações reais do dashboard:** endpoints de resumo por perfil com RBAC e minimização.
+2. **Gate 1.10 — Evidências/documentos:** DMS mínimo, hash, classificação e privacidade.
+3. **Gate 1.11 — Integrações supervisionadas:** adapters IXC/SGP ainda sem automação plena.
+4. **Gate 1.12 — Notificações transacionais:** SMS/e-mail/WhatsApp com consentimento, templates e auditoria.
 5. **Gate de piloto:** segurança, privacidade, backup/restore, observabilidade, acessibilidade e operação.
