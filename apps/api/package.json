@@ -10,9 +10,9 @@
     "lint": "eslint src --max-warnings=0"
   },
   "dependencies": {
-    "@nestjs/common": "^11.1.6",
-    "@nestjs/core": "^11.1.6",
-    "@nestjs/platform-express": "^11.1.6",
+    "@nestjs/common": "^11.1.22",
+    "@nestjs/core": "^11.1.22",
+    "@nestjs/platform-express": "^11.1.22",
     "@prisma/client": "^6.14.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",
-    "@nestjs/testing": "^11.1.6",
+    "@nestjs/testing": "^11.1.22",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.15.0",
     "jest": "^30.0.0",
