@@ -13,7 +13,8 @@
 | Bloco | Estado | Observação |
 |---|---|---|
 | Fundação de monorepo | Implementado | pnpm, Turborepo, apps, packages, CI e Security Gate. |
-| Identidade visual | Implementado inicial | Símbolo, brand board e diretrizes iniciais. |
+| Branding oficial | Implementado inicial | Brand book v1.1, mensagens, sistema visual, tokens, README e brand guidelines atualizados. |
+| Identidade visual | Implementado inicial | Símbolo, brand board, paleta, tipografia, iconografia e regras de uso. |
 | Multiempresa | Implementado inicial | Tenant, organizações, programas, participações, vínculos e sessão contextual. |
 | Autenticação/sessão | Implementado inicial | Token opaco, hash persistido, troca de contexto e logout. |
 | RBAC | Implementado inicial | Permissões por papel e guard no backend. |
@@ -55,6 +56,19 @@ Programa municipal ativo
   → Dashboard web consumindo dados reais com fallback controlado
 ```
 
+## Branding atual
+
+- Nome oficial: **Quero Internet GovTech**.
+- Nome curto: **Quero Internet**.
+- Slogan oficial: **Conectando pessoas, transformando cidades.**
+- Posicionamento: GovTech/SaaS para gestão operacional, segura e auditável de programas públicos de conectividade.
+- Documentos oficiais:
+  - `docs/brand/BRAND-BOOK.md`
+  - `docs/brand/BRAND-TOKENS.json`
+  - `docs/brand/MESSAGING.md`
+  - `docs/brand/VISUAL-SYSTEM.md`
+  - `docs/design/BRAND-GUIDELINES.md`
+
 ## Contrato HTTP atual
 
 - Versão contratual inicial: `v1`.
@@ -91,6 +105,7 @@ Programa municipal ativo
 6. OpenAPI completo ainda não foi gerado a partir dos DTOs reais.
 7. Paginação/cursor ainda não foi padronizada em todas as listagens.
 8. Falhas de dashboard ainda não emitem telemetria estruturada.
+9. Branding ainda precisa de revisão gráfica final antes de campanhas públicas, materiais impressos e uso institucional com órgão específico.
 
 ## Próximos gates recomendados
 
