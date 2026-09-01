@@ -25,8 +25,9 @@
 | Instalação/ativação | Implementado inicial | Ordem operacional e máquina de estados até `ACTIVATED`. |
 | Serviço ativo | Implementado inicial | Ciclo básico após ativação, separado de ERP e benefício automático. |
 | Contratos HTTP internos | Implementado inicial | Envelope de erro, códigos estáveis, request id e política de versionamento inicial. |
-| Dashboard operacional | Implementado inicial | Tela por persona operacional com dados de referência rotulados e BFF preparado. |
+| Dashboard operacional | Implementado inicial | Tela por persona operacional conectada ao BFF de dados reais com fallback controlado. |
 | Agregações do dashboard | Implementado inicial | Endpoint `GET /dashboard/operational` com contagens reais, RBAC, tenant isolation e minimização por perfil. |
+| UX de dados reais | Implementado inicial | Loading, erro, botão de recarga, selo `DADOS DO BANCO` e fallback explicitamente rotulado. |
 | Integrações IXC/SGP | Arquitetura aprovada, não implementado real | Somente adapters futuros; sem escrita externa real no MVP atual. |
 | DMS/evidências | Arquitetura aprovada, não implementado completo | Uploads, hashes, OCR e assinaturas ficam para fase própria. |
 | Notificações | Pendente | Sem SMS/e-mail/WhatsApp transacional. |
@@ -51,6 +52,7 @@ Programa municipal ativo
   → Ativação registrada
   → Serviço ativo inicial
   → Dashboard operacional agregado por perfil
+  → Dashboard web consumindo dados reais com fallback controlado
 ```
 
 ## Contrato HTTP atual
@@ -64,11 +66,13 @@ Programa municipal ativo
 ## Dashboard operacional atual
 
 - Resolve persona pela sessão autenticada.
+- Consome o BFF `GET /api/dashboard/operational` no navegador.
+- O BFF chama a API interna `GET /dashboard/operational` com o token server-side.
 - Exibe KPIs, esteira, filas e próximos passos por perfil.
+- Mostra `DADOS DO BANCO` quando os agregados reais são carregados.
+- Mostra `FALLBACK CONTROLADO` quando a agregação falha.
 - Mantém avisos de privacidade e minimização.
-- Possui endpoint backend inicial de agregações reais em `GET /dashboard/operational`.
-- Possui BFF web em `GET /api/dashboard/operational` para preservar cookie HttpOnly.
-- Ainda precisa de refinamento UX para loading/erro/fallback no navegador.
+- Não substitui autorização do backend por lógica visual.
 
 ## Segurança atual da trilha
 
@@ -80,17 +84,18 @@ Programa municipal ativo
 ## Débitos controlados
 
 1. Não há lockfile persistido no repositório; o pipeline usa instalação sem frozen lockfile e depende de overrides explícitos para reduzir deriva.
-2. A camada web ainda precisa consumir o endpoint real com estados explícitos de carregamento, erro e fallback.
+2. O fallback de referência do dashboard deve ser removido ou condicionado por feature flag antes de produção pública.
 3. Não há ambiente de homologação descrito por infraestrutura imutável.
 4. Não há seed completo de demonstração governamental.
 5. Não há testes E2E de jornada completa município → provedor → serviço ativo.
 6. OpenAPI completo ainda não foi gerado a partir dos DTOs reais.
 7. Paginação/cursor ainda não foi padronizada em todas as listagens.
+8. Falhas de dashboard ainda não emitem telemetria estruturada.
 
 ## Próximos gates recomendados
 
-1. **Gate 1.10 — UX de dados reais no dashboard:** conectar a tela ao endpoint agregado com loading/erro/fallback explícito.
-2. **Gate 1.11 — Evidências/documentos:** DMS mínimo, hash, classificação e privacidade.
-3. **Gate 1.12 — Integrações supervisionadas:** adapters IXC/SGP ainda sem automação plena.
-4. **Gate 1.13 — Notificações transacionais:** SMS/e-mail/WhatsApp com consentimento, templates e auditoria.
+1. **Gate 1.11 — Evidências/documentos:** DMS mínimo, hash, classificação e privacidade.
+2. **Gate 1.12 — Integrações supervisionadas:** adapters IXC/SGP ainda sem automação plena.
+3. **Gate 1.13 — Notificações transacionais:** SMS/e-mail/WhatsApp com consentimento, templates e auditoria.
+4. **Gate 1.14 — Observabilidade operacional:** telemetria, métricas, logs estruturados e alertas.
 5. **Gate de piloto:** segurança, privacidade, backup/restore, observabilidade, acessibilidade e operação.
