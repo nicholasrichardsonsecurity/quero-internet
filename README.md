@@ -8,7 +8,7 @@
   Plataforma GovTech multiempresa para gestão de programas públicos de conectividade e inclusão digital, conectando municípios, cidadãos elegíveis e provedores locais em uma operação segura, auditável e escalável.
 
   ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-2563EB?style=for-the-badge)
-  ![Fase](https://img.shields.io/badge/fase-1%20fundação%20técnica-0D47C7?style=for-the-badge)
+  ![Fase](https://img.shields.io/badge/fase-1%20MVP%20operacional-0D47C7?style=for-the-badge)
   ![License](https://img.shields.io/badge/licen%C3%A7a-propriet%C3%A1ria-DC2626?style=for-the-badge)
   ![LGPD](https://img.shields.io/badge/LGPD-privacy%20by%20design-16A34A?style=for-the-badge)
 
@@ -18,31 +18,72 @@
 
 ## Visão do produto
 
-O **Quero Internet** foi concebido para operar programas de conectividade sem transformar a plataforma em um provedor de internet. Municípios e outros entes responsáveis administram seus programas, provedores participantes executam viabilidade, instalação e ativação, e o cidadão acompanha sua jornada com linguagem simples e canais digitais acessíveis.
+O **Quero Internet GovTech** foi concebido para operar programas públicos de conectividade sem transformar a plataforma em um provedor de internet, ERP, sistema financeiro público ou motor autônomo de decisão administrativa.
 
-A arquitetura é **multiempresa e multi-município**: uma única plataforma pode atender diferentes cidades, programas e provedores mantendo contexto, autorização, dados, auditoria e regras de negócio segregados.
+Municípios administram programas, cidadãos entram na jornada de solicitação, provedores participantes executam etapas técnicas e a plataforma registra estados, evidências futuras e auditoria. O objetivo é criar uma trilha segura, rastreável e escalável para inclusão digital.
 
-### Jornada principal
+A arquitetura é **multiempresa e multi-município** desde a fundação: uma única plataforma pode atender diferentes cidades, programas, provedores e operadores mantendo contexto, autorização, dados e auditoria segregados.
+
+---
+
+## Jornada principal do MVP operacional
 
 ```text
-Programa público
+Programa municipal ativo
    ↓
-Solicitação do cidadão
+Cadastro mínimo do beneficiário
    ↓
-Elegibilidade e análise
+Solicitação do cidadão ao programa
    ↓
-Encaminhamento ao provedor
+Revisão humana de elegibilidade
    ↓
-Viabilidade técnica/comercial
+Encaminhamento ao provedor participante
    ↓
-Instalação FTTH / acesso aplicável
+Aceite ou recusa do provedor
    ↓
-Provisionamento e ativação confirmada
+Viabilidade técnica FTTH
    ↓
-Acompanhamento, indicadores e prestação de contas
+Ordem de instalação
+   ↓
+Agendamento e execução em campo
+   ↓
+Instalação concluída
+   ↓
+Ativação registrada
+   ↓
+Serviço ativo inicial
 ```
 
-> Ativação, elegibilidade e pagamentos não são inferidos por um único status externo. O domínio utiliza regras versionadas, evidências, reconciliação e auditoria.
+> Elegibilidade, suspensão, pagamento, benefício público e autorização administrativa não são decididos por IA nem por um único status externo de ERP.
+
+---
+
+## Estado atual da fundação
+
+A Fase 0.2 de arquitetura foi consolidada e a Fase 1 já possui fundação técnica funcional para a trilha operacional inicial.
+
+Implementado até aqui:
+
+- monorepo pnpm/Turborepo;
+- API NestJS, Web Next.js e Worker inicial;
+- PostgreSQL/Prisma, Redis e MinIO/S3 local;
+- CI com validação Prisma, migrations PostgreSQL, typecheck, testes e build;
+- Security Gate com auditoria de dependências e SAST/segredos;
+- identidade visual oficial;
+- núcleo multiempresa: `Tenant`, `Organization`, `Program`, `ProgramParticipation`, `User`, `Membership`, `Session`, `AuditLog`;
+- autenticação com sessão opaca e contexto organizacional;
+- RBAC no backend;
+- beneficiários, solicitações, elegibilidade humana, encaminhamento ao provedor, viabilidade FTTH, instalação/ativação e serviço ativo inicial.
+
+O projeto ainda **não está aprovado para piloto público ou produção**. Esse gate depende de segurança, privacidade, observabilidade, backup/restore, acessibilidade, operação, homologação e evidências externas.
+
+Documentos centrais:
+
+- [`docs/architecture/FOUNDATION.md`](docs/architecture/FOUNDATION.md)
+- [`docs/architecture/IMPLEMENTATION-STATUS.md`](docs/architecture/IMPLEMENTATION-STATUS.md)
+- [`docs/architecture/BENEFICIARIES-APPLICATIONS.md`](docs/architecture/BENEFICIARIES-APPLICATIONS.md)
+- [`docs/missions/1.5-installation-activation.md`](docs/missions/1.5-installation-activation.md)
+- [`docs/missions/1.6-service-lifecycle-monitoring.md`](docs/missions/1.6-service-lifecycle-monitoring.md)
 
 ---
 
@@ -58,13 +99,13 @@ O símbolo oficial combina **Q + conectividade + cidade + inclusão**, usando az
   <img src="assets/brand/quero-internet-brand-board.svg" alt="Brand Board Quero Internet GovTech" width="100%" />
 </p>
 
-- Fonte operacional: **Inter**
-- Ícones: **Lucide Icons**
-- Sidebar institucional: `#081D3A`
-- Azul primário: `#2563EB`
-- Verde positivo/conectividade: `#22C55E`
-- Sistema de espaçamento: base de **8 px**
-- Meta de acessibilidade: **WCAG 2.2 AA**, sujeita a auditoria antes de qualquer declaração de conformidade
+- Fonte operacional: **Inter**.
+- Ícones: **Lucide Icons**.
+- Sidebar institucional: `#081D3A`.
+- Azul primário: `#2563EB`.
+- Verde positivo/conectividade: `#22C55E`.
+- Sistema de espaçamento: base de **8 px**.
+- Meta de acessibilidade: **WCAG 2.2 AA**, sujeita a auditoria antes de qualquer declaração de conformidade.
 
 Documentação completa: [`docs/design/BRAND-GUIDELINES.md`](docs/design/BRAND-GUIDELINES.md)
 
@@ -79,40 +120,27 @@ flowchart LR
   API --> REDIS[(Redis)]
   API --> STORAGE[(MinIO / S3)]
   API --> WORKER[Workers / Filas]
-  WORKER --> IXC[Adapter IXC]
-  WORKER --> SGP[Adapter SGP]
-  WORKER --> MSG[SMS / E-mail / WhatsApp]
+  WORKER --> IXC[Adapter IXC futuro]
+  WORKER --> SGP[Adapter SGP futuro]
+  WORKER --> MSG[SMS / E-mail / WhatsApp futuro]
   API --> AUDIT[Auditoria / Observabilidade]
 ```
 
-Estratégia inicial: **monólito modular + workers assíncronos + adapters de integração**. Bounded contexts não são sinônimo de microsserviços e poderão evoluir com evidência técnica e operacional.
+Estratégia: **monólito modular + workers assíncronos + adapters de integração**. Bounded contexts não são sinônimo de microsserviços e só serão extraídos com ADR, evidência técnica e necessidade operacional real.
 
-### Núcleo multiempresa
+### Fronteiras permanentes
 
-O modelo fundamental inclui:
-
-`Tenant` · `Organization` · `OrganizationalUnit` · `Program` · `ProgramParticipation` · `User` · `Membership` · `Session` · `AuditLog`
-
-O acesso é contextual e a autorização real ocorre no backend. Esconder um botão no frontend nunca é tratado como controle de segurança.
+- Autorização real no backend.
+- Tenant e organização derivados da sessão e das entidades persistidas.
+- ERP externo não é fonte única de verdade.
+- Escritas externas futuras precisam de idempotência, reconciliação, timeout e kill switch.
+- Auditoria append-only para ações críticas.
+- DTOs minimizados por contexto.
+- Segurança e LGPD em cada incremento, não ao final.
 
 ---
 
 ## Stack tecnológica
-
-<div align="center">
-
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat-square&logo=nestjs&logoColor=white)
-![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
-![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=flat-square&logo=prisma&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
-![pnpm](https://img.shields.io/badge/pnpm-F69220?style=flat-square&logo=pnpm&logoColor=white)
-![Turborepo](https://img.shields.io/badge/Turborepo-000000?style=flat-square&logo=turborepo&logoColor=white)
-![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)
-
-</div>
 
 | Camada | Tecnologia / estratégia |
 |---|---|
@@ -121,11 +149,12 @@ O acesso é contextual e a autorização real ocorre no backend. Esconder um bot
 | Persistência | PostgreSQL + Prisma |
 | Cache / coordenação | Redis |
 | Arquivos | MinIO local / S3-compatible em ambientes externos |
-| Assíncrono | Workers e mensageria, com idempotência e reconciliação |
+| Assíncrono | Worker e filas futuras |
 | Monorepo | pnpm + Turborepo |
-| Contratos | OpenAPI + schemas versionados |
+| Contratos | OpenAPI e schemas versionados futuramente |
 | Observabilidade | logs estruturados, correlation ID e evolução para OpenTelemetry |
 | CI | GitHub Actions |
+| Segurança SDLC | dependency audit + SAST/secret patterns |
 
 ---
 
@@ -133,36 +162,34 @@ O acesso é contextual e a autorização real ocorre no backend. Esconder um bot
 
 Integrações externas são isoladas por adapters e capacidades homologadas. O domínio não depende diretamente de um ERP específico.
 
-### Prioridade inicial
+Prioridade futura:
 
-- **IXC** — integração com provedores participantes
-- **SGP** — integração com provedores participantes
-- SMS — provider substituível
-- E-mail — SMTP/API com políticas de entrega
-- Webhooks — inbox, autenticação, deduplicação e reconciliação
+- **IXC** para provedores participantes;
+- **SGP** para provedores participantes;
+- SMS, e-mail e WhatsApp transacional;
+- webhooks com autenticação, deduplicação e reconciliação.
 
-Operações externas de escrita devem ter idempotência, timeout, resultado indeterminado, kill switch e trilha de auditoria quando aplicável.
+No estado atual, **não há escrita real automatizada em IXC/SGP**. Qualquer avanço nessa área precisa ser supervisionado, idempotente, auditável e reversível operacionalmente quando possível.
 
 ---
 
 ## Segurança
 
-Segurança é requisito de arquitetura e de produto, não uma etapa aplicada no final.
+Segurança é requisito de arquitetura e de produto.
 
-Controles previstos e progressivamente materializados:
+Controles materializados ou exigidos pela fundação:
 
 - isolamento multiempresa e contextual;
-- RBAC/ABAC no backend;
-- MFA para perfis privilegiados conforme risco;
-- validação de entrada e schemas tipados;
+- sessão opaca com hash persistido;
+- RBAC/guard no backend;
+- validação de entrada;
 - gestão de secrets fora do código-fonte;
-- rate limiting e proteção contra enumeração;
-- logs sanitizados sem dados pessoais desnecessários;
+- proteção contra enumeração e abuso de login;
+- logs sanitizados;
 - trilha de auditoria para ações críticas;
-- criptografia em trânsito e em repouso conforme camada;
-- dependency/secret scanning no SDLC;
-- testes de autorização e acesso cruzado entre tenants;
-- threat modeling e baseline baseado em boas práticas OWASP/ASVS, sem declarar conformidade antes da verificação correspondente.
+- migrations com constraints quando regras são persistíveis;
+- CI e Security Gate obrigatórios antes de merge;
+- baseline alinhado a boas práticas OWASP/ASVS, sem declarar conformidade formal antes da auditoria correspondente.
 
 Política: [`docs/security/SECURITY-BASELINE.md`](docs/security/SECURITY-BASELINE.md)
 
@@ -177,13 +204,12 @@ Diretrizes centrais:
 - finalidade e necessidade antes da coleta;
 - minimização de dados;
 - segregação por contexto e organização;
-- classificação e retenção por categoria documental/dado;
-- compartilhamento somente por finalidade autorizada;
+- documento bruto de cidadão não persistido na fundação atual;
+- deduplicação por HMAC com pepper externo;
+- compartilhamento apenas por finalidade autorizada;
 - auditoria proporcional ao risco;
-- proteção de documentos e evidências;
 - ambientes de teste sem cópia indiscriminada de dados reais;
-- fornecedores externos avaliados quanto a dados processados, retenção, suboperadores e transferências quando aplicável;
-- suporte a governança dos direitos dos titulares conforme o papel jurídico de cada participante.
+- fornecedores externos avaliados quanto a dados processados, retenção, suboperadores e transferências.
 
 > A plataforma não usa o termo “LGPD compliant” como selo automático. Conformidade depende de processos, contratos, governança, operação e evidências além do código.
 
@@ -208,11 +234,11 @@ packages/
   security/        primitivas e controles compartilhados
 infra/
   docker/          infraestrutura local
-  observability/   evolução da stack operacional
 docs/
   adr/             Architecture Decision Records
-  architecture/    arquitetura consolidada
+  architecture/    arquitetura consolidada e status real
   design/          Brand & Design System
+  missions/        missões versionadas
   privacy/         privacidade e LGPD
   security/        segurança
   operations/      runbooks e operação
@@ -222,7 +248,7 @@ docs/
 
 ## Desenvolvimento local
 
-Pré-requisitos atuais: Node.js suportado pelo workspace, pnpm 10.14.x e Docker.
+Pré-requisitos: Node.js suportado pelo workspace, pnpm 10.14.x e Docker.
 
 ```bash
 pnpm install
@@ -236,8 +262,6 @@ pnpm build
 pnpm dev
 ```
 
-API local prevista em `http://localhost:3001`.
-
 Endpoints fundamentais:
 
 ```text
@@ -245,27 +269,26 @@ GET /health
 GET /ready
 ```
 
-`/health` indica vida do processo. `/ready` evolui para representar prontidão das dependências necessárias; os dois conceitos não devem ser confundidos.
+`/health` indica vida do processo. `/ready` representa prontidão das dependências necessárias; os dois conceitos não devem ser confundidos.
 
 ---
 
-## Estado do projeto
-
-**Fase 0.2 — Arquitetura:** concluída e aprovada para início da fundação técnica.
-
-**Fase 1 — Fundação Técnica e MVP:** em implementação.
-
-O projeto ainda **não está aprovado para piloto ou produção**. Gates posteriores exigirão evidências de segurança, privacidade, observabilidade, restauração, integração, usabilidade, acessibilidade e operação.
-
----
-
-## Agentes e IA
+## Regras para contribuição e agentes
 
 Agentes de programação podem auxiliar em implementação, revisão, testes e documentação, mas não são autoridade arquitetural nem decisória.
 
-IA não deve decidir autonomamente elegibilidade de cidadão, repasse público, penalidade, bloqueio ou outro ato administrativo de alto impacto. Decisões assistidas exigem governança, explicabilidade proporcional e revisão humana apropriada.
+Regras obrigatórias: [`AGENTS.md`](AGENTS.md)
 
-Regras: [`AGENTS.md`](AGENTS.md)
+Resumo dos gates antes de merge:
+
+- documentação atualizada;
+- migrations reais quando houver banco;
+- testes de domínio/autorização;
+- typecheck;
+- testes;
+- build;
+- Security Gate;
+- revisão de isolamento multiempresa, LGPD e autorização deny-by-default.
 
 ---
 
