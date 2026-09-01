@@ -117,6 +117,13 @@ enum ServiceStatus {
   ENDED
 }
 
+enum EvidenceClassification {
+  PUBLIC
+  INTERNAL
+  PERSONAL
+  SENSITIVE
+}
+
 model Tenant {
   id String @id @default(uuid()) @db.Uuid
   slug String @unique
@@ -437,10 +444,35 @@ model AuditLog {
   organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
   program Program? @relation(fields: [programId], references: [id], onDelete: SetNull)
   actorUser User? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+  evidenceDocuments EvidenceDocument[]
   @@index([tenantId, createdAt])
   @@index([organizationId, createdAt])
   @@index([programId, createdAt])
   @@index([actorUserId, createdAt])
   @@index([entityType, entityId])
   @@index([correlationId])
+}
+
+
+model EvidenceDocument {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  organizationId String @db.Uuid
+  entityType String
+  entityId String
+  purpose String
+  classification EvidenceClassification
+  originalFileName String?
+  mimeType String
+  byteSize Int
+  sha256 String @db.VarChar(64)
+  storageKey String
+  retentionUntil DateTime?
+  createdAt DateTime @default(now())
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  @@unique([tenantId, storageKey])
+  @@index([tenantId, entityType, entityId, createdAt])
+  @@index([organizationId, classification, createdAt])
+  @@index([retentionUntil])
 }
