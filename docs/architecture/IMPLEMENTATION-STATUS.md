@@ -24,6 +24,7 @@
 | Viabilidade FTTH | Implementado inicial | Resultado técnico, restrições e DTO municipal minimizado. |
 | Instalação/ativação | Implementado inicial | Ordem operacional e máquina de estados até `ACTIVATED`. |
 | Serviço ativo | Implementado inicial | Ciclo básico após ativação, separado de ERP e benefício automático. |
+| Contratos HTTP internos | Implementado inicial | Envelope de erro, códigos estáveis, request id e política de versionamento inicial. |
 | Integrações IXC/SGP | Arquitetura aprovada, não implementado real | Somente adapters futuros; sem escrita externa real no MVP atual. |
 | DMS/evidências | Arquitetura aprovada, não implementado completo | Uploads, hashes, OCR e assinaturas ficam para fase própria. |
 | Notificações | Pendente | Sem SMS/e-mail/WhatsApp transacional. |
@@ -49,6 +50,14 @@ Programa municipal ativo
   → Serviço ativo inicial
 ```
 
+## Contrato HTTP atual
+
+- Versão contratual inicial: `v1`.
+- Data-base do contrato: `2026-09-01`.
+- Header de versão recomendado: `x-api-version`.
+- Header de rastreio recomendado: `x-request-id`.
+- Erros seguem envelope único em `error.code`, `error.message`, `error.statusCode`, `error.path`, `error.timestamp` e `error.requestId` quando fornecido.
+
 ## Segurança atual da trilha
 
 - Security Gate com auditoria de dependências de produção.
@@ -63,11 +72,13 @@ Programa municipal ativo
 3. Não há ambiente de homologação descrito por infraestrutura imutável.
 4. Não há seed completo de demonstração governamental.
 5. Não há testes E2E de jornada completa município → provedor → serviço ativo.
+6. OpenAPI completo ainda não foi gerado a partir dos DTOs reais.
+7. Paginação/cursor ainda não foi padronizada em todas as listagens.
 
 ## Próximos gates recomendados
 
-1. **Gate 1.7 — Contratos/API pública interna:** padronizar DTOs, erros, OpenAPI e versionamento.
-2. **Gate 1.8 — Dashboard operacional:** telas reais por perfil com dados do domínio já implementado.
-3. **Gate 1.9 — Evidências/documentos:** DMS mínimo, hash, classificação e privacidade.
-4. **Gate 1.10 — Integrações supervisionadas:** adapters IXC/SGP ainda sem automação plena.
+1. **Gate 1.8 — Dashboard operacional:** telas reais por perfil com dados do domínio já implementado.
+2. **Gate 1.9 — Evidências/documentos:** DMS mínimo, hash, classificação e privacidade.
+3. **Gate 1.10 — Integrações supervisionadas:** adapters IXC/SGP ainda sem automação plena.
+4. **Gate 1.11 — Notificações transacionais:** SMS/e-mail/WhatsApp com consentimento, templates e auditoria.
 5. **Gate de piloto:** segurança, privacidade, backup/restore, observabilidade, acessibilidade e operação.
