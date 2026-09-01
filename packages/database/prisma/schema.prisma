@@ -134,6 +134,17 @@ enum IntegrationSyncStatus {
   REUSED
 }
 
+enum NotificationChannel {
+  EMAIL
+  SMS
+  WHATSAPP
+}
+
+enum NotificationDeliveryStatus {
+  QUEUED
+  SUPPRESSED
+}
+
 model Tenant {
   id String @id @default(uuid()) @db.Uuid
   slug String @unique
@@ -152,6 +163,8 @@ model Tenant {
   auditLogs AuditLog[]
   evidenceDocuments EvidenceDocument[]
   integrationSyncRuns IntegrationSyncRun[]
+  notificationConsents NotificationConsent[]
+  notificationDeliveries NotificationDelivery[]
 }
 
 model Organization {
@@ -181,6 +194,8 @@ model Organization {
   auditLogs AuditLog[]
   evidenceDocuments EvidenceDocument[]
   integrationSyncRuns IntegrationSyncRun[]
+  notificationConsents NotificationConsent[]
+  notificationDeliveries NotificationDelivery[]
   @@index([type, status])
 }
 
@@ -466,6 +481,40 @@ model AuditLog {
   @@index([correlationId])
 }
 
+
+model NotificationConsent {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  organizationId String @db.Uuid
+  recipientRef String
+  channel NotificationChannel
+  purpose String
+  grantedAt DateTime?
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  @@unique([tenantId, recipientRef, channel, purpose])
+  @@index([organizationId, channel, updatedAt])
+}
+
+model NotificationDelivery {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  organizationId String @db.Uuid
+  recipientRef String
+  templateCode String
+  channel NotificationChannel
+  status NotificationDeliveryStatus
+  idempotencyKey String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  @@unique([tenantId, channel, idempotencyKey])
+  @@index([organizationId, status, createdAt])
+}
 
 model IntegrationSyncRun {
   id String @id @default(uuid()) @db.Uuid
