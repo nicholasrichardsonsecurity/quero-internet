@@ -70,7 +70,7 @@ Implementado até aqui:
 - CI com validação Prisma, migrations PostgreSQL, typecheck, testes e build;
 - gate formal de piloto controlado, runbook de incidentes, política de dados sintéticos, configuração de homologação e procedimento de backup/restauração;
 - Security Gate com auditoria de dependências e SAST/segredos;
-- branding oficial v1.1;
+- branding oficial v1.2;
 - DMS mínimo de evidências com hash, classificação, finalidade, retenção e escopo por tenant;
 - integração IXC/SGP em modo simulado somente leitura, com prévia idempotente, hash de resultado e auditoria;
 - base de notificações com templates, consentimento/opt-out, prévia idempotente e auditoria, sem envio externo;
@@ -108,7 +108,11 @@ A marca oficial é **Quero Internet GovTech**.
 O símbolo oficial combina **Q + conectividade + cidade + inclusão**, usando azul institucional, verde de conectividade e linguagem visual de plataforma pública moderna.
 
 <p align="center">
-  <img src="assets/brand/quero-internet-symbol-official.svg" alt="Símbolo oficial Quero Internet" width="260" />
+  <img src="assets/brand/quero-internet-symbol-official.svg" alt="Símbolo oficial Quero Internet" width="220" />
+</p>
+
+<p align="center">
+  <img src="assets/brand/quero-internet-wordmark-official.svg" alt="Assinatura horizontal Quero Internet GovTech" width="100%" />
 </p>
 
 <p align="center">
@@ -128,11 +132,19 @@ Diretrizes principais:
 
 Documentação de marca:
 
+- [`docs/brand/BRANDING-OFFICIAL-V1.2.md`](docs/brand/BRANDING-OFFICIAL-V1.2.md)
 - [`docs/brand/BRAND-BOOK.md`](docs/brand/BRAND-BOOK.md)
 - [`docs/brand/BRAND-TOKENS.json`](docs/brand/BRAND-TOKENS.json)
 - [`docs/brand/MESSAGING.md`](docs/brand/MESSAGING.md)
 - [`docs/brand/VISUAL-SYSTEM.md`](docs/brand/VISUAL-SYSTEM.md)
 - [`docs/design/BRAND-GUIDELINES.md`](docs/design/BRAND-GUIDELINES.md)
+
+Assets oficiais:
+
+- [`assets/brand/quero-internet-symbol-official.svg`](assets/brand/quero-internet-symbol-official.svg)
+- [`assets/brand/quero-internet-wordmark-official.svg`](assets/brand/quero-internet-wordmark-official.svg)
+- [`assets/brand/quero-internet-app-icon.svg`](assets/brand/quero-internet-app-icon.svg)
+- [`assets/brand/quero-internet-brand-board.svg`](assets/brand/quero-internet-brand-board.svg)
 
 ---
 
