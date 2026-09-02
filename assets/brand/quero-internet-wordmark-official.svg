@@ -1,0 +1,25 @@
+<svg width="980" height="260" viewBox="0 0 980 260" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Quero Internet GovTech — assinatura horizontal oficial</title>
+  <desc id="desc">Logotipo horizontal com símbolo de conectividade pública e texto Quero Internet GovTech.</desc>
+  <rect width="980" height="260" rx="44" fill="#F8FAFC"/>
+  <g transform="translate(56 44)">
+    <rect width="172" height="172" rx="44" fill="url(#paint0_linear)"/>
+    <circle cx="86" cy="86" r="56" stroke="white" stroke-width="13"/>
+    <path d="M60 103C74 88 98 88 112 103" stroke="#22C55E" stroke-width="11" stroke-linecap="round"/>
+    <path d="M43 82C66 57 106 57 129 82" stroke="white" stroke-width="10" stroke-linecap="round" opacity="0.92"/>
+    <path d="M86 126H86.5" stroke="#22C55E" stroke-width="14" stroke-linecap="round"/>
+    <path d="M123 123L146 146" stroke="white" stroke-width="13" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(264 69)">
+    <text x="0" y="55" fill="#081D3A" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="800" letter-spacing="-1.8">Quero Internet</text>
+    <text x="3" y="99" fill="#2563EB" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="800" letter-spacing="7">GOVTECH</text>
+    <text x="3" y="137" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="500">Conectando pessoas, transformando cidades.</text>
+  </g>
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="172" y2="172" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#081D3A"/>
+      <stop offset="0.56" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#22C55E"/>
+    </linearGradient>
+  </defs>
+</svg>
