@@ -1,0 +1,18 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Quero Internet GovTech — ícone oficial</title>
+  <desc id="desc">Ícone quadrado arredondado com Q, ondas de conectividade e ponto verde.</desc>
+  <rect width="512" height="512" rx="116" fill="url(#paint0_radial)"/>
+  <rect x="34" y="34" width="444" height="444" rx="92" stroke="white" stroke-opacity="0.12" stroke-width="3"/>
+  <circle cx="256" cy="244" r="142" stroke="white" stroke-width="34"/>
+  <path d="M189 279C225 242 287 242 323 279" stroke="#22C55E" stroke-width="30" stroke-linecap="round"/>
+  <path d="M147 218C205 158 307 158 365 218" stroke="white" stroke-width="27" stroke-linecap="round" opacity="0.92"/>
+  <path d="M256 341H257" stroke="#22C55E" stroke-width="38" stroke-linecap="round"/>
+  <path d="M345 342L408 405" stroke="white" stroke-width="35" stroke-linecap="round"/>
+  <defs>
+    <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(120 86) rotate(48) scale(560)">
+      <stop stop-color="#0D47C7"/>
+      <stop offset="0.48" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#081D3A"/>
+    </radialGradient>
+  </defs>
+</svg>
