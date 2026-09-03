@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/brand/quero-internet-wordmark-official.svg" alt="Quero Internet GovTech" width="420" />
+  <img src="assets/brand/quero-internet-horizontal-realista.png" alt="Quero Internet GovTech" width="420" />
 </p>
 
 <p align="center">
