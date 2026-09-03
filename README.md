@@ -1,303 +1,230 @@
 <div align="center">
-  <img src="assets/brand/quero-internet-symbol-official.svg" alt="Quero Internet GovTech" width="180" />
 
-  # Quero Internet GovTech
+<table>
+<tr>
+<td bgcolor="#F8FAFC" align="center">
+<img src="assets/brand/quero-internet-horizontal-realista.png" alt="Quero Internet GovTech" width="820" />
+</td>
+</tr>
+</table>
 
-  **Conectando pessoas, transformando cidades.**
+**Plataforma GovTech multiempresa para gestão de programas públicos de conectividade e inclusão digital, conectando municípios, cidadãos elegíveis e provedores participantes em uma operação segura, auditável e escalável.**
 
-  Plataforma GovTech multiempresa para gestão de programas públicos de conectividade e inclusão digital, conectando municípios, cidadãos elegíveis e provedores locais em uma operação segura, auditável e escalável.
+[![CI](https://github.com/nicholasrichardsonsecurity/quero-internet/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/nicholasrichardsonsecurity/quero-internet/actions/workflows/ci.yml)
+[![Security Gate](https://github.com/nicholasrichardsonsecurity/quero-internet/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/nicholasrichardsonsecurity/quero-internet/actions/workflows/security.yml)
+[![Status](https://img.shields.io/badge/status-em%20desenvolvimento-2563EB?style=flat-square)](#estado-atual)
+[![Fase](https://img.shields.io/badge/fase-1%20MVP%20operacional-0D47C7?style=flat-square)](#estado-atual)
+[![Licença](https://img.shields.io/badge/licença-proprietária-DC2626?style=flat-square)](#licença)
+[![LGPD](https://img.shields.io/badge/LGPD-privacy%20by%20design-16A34A?style=flat-square)](#segurança-e-privacidade)
 
-  ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-2563EB?style=for-the-badge)
-  ![Fase](https://img.shields.io/badge/fase-1%20MVP%20operacional-0D47C7?style=for-the-badge)
-  ![License](https://img.shields.io/badge/licen%C3%A7a-propriet%C3%A1ria-DC2626?style=for-the-badge)
-  ![LGPD](https://img.shields.io/badge/LGPD-privacy%20by%20design-16A34A?style=for-the-badge)
+### Stack principal
+
+[![Node.js](https://img.shields.io/badge/Node.js-22.x-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![pnpm](https://img.shields.io/badge/pnpm-10.14-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-11.x-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.x-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Redis](https://img.shields.io/badge/Redis-7.x-DC382D?logo=redis&logoColor=white)](https://redis.io/)
+[![Prisma](https://img.shields.io/badge/Prisma-6.x-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![Docker](https://img.shields.io/badge/Docker%20Compose-isolated-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
 
 </div>
 
 ---
 
+## Navegação
+
+- [Visão do produto](#visão-do-produto)
+- [O que oferecemos](#o-que-oferecemos)
+- [Jornada operacional](#jornada-operacional)
+- [Estado atual](#estado-atual)
+- [Arquitetura](#arquitetura)
+- [Instalação local](#instalação-local)
+- [Instalação em Debian](#instalação-em-debian)
+- [Homologação](#homologação)
+- [Segurança e privacidade](#segurança-e-privacidade)
+- [Documentação](#documentação)
+
 ## Visão do produto
 
-O **Quero Internet GovTech** foi concebido para operar programas públicos de conectividade sem transformar a plataforma em um provedor de internet, ERP, sistema financeiro público ou motor autônomo de decisão administrativa.
+O Quero Internet GovTech é uma plataforma para organizar programas públicos de conectividade e inclusão digital do planejamento à operação. O sistema conecta município, cidadão elegível e provedor participante em fluxos rastreáveis, com autorização contextual, evidências e auditoria.
 
-Municípios administram programas, cidadãos entram na jornada de solicitação, provedores participantes executam etapas técnicas e a plataforma registra estados, evidências futuras e auditoria. O objetivo é criar uma trilha segura, rastreável e escalável para inclusão digital.
+A plataforma não é um provedor de internet, ERP de provedor, sistema financeiro público nem motor autônomo de decisão administrativa. A análise de elegibilidade e os atos administrativos permanecem sob responsabilidade humana e institucional.
 
-A arquitetura é **multiempresa e multi-município** desde a fundação: uma única plataforma pode atender diferentes cidades, programas, provedores e operadores mantendo contexto, autorização, dados e auditoria segregados.
+## O que oferecemos
 
----
+### Para municípios
 
-## Jornada principal do MVP operacional
+- criação e organização de programas de conectividade;
+- acompanhamento de beneficiários e solicitações;
+- revisão humana e auditável de elegibilidade;
+- encaminhamento controlado para provedores;
+- dashboards operacionais e trilha de auditoria;
+- evidências, indicadores e base para prestação de contas.
+
+### Para provedores participantes
+
+- fila contextual de solicitações autorizadas;
+- aceite ou recusa justificada;
+- avaliação de viabilidade técnica FTTH;
+- gestão de instalação, agendamento e ativação;
+- acompanhamento do serviço ativo;
+- integração futura por adapters, com idempotência e reconciliação.
+
+### Para cidadãos
+
+- jornada organizada de solicitação;
+- acompanhamento transparente do status;
+- comunicação clara sobre análise e próximos passos;
+- proteção de dados e minimização de informações.
+
+## Jornada operacional
 
 ```text
-Programa municipal ativo
-   ↓
-Cadastro mínimo do beneficiário
-   ↓
-Solicitação do cidadão ao programa
-   ↓
+Programa municipal
+      ↓
+Solicitação do cidadão
+      ↓
 Revisão humana de elegibilidade
-   ↓
-Encaminhamento ao provedor participante
-   ↓
-Aceite ou recusa do provedor
-   ↓
+      ↓
+Encaminhamento ao provedor
+      ↓
 Viabilidade técnica FTTH
-   ↓
+      ↓
 Ordem de instalação
-   ↓
-Agendamento e execução em campo
-   ↓
-Instalação concluída
-   ↓
-Ativação registrada
-   ↓
-Serviço ativo inicial
+      ↓
+Agendamento e execução
+      ↓
+Ativação e serviço ativo
 ```
 
-> Elegibilidade, suspensão, pagamento, benefício público e autorização administrativa não são decididos por IA nem por um único status externo de ERP.
+## Estado atual
 
----
-
-## Estado atual da fundação
-
-A Fase 0.2 de arquitetura foi consolidada e a Fase 1 já possui fundação técnica funcional para a trilha operacional inicial.
-
-Implementado até aqui:
+Estamos na Fase 1 — MVP operacional. A fundação técnica inclui:
 
 - monorepo pnpm/Turborepo;
-- API NestJS, Web Next.js e Worker inicial;
-- PostgreSQL/Prisma, Redis e MinIO/S3 local;
-- CI com validação Prisma, migrations PostgreSQL, typecheck, testes e build;
-- gate formal de piloto controlado, runbook de incidentes, política de dados sintéticos, configuração de homologação e procedimento de backup/restauração;
-- Security Gate com auditoria de dependências e SAST/segredos;
-- branding oficial v1.2;
-- DMS mínimo de evidências com hash, classificação, finalidade, retenção e escopo por tenant;
-- integração IXC/SGP em modo simulado somente leitura, com prévia idempotente, hash de resultado e auditoria;
-- base de notificações com templates, consentimento/opt-out, prévia idempotente e auditoria, sem envio externo;
-- observabilidade operacional inicial com request/correlation ID, logs JSON sanitizados e métricas em `/metrics`;
-- núcleo multiempresa: `Tenant`, `Organization`, `Program`, `ProgramParticipation`, `User`, `Membership`, `Session`, `AuditLog`;
-- autenticação com sessão opaca e contexto organizacional;
-- RBAC no backend;
-- beneficiários, solicitações, elegibilidade humana, encaminhamento ao provedor, viabilidade FTTH, instalação/ativação e serviço ativo inicial.
+- API NestJS, Web Next.js e worker inicial;
+- PostgreSQL com Prisma, Redis e MinIO/S3-compatible;
+- autenticação por sessão opaca e RBAC contextual;
+- núcleo multiempresa e multi-município;
+- beneficiários, solicitações, elegibilidade humana e provedores;
+- viabilidade FTTH, instalação, ativação e serviço ativo;
+- auditoria, evidências, notificações sem envio externo e integrações simuladas somente leitura;
+- logs JSON sanitizados, correlation ID e métricas básicas;
+- CI e Security Gate com migrations, typecheck, testes, build e verificações de segurança.
 
-O projeto ainda **não está aprovado para piloto público ou produção**. Esse gate depende de segurança, privacidade, observabilidade, backup/restore, acessibilidade, operação, homologação e evidências externas.
-
-Documentos centrais:
-
-- [`docs/operations/PILOT-GATE.md`](docs/operations/PILOT-GATE.md)
-- [`docs/operations/HOMOLOGATION-ENVIRONMENT.md`](docs/operations/HOMOLOGATION-ENVIRONMENT.md)
-- [`docs/operations/HOMOLOGATION-EXECUTION.md`](docs/operations/HOMOLOGATION-EXECUTION.md)
-- [`docs/operations/E2E-SMOKE-SPEC.md`](docs/operations/E2E-SMOKE-SPEC.md)
-
-- [`docs/architecture/FOUNDATION.md`](docs/architecture/FOUNDATION.md)
-- [`docs/architecture/IMPLEMENTATION-STATUS.md`](docs/architecture/IMPLEMENTATION-STATUS.md)
-- [`docs/architecture/BENEFICIARIES-APPLICATIONS.md`](docs/architecture/BENEFICIARIES-APPLICATIONS.md)
-- [`docs/missions/1.5-installation-activation.md`](docs/missions/1.5-installation-activation.md)
-- [`docs/missions/1.6-service-lifecycle-monitoring.md`](docs/missions/1.6-service-lifecycle-monitoring.md)
-
----
-
-## Branding oficial
-
-A marca oficial é **Quero Internet GovTech**.
-
-**Slogan:** Conectando pessoas, transformando cidades.
-
-**Posicionamento:** GovTech/SaaS para gestão operacional, segura e auditável de programas públicos de conectividade, conectando prefeitura, cidadão elegível e provedor participante.
-
-O símbolo oficial combina **Q + conectividade + cidade + inclusão**, usando azul institucional, verde de conectividade e linguagem visual de plataforma pública moderna.
-
-<p align="center">
-  <img src="assets/brand/quero-internet-symbol-official.svg" alt="Símbolo oficial Quero Internet" width="220" />
-</p>
-
-<p align="center">
-  <img src="assets/brand/quero-internet-wordmark-official.svg" alt="Assinatura horizontal Quero Internet GovTech" width="100%" />
-</p>
-
-<p align="center">
-  <img src="assets/brand/quero-internet-brand-board.svg" alt="Brand Board Quero Internet GovTech" width="100%" />
-</p>
-
-Diretrizes principais:
-
-- Fonte operacional: **Inter**.
-- Ícones: **Lucide Icons**.
-- Sidebar institucional: `#081D3A`.
-- Azul primário: `#2563EB`.
-- Verde positivo/conectividade: `#22C55E`.
-- Sistema de espaçamento: base de **8 px**.
-- Meta de acessibilidade: **WCAG 2.2 AA**, sujeita a auditoria antes de qualquer declaração de conformidade.
-- Comunicação sem promessa de aprovação automática, internet garantida ou decisão por IA.
-
-Documentação de marca:
-
-- [`docs/brand/BRANDING-OFFICIAL-V1.2.md`](docs/brand/BRANDING-OFFICIAL-V1.2.md)
-- [`docs/brand/BRAND-BOOK.md`](docs/brand/BRAND-BOOK.md)
-- [`docs/brand/BRAND-TOKENS.json`](docs/brand/BRAND-TOKENS.json)
-- [`docs/brand/MESSAGING.md`](docs/brand/MESSAGING.md)
-- [`docs/brand/VISUAL-SYSTEM.md`](docs/brand/VISUAL-SYSTEM.md)
-- [`docs/design/BRAND-GUIDELINES.md`](docs/design/BRAND-GUIDELINES.md)
-
-Assets oficiais:
-
-- [`assets/brand/quero-internet-symbol-official.svg`](assets/brand/quero-internet-symbol-official.svg)
-- [`assets/brand/quero-internet-wordmark-official.svg`](assets/brand/quero-internet-wordmark-official.svg)
-- [`assets/brand/quero-internet-app-icon.svg`](assets/brand/quero-internet-app-icon.svg)
-- [`assets/brand/quero-internet-brand-board.svg`](assets/brand/quero-internet-brand-board.svg)
-
----
+> O projeto ainda não está aprovado para piloto público ou produção. Esse status depende de evidências completas de segurança, privacidade, acessibilidade, operação, backup/restore, homologação e aprovação formal do gate.
 
 ## Arquitetura
 
 ```mermaid
 flowchart LR
-  WEB[Web / PWA\nNext.js] --> API[API\nNestJS]
+  WEB[Web / PWA] --> API[API NestJS]
   API --> DB[(PostgreSQL)]
   API --> REDIS[(Redis)]
   API --> STORAGE[(MinIO / S3)]
-  API --> WORKER[Workers / Filas]
-  WORKER --> IXC[Adapter IXC futuro]
-  WORKER --> SGP[Adapter SGP futuro]
-  WORKER --> MSG[SMS / E-mail / WhatsApp futuro]
-  API --> AUDIT[Auditoria / Observabilidade]
+  API --> WORKER[Worker e adapters]
 ```
 
-Estratégia: **monólito modular + workers assíncronos + adapters de integração**. Bounded contexts não são sinônimo de microsserviços e só serão extraídos com ADR, evidência técnica e necessidade operacional real.
+Estratégia: monólito modular TypeScript, workers assíncronos e adapters de integração. Microsserviços somente quando houver ADR, necessidade real e evidência operacional.
 
-### Fronteiras permanentes
+## Instalação local
 
-- Autorização real no backend.
-- Tenant e organização derivados da sessão e das entidades persistidas.
-- ERP externo não é fonte única de verdade.
-- Escritas externas futuras precisam de idempotência, reconciliação, timeout e kill switch.
-- Auditoria append-only para ações críticas.
-- DTOs minimizados por contexto.
-- Segurança e LGPD em cada incremento, não ao final.
+### Requisitos
 
----
-
-## Stack tecnológica
-
-| Camada | Tecnologia / estratégia |
-|---|---|
-| Web | Next.js + TypeScript |
-| API | NestJS + TypeScript |
-| Persistência | PostgreSQL + Prisma |
-| Cache / coordenação | Redis |
-| Arquivos | MinIO local / S3-compatible em ambientes externos |
-| Assíncrono | Worker e filas futuras |
-| Monorepo | pnpm + Turborepo |
-| Contratos | OpenAPI e schemas versionados futuramente |
-| Observabilidade | logs JSON sanitizados, request/correlation ID, métricas básicas e evolução para OpenTelemetry |
-| CI | GitHub Actions |
-| Segurança SDLC | dependency audit + SAST/secret patterns |
-
----
-
-## Integrações
-
-Integrações externas são isoladas por adapters e capacidades homologadas. O domínio não depende diretamente de um ERP específico.
-
-Prioridade futura:
-
-- **IXC** para provedores participantes;
-- **SGP** para provedores participantes;
-- SMS, e-mail e WhatsApp transacional, após homologação de fornecedor e consentimento;
-- webhooks com autenticação, deduplicação e reconciliação.
-
-A Missão 1.12 entrega adapters simulados somente leitura, health check e `sync-preview` idempotente para validar o contrato antes da homologação. **Não há escrita real automatizada em IXC/SGP**. Qualquer avanço nessa área precisa ser supervisionado, idempotente, auditável e reversível operacionalmente quando possível.
-
----
-
-## Segurança
-
-Segurança é requisito de arquitetura e de produto.
-
-Controles materializados ou exigidos pela fundação:
-
-- isolamento multiempresa e contextual;
-- sessão opaca com hash persistido;
-- RBAC/guard no backend;
-- validação de entrada;
-- gestão de secrets fora do código-fonte;
-- proteção contra enumeração e abuso de login;
-- logs sanitizados;
-- trilha de auditoria para ações críticas;
-- migrations com constraints quando regras são persistíveis;
-- CI e Security Gate obrigatórios antes de merge;
-- baseline alinhado a boas práticas OWASP/ASVS, sem declarar conformidade formal antes da auditoria correspondente.
-
-Política: [`docs/security/BASELINE.md`](docs/security/SECURITY-BASELINE.md)
-
----
-
-## LGPD e privacidade
-
-O projeto adota **privacy by design / privacy by default** como princípio de engenharia.
-
-Diretrizes centrais:
-
-- finalidade e necessidade antes da coleta;
-- minimização de dados;
-- segregação por contexto e organização;
-- documento bruto de cidadão não persistido na fundação atual;
-- deduplicação por HMAC com pepper externo;
-- compartilhamento apenas por finalidade autorizada;
-- auditoria proporcional ao risco;
-- ambientes de teste sem cópia indiscriminada de dados reais;
-- fornecedores externos avaliados quanto a dados processados, retenção, suboperadores e transferências.
-
-> A plataforma não usa o termo “LGPD compliant” como selo automático. Conformidade depende de processos, contratos, governança, operação e evidências além do código.
-
-Princípios: [`docs/privacy/PRINCIPLES.md`](docs/privacy/PRIVACY-PRINCIPLES.md)
-
----
-
-## Estrutura do repositório
-
-```text
-apps/
-  api/        API NestJS
-  web/        Aplicação web Next.js
-  worker/     Worker inicial
-packages/
-  database/   Prisma, schema e migrations
-docs/
-  agents/     Playbooks especializados
-  architecture/
-  brand/      Branding oficial, mensagens e tokens
-  design/
-  missions/
-  privacy/
-  product/
-  security/
-```
-
----
-
-## Execução local
+- Git;
+- Node.js 22.x;
+- pnpm 10.14.x;
+- Docker Engine e Docker Compose;
+- OpenSSL.
 
 ```bash
-pnpm install
+git clone git@github.com:nicholasrichardsonsecurity/quero-internet.git
+cd quero-internet
+pnpm install --frozen-lockfile=false
+cp .env.example .env
+docker compose -f infra/docker/docker-compose.yml up -d postgres redis minio
 pnpm db:generate
 pnpm db:validate
+pnpm db:migrate:deploy
+pnpm typecheck
 pnpm test
 pnpm build
-```
-
-Com Docker local:
-
-```bash
-docker compose up -d postgres redis minio
-pnpm db:migrate:deploy
 pnpm dev
 ```
 
----
+Preencha o `.env` com `DATABASE_URL`, `REDIS_URL`, `S3_ENDPOINT`, bucket e credenciais locais. Nunca commite `.env`, tokens ou secrets.
+
+## Instalação em Debian
+
+Execute em um Debian 12 ou superior com usuário autorizado a usar Docker:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl git openssl
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker "$USER"
+```
+
+Saia e entre novamente na sessão para aplicar o grupo Docker. Depois:
+
+```bash
+git clone git@github.com:nicholasrichardsonsecurity/quero-internet.git /opt/quero-internet/quero-internet
+cd /opt/quero-internet/quero-internet
+corepack enable
+corepack prepare pnpm@10.14.0 --activate
+pnpm install --frozen-lockfile=false
+cp .env.example .env
+pnpm db:generate
+pnpm db:validate
+pnpm --filter @quero-internet/api build
+```
+
+Em servidor, não use credenciais de exemplo. Prefira secret manager, firewall, TLS reverso, backups testados, logs sanitizados e serviços internos sem portas de banco publicadas.
+
+## Homologação
+
+Homologação é isolada do desenvolvimento e da produção, usa secrets próprios e somente dados sintéticos:
+
+```bash
+cp infra/docker/.env.homolog.example infra/docker/.env.homolog.local
+chmod 600 infra/docker/.env.homolog.local
+bash scripts/verify-homologation-config.sh
+docker compose --env-file infra/docker/.env.homolog.local -f infra/docker/docker-compose.homolog.yml up -d postgres redis minio
+```
+
+Aplique as migrations, execute o seed sintético e rode o smoke test seguindo [`docs/operations/INSTALLATION.md`](docs/operations/INSTALLATION.md). O compose não publica PostgreSQL, Redis ou MinIO no host.
+
+Não reutilize redes, volumes, containers ou portas de outros produtos no mesmo servidor.
+
+## Segurança e privacidade
+
+- autorização real no backend;
+- isolamento por tenant e organização;
+- documento bruto não persistido na fundação atual;
+- deduplicação por HMAC com pepper externo;
+- auditoria append-only;
+- logs sem secrets, cookies, tokens ou dados pessoais desnecessários;
+- migrations e testes de autorização obrigatórios;
+- dados sintéticos em homologação;
+- Security Gate verde antes do merge.
+
+O projeto adota privacy by design / privacy by default. Não usa “LGPD compliant” como selo automático: conformidade também depende de processos, contratos, governança e operação.
+
+## Documentação
+
+- [`docs/operations/INSTALLATION.md`](docs/operations/INSTALLATION.md) — instalação e operação;
+- [`docs/architecture/FOUNDATION.md`](docs/architecture/FOUNDATION.md) — fundação técnica;
+- [`docs/architecture/IMPLEMENTATION-STATUS.md`](docs/architecture/IMPLEMENTATION-STATUS.md) — status por domínio;
+- [`docs/brand/BRANDING-OFFICIAL-V1.2.md`](docs/brand/BRANDING-OFFICIAL-V1.2.md) — identidade e uso da marca;
+- [`docs/operations/HOMOLOGATION-ENVIRONMENT.md`](docs/operations/HOMOLOGATION-ENVIRONMENT.md) — ambiente de homologação;
+- [`docs/operations/HOMOLOGATION-EXECUTION.md`](docs/operations/HOMOLOGATION-EXECUTION.md) — execução e evidências;
+- [`docs/operations/E2E-SMOKE-SPEC.md`](docs/operations/E2E-SMOKE-SPEC.md) — teste E2E;
+- [`docs/operations/PILOT-GATE.md`](docs/operations/PILOT-GATE.md) — critérios de piloto;
+- [`docs/security/SECURITY-BASELINE.md`](docs/security/SECURITY-BASELINE.md) — baseline de segurança;
+- [`docs/privacy/PRIVACY-PRINCIPLES.md`](docs/privacy/PRIVACY-PRINCIPLES.md) — privacidade.
 
 ## Licença
 
-Software proprietário. Ver [`LICENSE.md`](LICENSE.md).
-
-Nenhum direito é concedido para copiar, distribuir, sublicenciar, revender, hospedar, modificar ou explorar comercialmente este projeto sem autorização expressa e formal do titular.
+Software proprietário. Consulte [`LICENSE.md`](LICENSE.md). Nenhum direito é concedido para copiar, distribuir, sublicenciar, revender, hospedar, modificar ou explorar comercialmente este projeto sem autorização formal do titular.
