@@ -17,8 +17,10 @@ ENV NODE_ENV=production
 ENV PORT=3401
 ENV HOSTNAME=0.0.0.0
 
-RUN corepack enable
+RUN corepack enable && groupadd --system webapp && useradd --system --gid webapp webapp
 
-COPY --from=build /app /app
+COPY --from=build --chown=webapp:webapp /app /app
+USER webapp
+
 EXPOSE 3401
 CMD ["pnpm", "--filter", "@quero-internet/web", "start"]
