@@ -1,4 +1,25 @@
-# Quero Internet GovTech
+<p align="center">
+  <img src="assets/brand/quero-internet-wordmark-official.svg" alt="Quero Internet GovTech" width="420" />
+</p>
+
+<p align="center">
+  <strong>Conectando pessoas, transformando cidades.</strong><br />
+  Plataforma GovTech para programas públicos de conectividade e inclusão digital.
+</p>
+
+[![CI](https://github.com/nicholasrichardsonsecurity/quero-internet/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/nicholasrichardsonsecurity/quero-internet/actions/workflows/ci.yml)
+[![Security Gate](https://github.com/nicholasrichardsonsecurity/quero-internet/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/nicholasrichardsonsecurity/quero-internet/actions/workflows/security.yml)
+[![Node.js](https://img.shields.io/badge/Node.js-22.x-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![pnpm](https://img.shields.io/badge/pnpm-10.14-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-11.x-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.x-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Redis](https://img.shields.io/badge/Redis-7.x-DC382D?logo=redis&logoColor=white)](https://redis.io/)
+[![Prisma](https://img.shields.io/badge/Prisma-6.x-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![Docker](https://img.shields.io/badge/Docker%20Compose-isolated-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
+
+---
 
 Plataforma GovTech multiempresa para gestão segura, auditável e escalável de programas públicos de conectividade e inclusão digital.
 
