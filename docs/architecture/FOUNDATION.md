@@ -1,136 +1,69 @@
 # Fundação Técnica — Quero Internet GovTech
 
-> Baseline consolidado em 2026-09-01 após recuperação do Security Gate e avanço da Fase 1 até o ciclo de vida inicial do serviço ativo.
+> Baseline consolidado em 2026-09-03 após a fundação do MVP operacional e a preparação do ambiente isolado de homologação.
 
-## Propósito da fundação
+## Propósito
 
-A fundação técnica do **Quero Internet GovTech** existe para permitir que programas públicos de conectividade sejam operados com segurança, rastreabilidade, segregação multiempresa e evolução controlada.
+A fundação técnica permite operar programas públicos de conectividade com segurança, rastreabilidade, segregação multiempresa e evolução controlada.
 
-O produto não é um ERP de provedor, não é um sistema financeiro público e não é um motor autônomo de decisão administrativa. Ele coordena a jornada entre município, cidadão elegível e provedor participante, preservando evidências, estados de domínio e trilhas de auditoria.
+O produto coordena a jornada entre município, cidadão elegível e provedor participante. Não é provedor de internet, ERP de provedor, sistema financeiro público ou motor autônomo de decisão administrativa.
 
 ## Arquitetura aprovada
 
-O projeto segue como **monólito modular TypeScript**, com possibilidade de extração futura apenas mediante ADR e evidência operacional.
+O projeto segue como monólito modular TypeScript, com workers assíncronos e adapters de integração. Extrações para microsserviços exigem ADR, evidência técnica e necessidade operacional real.
 
 Componentes-base:
 
-- **Web/PWA:** Next.js.
-- **API:** NestJS.
-- **Worker:** processamento assíncrono e integrações futuras.
-- **Banco:** PostgreSQL via Prisma.
-- **Cache/coordenação:** Redis.
-- **Arquivos:** storage compatível com S3/MinIO.
-- **CI/Security Gate:** GitHub Actions com migração real PostgreSQL, typecheck, testes, build, auditoria de dependências e SAST/segredos.
+- Web/PWA: Next.js;
+- API: NestJS;
+- Worker: processamento assíncrono e integrações futuras;
+- banco: PostgreSQL via Prisma;
+- cache/coordenação: Redis;
+- arquivos: MinIO local ou storage compatível com S3;
+- CI/Security Gate: migrations, typecheck, testes, build, auditoria e SAST/segredos.
 
-## Fronteiras permanentes
+## Princípios permanentes
 
-1. **Autorização no backend.** Frontend não é barreira de segurança.
-2. **Multiempresa desde a fundação.** `Tenant`, `Organization`, `Program`, `ProgramParticipation`, `Membership` e `Session` formam a base de isolamento.
-3. **Contexto derivado da sessão.** Tenant, organização e papéis não devem ser aceitos de headers arbitrários.
-4. **Domínio desacoplado de ERP.** IXC, SGP e similares entram por adapters/ACL, nunca diretamente dentro das regras centrais.
-5. **Escritas externas futuras devem ser idempotentes, reconciliáveis e reversíveis operacionalmente quando possível.**
-6. **Auditoria é append-only.** Logs de auditoria registram ação, ator, organização, programa, entidade e correlação, sem expor dados pessoais desnecessários.
-7. **Estados de negócio não são inferidos de um único status externo.** O domínio usa transições explícitas, validações e eventos auditáveis.
-8. **IA não decide elegibilidade, suspensão, pagamento, ativação administrativa ou penalidade.**
+1. autorização no backend; frontend não é barreira de segurança;
+2. multiempresa desde a fundação, com tenant, organização, programa, participação, vínculo e sessão;
+3. contexto derivado da sessão, nunca de headers arbitrários;
+4. domínio desacoplado de ERP; IXC e SGP entram por adapters/ACL;
+5. escritas externas futuras idempotentes, reconciliáveis e operacionalmente reversíveis quando possível;
+6. auditoria append-only, com correlação e minimização de dados pessoais;
+7. estados de negócio explícitos, sem depender de um único status externo;
+8. IA não decide elegibilidade, suspensão, pagamento, ativação administrativa ou penalidade;
+9. secrets são fornecidos pelo ambiente e nunca commitados;
+10. dados de homologação são sintéticos e não podem ser substituídos por cópias de produção.
 
-## Domínios implementados na fundação atual
+## Domínios implementados
 
-### Núcleo institucional
-
-- Tenant.
-- Organização.
-- Unidade organizacional.
-- Programa.
-- Participação no programa.
-- Usuário, vínculo, papéis e sessão.
-- Auditoria.
-
-### Identidade e acesso
-
-- Sessão bearer opaca com hash persistido.
-- Contexto organizacional ativo fail-closed.
-- RBAC com permissões específicas por domínio.
-- Logout e troca de contexto organizacional.
-- Proteções de login e validações de entrada.
-
-### Beneficiário e solicitação
-
-- Cadastro municipal com minimização.
-- Documento bruto não persistido.
-- Deduplicação por HMAC com pepper externo.
-- Solicitação por programa.
-- Revisão de elegibilidade humana e auditável.
-
-### Encaminhamento ao provedor
-
-- Encaminhamento de solicitação elegível.
-- Provedor só acessa o que foi encaminhado a ele.
-- Aceite/recusa com motivo quando aplicável.
-- Restrição a participação ativa no programa.
-
-### Viabilidade técnica FTTH
-
-- Avaliação técnica por provedor autorizado.
-- Resultados: `FEASIBLE`, `EXPANSION_REQUIRED`, `NOT_FEASIBLE`.
-- Cobertura e capacidade não são inferidas apenas por CEP.
-- Dados técnicos sensíveis não são expostos no DTO municipal.
-
-### Instalação e ativação
-
-- Ordem criada somente após encaminhamento aceito e viabilidade `FEASIBLE`.
-- Fluxo: `INSTALLATION_PENDING → SCHEDULED → IN_PROGRESS → INSTALLED → ACTIVATED`.
-- Falha/cancelamento exigem motivo descritivo.
-- Transições inválidas falham fechadas.
-- Atualizações concorrentes usam controle por estado atual.
-
-### Serviço ativo
-
-- Serviço ativo nasce a partir de instalação `ACTIVATED`.
-- Ciclo inicial do serviço separa estado do benefício, estado operacional e futuras integrações com ERP.
-- Suspensão, cancelamento, restauração e encerramento exigem motivo e auditoria.
-- Não há decisão automática de benefício por IA ou por status isolado de ERP.
+- núcleo institucional: tenant, organização, unidade, programa, participação, usuário, vínculo, sessão e auditoria;
+- identidade e acesso: sessão bearer opaca, contexto organizacional fail-closed, RBAC, logout e proteções de login;
+- beneficiário e solicitação: cadastro minimizado, documento bruto não persistido, deduplicação HMAC e revisão humana;
+- provedor: encaminhamento contextual, aceite/recusa e participação ativa;
+- viabilidade FTTH: avaliação autorizada com resultados explícitos e DTOs por contexto;
+- instalação e ativação: estados `INSTALLATION_PENDING`, `SCHEDULED`, `IN_PROGRESS`, `INSTALLED` e `ACTIVATED`;
+- serviço ativo: ciclo operacional separado do benefício e de integrações futuras;
+- evidências, sincronização simulada somente leitura, notificações sem envio externo e observabilidade inicial.
 
 ## Segurança e privacidade
 
-Controles obrigatórios para todo novo incremento:
+Todo incremento deve validar entrada, aplicar menor privilégio, separar DTOs por contexto, evitar documento bruto em logs, manter tratamento previsível de erros, adicionar testes de autorização e usar migration real quando houver persistência.
 
-- validação de entrada;
-- menor privilégio;
-- DTOs diferentes por contexto;
-- sem CPF/documento bruto em logs;
-- sem secrets em código;
-- tratamento previsível de erros;
-- testes de autorização quando houver permissão nova;
-- migração PostgreSQL real quando houver persistência nova;
-- Security Gate verde antes de merge.
+Os gates são: documentação da decisão, implementação coerente, migration validada, testes de domínio/autorização, typecheck, testes, build, Security Gate e PR revisável.
 
-## Gates de continuidade
+## Ambiente e instalação
 
-Nenhum incremento estrutural deve ser tratado como concluído sem:
+O procedimento oficial está em [`docs/operations/INSTALLATION.md`](../operations/INSTALLATION.md). Ele cobre pré-requisitos, instalação local, Docker Compose, configuração de secrets, migrations, seed sintético, smoke test, isolamento e encerramento seguro.
 
-1. documentação da decisão ou missão;
-2. implementação mínima coerente;
-3. migration validada quando houver banco;
-4. testes de domínio/autorização;
-5. typecheck, testes, build e Security Gate verdes;
-6. PR revisável;
-7. merge somente após verificação verde.
+Homologação usa compose project, rede e volumes próprios; não publica PostgreSQL, Redis ou MinIO no host. A convivência com outros produtos, inclusive LoopClub, exige que nenhum container, volume, rede ou porta externa de outro projeto seja alterado.
 
-## Fora da fundação atual
+## Status e limites
 
-Ainda não fazem parte da fundação pronta para produção:
+O ambiente isolado de homologação possui PostgreSQL, Redis e MinIO configurados, com migrations do schema aplicadas. Isso demonstra preparação técnica do ambiente, não aprovação de piloto público nem produção.
 
-- integração real IXC/SGP;
-- provisionamento automático;
-- reserva concorrente real de CTO/PON/porta;
-- assinatura eletrônica de beneficiário;
-- DMS completo de evidências;
-- notificações multicanal;
-- relatórios oficiais de prestação de contas;
-- observabilidade completa com OpenTelemetry;
-- auditoria legal externa;
-- piloto real com dados sensíveis.
+Ainda fora da fundação pronta para produção: integração real IXC/SGP, provisionamento automático, reserva concorrente real de rede, assinatura eletrônica, notificações multicanal, relatórios oficiais, OpenTelemetry completo, auditoria legal externa e piloto com dados sensíveis.
 
-## Status
+## Regra de continuidade
 
-A fundação técnica está apta a continuar a construção do MVP operacional, mas **não está aprovada para piloto público nem produção**. O próximo avanço deve manter a separação entre arquitetura aprovada, evidência implementada e prontidão operacional real.
+Não tratar um incremento estrutural como concluído sem evidência correspondente. O estado do código, o estado do ambiente e a aprovação operacional devem permanecer registrados separadamente.
