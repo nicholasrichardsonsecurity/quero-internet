@@ -183,7 +183,7 @@ export default function HomePage() {
         </header>
 
         <div className="content operational-content">
-          <section className="hero-panel">
+          <section className="hero-panel motion-fade-up">
             <div>
               <span className="eyebrow">MISSÃO 1.10 • DASHBOARD COM DADOS REAIS</span>
               <h1>{currentDashboard.title}</h1>
@@ -201,7 +201,7 @@ export default function HomePage() {
           </section>
 
           {errorMessage ? (
-            <section className="status-alert" role="status">
+            <section className="status-alert motion-fade-in" role="status">
               <AlertTriangle size={18} />
               <div>
                 <strong>Dashboard real indisponível no momento.</strong>
@@ -211,7 +211,7 @@ export default function HomePage() {
           ) : null}
 
           {isLoading ? (
-            <section className="status-alert loading" role="status">
+            <section className="status-alert loading motion-fade-in" role="status">
               <Loader2 size={18} className="spin" />
               <div>
                 <strong>Carregando dados operacionais do banco.</strong>
@@ -220,7 +220,7 @@ export default function HomePage() {
             </section>
           ) : null}
 
-          <section className="kpi-grid operational-kpis">
+          <section className="kpi-grid operational-kpis motion-fade-up" aria-busy={isLoading}>
             {currentDashboard.kpis.map(({ label, value, detail, tone }) => (
               <article className={`card kpi${isLoading ? ' skeleton-soft' : ''}`} key={label}>
                 <div className="kpi-top"><span className={`kpi-icon ${tone}`}><Database size={20} /></span><span className="kpi-label">{sourceLabel}</span></div>
@@ -230,7 +230,7 @@ export default function HomePage() {
             ))}
           </section>
 
-          <section className="grid-2 operational-grid">
+          <section className="grid-2 operational-grid motion-fade-up">
             <article className="card panel journey-panel">
               <div className="panel-title"><h2>Esteira operacional do benefício</h2><Link href="/relatorios">Ver relatórios</Link></div>
               <div className="journey-list">
@@ -241,7 +241,7 @@ export default function HomePage() {
                       <span className="journey-icon"><Icon size={17} /></span>
                       <div className="journey-body">
                         <div className="journey-head"><strong>{label}</strong><span>{value}</span></div>
-                        <div className="progress"><span style={{ width: `${Math.max(8, Math.round((value / stageMax) * 100))}%` }} /></div>
+                        <div className="progress" role="progressbar" aria-valuemin={0} aria-valuemax={stageMax} aria-valuenow={value} aria-label={`Progresso de ${label}`}><span className="motion-progress" style={{ width: `${Math.max(8, Math.round((value / stageMax) * 100))}%`, animationDelay: `${index * 50}ms` }} /></div>
                         <small>{description}</small>
                       </div>
                     </div>
@@ -266,7 +266,7 @@ export default function HomePage() {
             </article>
           </section>
 
-          <section className="bottom-grid operational-bottom">
+          <section className="bottom-grid operational-bottom motion-fade-up">
             <article className="card panel action-panel">
               <div className="panel-title"><h2>Próximas ações recomendadas</h2><ShieldCheck size={18} /></div>
               {currentDashboard.nextActions.map((action) => (
