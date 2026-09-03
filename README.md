@@ -301,3 +301,30 @@ pnpm dev
 Software proprietário. Ver [`LICENSE.md`](LICENSE.md).
 
 Nenhum direito é concedido para copiar, distribuir, sublicenciar, revender, hospedar, modificar ou explorar comercialmente este projeto sem autorização expressa e formal do titular.
+
+
+## Biblioteca oficial de ícones
+
+A interface utiliza **[Lucide React](https://lucide.dev/)** como biblioteca oficial de ícones. A escolha atende ao padrão visual do produto: ícones modernos, limpos, acessíveis, consistentes e adequados a dashboards GovTech com muitas funcionalidades.
+
+Boas práticas adotadas:
+
+- dependência mantida em `apps/web/package.json`;
+- `optimizePackageImports` configurado no Next.js para reduzir o bundle e preservar tree shaking;
+- ícones estáticos podem ser usados em Server Components;
+- Client Components só são necessários quando o ícone depende de estado ou interação;
+- registro tipado centralizado em `apps/web/components/ui/icon.tsx`;
+- menus dinâmicos usam `IconName`, reduzindo erros de digitação;
+- não importar a biblioteca inteira nem criar SVGs duplicados sem necessidade;
+- manter tamanho, espessura e significado semântico consistentes;
+- ícones decorativos devem permanecer ocultos para leitores de tela; ícones que comunicam ação devem acompanhar texto ou nome acessível.
+
+Exemplo:
+
+```tsx
+import { Icon } from '@/components/ui/icon';
+
+<Icon name="dashboard" aria-label="Dashboard" />
+```
+
+A biblioteca de ícones não substitui texto, estados de carregamento, skeletons, feedback de progresso ou requisitos de acessibilidade. Ela é parte do sistema visual e deve ser aplicada com parcimônia.

@@ -134,3 +134,18 @@ Ainda não fazem parte da fundação pronta para produção:
 ## Status
 
 A fundação técnica está apta a continuar a construção do MVP operacional, mas **não está aprovada para piloto público nem produção**. O próximo avanço deve manter a separação entre arquitetura aprovada, evidência implementada e prontidão operacional real.
+
+
+## Padrão de ícones e linguagem visual
+
+O produto adota **Lucide React** como biblioteca oficial de ícones para Web/PWA. A decisão atende à necessidade de dashboards complexos, navegação operacional e componentes consistentes, com ícones SVG leves, customizáveis e compatíveis com a arquitetura Next.js.
+
+Regras permanentes:
+
+1. A dependência deve permanecer declarada em `apps/web/package.json`.
+2. O Next.js deve manter `experimental.optimizePackageImports: ['lucide-react']` para otimização de imports.
+3. O registro compartilhado e tipado deve ficar em `apps/web/components/ui/icon.tsx`.
+4. Server Components são preferidos para ícones estáticos; Client Components só quando houver estado, evento ou animação dependente do cliente.
+5. Ícones não devem ser usados como único meio de comunicação: ações críticas precisam de texto, tooltip acessível ou nome semântico.
+6. Novos ícones devem respeitar a grade visual, espessura consistente e contraste do sistema de marca.
+7. Não adicionar bibliotecas concorrentes para o mesmo propósito sem ADR e justificativa de manutenção.
