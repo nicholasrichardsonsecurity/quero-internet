@@ -23,4 +23,4 @@ COPY --from=build --chown=webapp:webapp /app /app
 USER webapp
 
 EXPOSE 3401
-CMD ["node", "apps/web/node_modules/next/dist/bin/next", "start", "-p", "3401"]
+CMD ["node", "apps/web/node_modules/next/dist/bin/next", "start", "apps/web", "-p", "3401"]
