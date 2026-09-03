@@ -403,3 +403,27 @@ Toda peça deve preservar confiança pública, clareza operacional, segurança d
 - CTA compatível com a fase: demonstração, homologação, piloto ou produção.
 - Mensagem clara sobre análise humana e regras do programa.
 - Revisão de acessibilidade e comunicação feita antes de campanha pública.
+
+## 17. Arquivos oficiais da marca
+
+Os arquivos abaixo são as versões PNG de alta resolução, com fundo transparente, para uso em README, site, apresentações e materiais institucionais.
+
+### Símbolo realista
+
+<p align="center">
+  <img src="../../assets/brand/quero-internet-symbol-realista.png" alt="Símbolo realista Quero Internet GovTech" width="360" />
+</p>
+
+Arquivo: [`assets/brand/quero-internet-symbol-realista.png`](../../assets/brand/quero-internet-symbol-realista.png).
+
+### Assinatura horizontal realista
+
+<p align="center">
+  <img src="../../assets/brand/quero-internet-horizontal-realista.png" alt="Assinatura horizontal realista Quero Internet GovTech" width="760" />
+</p>
+
+Arquivo: [`assets/brand/quero-internet-horizontal-realista.png`](../../assets/brand/quero-internet-horizontal-realista.png).
+
+Uso recomendado: a assinatura horizontal em README, cabeçalhos e documentos; o símbolo isolado em favicon, avatar, aplicativo e espaços quadrados.
+
+Essas imagens são materiais oficiais da marca e não devem ser redesenhadas, comprimidas excessivamente, esticadas, aplicadas sobre fundos que prejudiquem a leitura ou combinadas com promessas não aprovadas.
