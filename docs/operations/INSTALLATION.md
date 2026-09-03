@@ -129,3 +129,64 @@ Esse comando não remove volumes. A remoção de volumes exige decisão operacio
 - [`docs/operations/HOMOLOGATION-EXECUTION.md`](HOMOLOGATION-EXECUTION.md)
 - [`docs/operations/E2E-SMOKE-SPEC.md`](E2E-SMOKE-SPEC.md)
 - [`docs/operations/PILOT-GATE.md`](PILOT-GATE.md)
+
+## Fluxo obrigatório de trabalho: Issue → branch → PR → deploy
+
+Este é o padrão oficial do projeto para qualquer **correção**, **melhoria** ou **nova função**. Ele se aplica a pessoas e agentes de qualquer modelo.
+
+### 1. Abrir a Issue antes de implementar
+
+Toda tarefa deve ter uma Issue no repositório, com contexto, objetivo, escopo, fora de escopo, dependências, riscos e critérios de aceite verificáveis. Não iniciar uma mudança relevante sem Issue.
+
+Issues de referência desta frente:
+
+- [#44 — Publicar a API em api.querointernet.aplivora.com.br](https://github.com/nicholasrichardsonsecurity/quero-internet/issues/44)
+- [#45 — Tornar o deploy da API de homologação reproduzível e auditável](https://github.com/nicholasrichardsonsecurity/quero-internet/issues/45)
+- [#46 — Governança: fluxo obrigatório de Issues, branches, PRs e deploys](https://github.com/nicholasrichardsonsecurity/quero-internet/issues/46)
+- [#47 — Documentar instalação, operação e identidade oficial](https://github.com/nicholasrichardsonsecurity/quero-internet/issues/47)
+
+### 2. Criar uma branch vinculada
+
+Uma tarefa por branch, criada a partir da base atualizada. Use um dos padrões:
+
+- `fix/issue-<numero>-descricao-curta`
+- `feat/issue-<numero>-descricao-curta`
+- `docs/issue-<numero>-descricao-curta`
+- `ops/issue-<numero>-descricao-curta`
+
+Não fazer commit direto em `main` e não usar uma branch de outra tarefa.
+
+### 3. Trabalhar por Pull Request
+
+Toda alteração deve chegar à base por PR. A descrição do PR deve conter:
+
+- `Closes #<numero>` (ou `Fixes #<numero>` quando for correção);
+- resumo da mudança e arquivos afetados;
+- critérios de aceite atendidos;
+- testes e evidências executados;
+- impacto de segurança, privacidade e operação;
+- plano de deploy e rollback;
+- secrets redigidos e nunca incluídos no código, Issue, PR, log ou screenshot.
+
+O PR deve permanecer bloqueado até a CI ficar verde e as revisões obrigatórias serem concluídas.
+
+### 4. Fazer deploy somente pelo fluxo aprovado
+
+Deploy em homologação ou produção só pode ocorrer com PR aprovado e mergeado, usando o commit SHA que foi revisado. Registrar ambiente, SHA, imagem/digest, data, operador, resultado dos health checks e referência da Issue/PR.
+
+Em caso de hotfix, abrir a Issue imediatamente, registrar a justificativa e ainda assim abrir o PR correspondente. A urgência não elimina revisão, CI, evidência ou rollback.
+
+### 5. Definition of Done
+
+Uma tarefa só está concluída quando:
+
+- Issue, branch e PR estão vinculados;
+- critérios de aceite foram verificados;
+- CI e Security Gate estão verdes;
+- documentação e variáveis de ambiente foram atualizadas;
+- não há secrets ou dados reais nas alterações;
+- deploy foi validado no ambiente correto;
+- evidências e rollback estão registrados;
+- a Issue foi fechada pelo PR ou manualmente após confirmação.
+
+Qualquer agente deve consultar esta seção, a Issue vinculada e o PR antes de modificar o projeto.
