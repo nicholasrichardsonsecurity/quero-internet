@@ -83,12 +83,12 @@ export default function HomePage() {
     let sessionData: SessionSummary | null = null;
 
     try {
-      const sessionResponse = await fetch('/api/auth/me', { cache: 'no-store' });
+      const sessionResponse = await fetch('/querointernet/api/auth/me', { cache: 'no-store' });
       if (!sessionResponse.ok) throw new Error('unauthorized');
       sessionData = (await sessionResponse.json()) as SessionSummary;
       setSession(sessionData);
 
-      const dashboardResponse = await fetch('/api/dashboard/operational', { cache: 'no-store' });
+      const dashboardResponse = await fetch('/querointernet/api/dashboard/operational', { cache: 'no-store' });
       if (!dashboardResponse.ok) {
         const problem = (await dashboardResponse.json().catch(() => null)) as { message?: string } | null;
         throw new Error(problem?.message || 'Não foi possível carregar o dashboard real.');
@@ -128,7 +128,7 @@ export default function HomePage() {
     : 'Exibindo referência segura até o endpoint responder.';
 
   async function logout() {
-    await fetch('/api/auth/logout', { method: 'POST' }).catch(() => undefined);
+    await fetch('/querointernet/api/auth/logout', { method: 'POST' }).catch(() => undefined);
     router.replace('/login');
     router.refresh();
   }
