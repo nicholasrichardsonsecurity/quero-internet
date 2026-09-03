@@ -403,3 +403,20 @@ Toda peça deve preservar confiança pública, clareza operacional, segurança d
 - CTA compatível com a fase: demonstração, homologação, piloto ou produção.
 - Mensagem clara sobre análise humana e regras do programa.
 - Revisão de acessibilidade e comunicação feita antes de campanha pública.
+
+
+## 17. Biblioteca de ícones do produto
+
+A biblioteca oficial de ícones é **Lucide React**.
+
+A escolha reforça a personalidade moderna, limpa, amigável e consistente da marca, especialmente em dashboards, navegação, tabelas, gráficos, mapas, configurações e fluxos operacionais.
+
+Diretrizes de uso:
+
+- usar o registro tipado em `apps/web/components/ui/icon.tsx`;
+- preferir ícones Lucide aos SVGs desenhados manualmente para elementos de interface;
+- manter espessura e escala coerentes entre componentes;
+- não usar ícone isolado em ações críticas sem rótulo ou nome acessível;
+- usar `aria-hidden` para ícones puramente decorativos;
+- respeitar contraste, foco, tamanho mínimo e leitura em telas pequenas;
+- reservar animações para feedback de estado, carregamento ou progresso, sem transformar a interface em ruído visual.
