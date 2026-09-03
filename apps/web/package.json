@@ -7,7 +7,8 @@
     "build": "next build",
     "typecheck": "tsc --noEmit",
     "lint": "next lint",
-    "test": "node -e \"console.log('web tests pending')\""
+    "test": "node -e \"console.log('web tests pending')\"",
+    "start": "next start -p 3401"
   },
   "dependencies": {
     "lucide-react": "^1.34.0",
