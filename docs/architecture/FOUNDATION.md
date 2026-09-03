@@ -149,3 +149,27 @@ Regras permanentes:
 5. Ícones não devem ser usados como único meio de comunicação: ações críticas precisam de texto, tooltip acessível ou nome semântico.
 6. Novos ícones devem respeitar a grade visual, espessura consistente e contraste do sistema de marca.
 7. Não adicionar bibliotecas concorrentes para o mesmo propósito sem ADR e justificativa de manutenção.
+
+
+## Padrão de domínios do Hub Aplivora
+
+A arquitetura de publicação adota subdomínios de primeiro nível para cada aplicação:
+
+- `aplivora.com.br`: Hub institucional;
+- `querointernet.aplivora.com.br`: Quero Internet;
+- `loopclub.aplivora.com.br`: LoopClub;
+- `linkops.aplivora.com.br`: LinkOps;
+- `api.aplivora.com.br`: API central, Billing e namespaces por produto.
+
+### Regra obrigatória para APIs
+
+O padrão é publicar APIs pelo domínio central com namespace de caminho:
+
+- `/querointernet/*`;
+- `/loopclub/*`;
+- `/linkops/*`;
+- `/billing/*`.
+
+Não usar `api.linkops.aplivora.com.br` nem `api.querointernet.aplivora.com.br` como padrão. Esses nomes possuem dois níveis de subdomínio e podem não estar cobertos pelo certificado Universal SSL do Cloudflare. Só podem ser adotados após validação explícita de certificado, DNS, proxy, Caddy, CORS, cookies, monitoramento e renovação TLS.
+
+Essa regra evita falhas de handshake TLS e mantém o Hub com uma superfície de operação previsível.
