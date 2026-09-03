@@ -39,5 +39,10 @@ jobs:
       - run: pnpm db:generate
       - run: pnpm db:migrate:deploy
       - run: pnpm typecheck
-      - run: pnpm test
+      - run: pnpm --filter @quero-internet/api test -- --coverage
+      - uses: codecov/codecov-action@v5
+        with:
+          files: apps/api/coverage/lcov.info
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
       - run: pnpm build
