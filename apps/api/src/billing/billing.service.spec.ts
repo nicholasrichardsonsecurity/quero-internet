@@ -15,6 +15,7 @@ describe('BillingService', () => {
     const prisma = {
       billingWebhookEvent: { findUnique: jest.fn().mockResolvedValue(existing), create: jest.fn() },
       billingAuditEntry: { create: jest.fn() },
+          billingDelivery: { create: jest.fn() },
       $transaction: jest.fn(async (callback: (tx: unknown) => Promise<void>) =>
         callback({
           billingWebhookEvent: { create: jest.fn() },
