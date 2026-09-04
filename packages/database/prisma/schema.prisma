@@ -556,3 +556,40 @@ model EvidenceDocument {
   @@index([organizationId, classification, createdAt])
   @@index([retentionUntil])
 }
+
+
+model BillingWebhookEvent {
+  id String @id @default(uuid()) @db.Uuid
+  eventId String @unique
+  eventName String
+  paymentId String
+  paymentStatus String?
+  productKey String
+  tenantId String
+  companyId String
+  planId String
+  externalReference String
+  environment String
+  payloadHash String @db.VarChar(64)
+  payload Json
+  receivedAt DateTime @default(now())
+  processedAt DateTime?
+  @@index([paymentId, receivedAt])
+  @@index([productKey, tenantId, receivedAt])
+}
+
+model BillingAuditEntry {
+  id String @id @default(uuid()) @db.Uuid
+  eventId String
+  action String
+  productKey String
+  tenantId String
+  companyId String
+  planId String
+  paymentId String
+  environment String
+  payloadHash String @db.VarChar(64)
+  createdAt DateTime @default(now())
+  @@index([eventId, createdAt])
+  @@index([productKey, tenantId, createdAt])
+}
