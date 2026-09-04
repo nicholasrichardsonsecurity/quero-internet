@@ -38,3 +38,7 @@ A entrega deve ser idempotente por `eventId`. O Hub não executa ativação de b
 O worker usa `https://api-sandbox.asaas.com/v3` em sandbox e `https://api.asaas.com/v3` em produção. A credencial é enviada somente no header `access_token`; o valor nunca aparece em logs.
 
 A política de retry considera timeout, HTTP 429 e HTTP 5xx como transitórios, com backoff exponencial limitado a cinco tentativas. Erros HTTP 4xx são permanentes até intervenção operacional. O cliente rejeita IDs de pagamento fora do formato permitido e não registra o corpo da resposta do provedor.
+
+## Adaptadores de produto
+
+Quero Internet e LoopClub permanecem sistemas independentes. O Hub entrega eventos por uma allowlist de `productKey`, usando URL e token distintos por produto e ambiente. Nenhum banco ou sessão é compartilhado.
