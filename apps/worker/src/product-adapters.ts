@@ -1,7 +1,7 @@
 export type ProductKey = 'quero-internet' | 'loopclub';
 export type BillingDeliveryEvent = {
   eventId: string;
-  productKey: string;
+  productKey: ProductKey;
   paymentId: string;
   state: string;
   environment: 'sandbox' | 'production';
