@@ -27,11 +27,11 @@ jobs:
     env:
       DATABASE_URL: postgresql://quero_internet:change_me@localhost:5432/quero_internet
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
         with:
           version: 10.14.0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
       - run: pnpm install --frozen-lockfile=false
@@ -39,5 +39,10 @@ jobs:
       - run: pnpm db:generate
       - run: pnpm db:migrate:deploy
       - run: pnpm typecheck
-      - run: pnpm test
+      - run: pnpm --filter @quero-internet/api test -- --coverage
+      - uses: codecov/codecov-action@04b047e8bb82a0c002c8312c1c880fbc6a999d45 # v5
+        with:
+          files: apps/api/coverage/lcov.info
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
       - run: pnpm build
