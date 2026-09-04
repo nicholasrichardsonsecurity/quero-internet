@@ -22,19 +22,20 @@ export class InternalBillingService {
 
     const source = await this.prisma.billingWebhookEvent.findUnique({ where: { eventId } });
     if (!source || source.productKey !== productKey || source.paymentId !== paymentId ||
-        source.processingStatus === 'PENDING_RECONCILIATION') {
+        source.processingStatus === 'PENDING_RECONCILIATION' || source.processingStatus !== state) {
       throw new NotFoundException('Evento não reconciliado ou inexistente.');
     }
 
     const delivery = await this.prisma.billingDelivery.findUnique({ where: { eventId } });
     if (!delivery) throw new NotFoundException('Entrega de billing inexistente.');
-    if (delivery.status === 'DELIVERED') return { status: 'accepted', eventId, duplicate: true };
 
-    await this.prisma.$transaction(async (tx) => {
-      await tx.billingDelivery.update({
-        where: { eventId },
+    const accepted = await this.prisma.$transaction(async (tx) => {
+      const result = await tx.billingDelivery.updateMany({
+        where: { eventId, status: { not: 'DELIVERED' } },
         data: { status: 'DELIVERED', deliveredAt: new Date(), attempts: { increment: 1 }, lastError: null }
       });
+      if (result.count !== 1) return false;
+
       await tx.billingAuditEntry.create({
         data: {
           eventId,
@@ -48,9 +49,10 @@ export class InternalBillingService {
           payloadHash: source.payloadHash
         }
       });
+      return true;
     });
 
-    return { status: 'accepted', eventId, duplicate: false };
+    return { status: 'accepted', eventId, duplicate: !accepted };
   }
 
   private environment(): 'sandbox' | 'production' {
