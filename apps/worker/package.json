@@ -7,7 +7,7 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --max-warnings=0",
-    "test": "node dist/reconciliation-policy.test.js"
+    "test": "node dist/reconciliation-policy.test.js && node dist/product-adapters.test.js"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",
