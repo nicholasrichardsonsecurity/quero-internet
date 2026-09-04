@@ -19,13 +19,13 @@ describe('InternalBillingService', () => {
 
   function createService(deliveryStatus = 'PENDING') {
     const tx = {
-      billingDelivery: { update: jest.fn() },
+      billingDelivery: { updateMany: jest.fn().mockResolvedValue({ count: 1 }) },
       billingAuditEntry: { create: jest.fn() }
     };
     const prisma = {
       billingWebhookEvent: { findUnique: jest.fn().mockResolvedValue(source) },
       billingDelivery: { findUnique: jest.fn().mockResolvedValue({ eventId: 'evt-1', status: deliveryStatus }) },
-      $transaction: jest.fn((fn: (client: unknown) => Promise<void>) => fn(tx))
+      $transaction: jest.fn((fn: (client: unknown) => Promise<unknown>) => fn(tx))
     } as never;
     return { service: new InternalBillingService(prisma), prisma, tx };
   }
@@ -35,14 +35,18 @@ describe('InternalBillingService', () => {
     await expect(service.receive('evt-1', 'internal-test-token', {
       eventId: 'evt-1', productKey: 'quero-internet', paymentId: 'pay-1', state: 'PAID', environment: 'sandbox'
     })).resolves.toMatchObject({ duplicate: false });
-    expect(tx.billingDelivery.update).toHaveBeenCalled();
+    expect(tx.billingDelivery.updateMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: { eventId: 'evt-1', status: { not: 'DELIVERED' } }
+    }));
   });
 
   it('is idempotent for delivered events', async () => {
-    const { service, prisma } = createService('DELIVERED');
+    const { service, prisma, tx } = createService('DELIVERED');
+    (tx.billingDelivery.updateMany as jest.Mock).mockResolvedValue({ count: 0 });
     await expect(service.receive('evt-1', 'internal-test-token', {
       eventId: 'evt-1', productKey: 'quero-internet', paymentId: 'pay-1', state: 'PAID', environment: 'sandbox'
     })).resolves.toMatchObject({ duplicate: true });
-    expect((prisma as { $transaction: jest.Mock }).$transaction).not.toHaveBeenCalled();
+    expect((prisma as { $transaction: jest.Mock }).$transaction).toHaveBeenCalled();
+    expect(tx.billingAuditEntry.create).not.toHaveBeenCalled();
   });
 });
