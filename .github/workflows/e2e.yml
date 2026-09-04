@@ -17,7 +17,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: pnpm
       - run: pnpm install --frozen-lockfile=false
       - run: pnpm --filter @quero-internet/web build
       - run: pnpm dlx playwright@1.55.0 install --with-deps chromium
