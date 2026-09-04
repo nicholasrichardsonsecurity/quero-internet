@@ -1,4 +1,4 @@
-import { test, expect } from 'playwright/test';
+import { test, expect } from '@playwright/test';
 
 test('admin protegido redireciona visitantes sem sessão para login', async ({ page }) => {
   const response = await page.goto('/admin');
