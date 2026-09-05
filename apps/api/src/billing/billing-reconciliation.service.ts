@@ -2,9 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { AsaasClient, type AsaasPayment } from './asaas.client';
 import { InternalBillingService } from './internal-billing.service';
 import { PrismaService } from '../database/prisma.service';
-import { INTERNAL_BILLING_STATES, type InternalBillingState } from './internal-billing.types';
+import type { InternalBillingState } from './internal-billing.types';
 
 type ReconciliationResult = { processed: number; delivered: number; retried: number };
+
+const TERMINAL_STATUS_BY_EVENT: Partial<Record<string, readonly string[]>> = {
+  PAYMENT_REFUNDED: ['REFUNDED'],
+  PAYMENT_CHARGEBACK_REQUESTED: ['CHARGEBACK_REQUESTED', 'CHARGEBACK_DISPUTE', 'AWAITING_CHARGEBACK_REVERSAL'],
+  PAYMENT_OVERDUE: ['OVERDUE'],
+  PAYMENT_DELETED: ['DELETED'],
+  PAYMENT_RESTORED: ['RECEIVED', 'RECEIVED_IN_CASH', 'CONFIRMED']
+};
 
 @Injectable()
 export class BillingReconciliationService {
@@ -38,7 +46,7 @@ export class BillingReconciliationService {
         const payment = await this.asaas.getPayment(event.paymentId);
         const state = this.resolveState(event.eventName, payment);
         if (!state) {
-          await this.defer(event.id, 'Pagamento ainda não está em estado reconciliável.');
+          await this.defer(event.id, 'Pagamento remoto não confirma o estado do evento.');
           result.retried += 1;
           continue;
         }
@@ -65,12 +73,21 @@ export class BillingReconciliationService {
   }
 
   private resolveState(eventName: string, payment: AsaasPayment): InternalBillingState | null {
+    if (eventName === 'PAYMENT_CONFIRMED' || eventName === 'PAYMENT_RECEIVED') {
+      return ['RECEIVED', 'RECEIVED_IN_CASH', 'CONFIRMED'].includes(payment.status) ? 'PAID' : null;
+    }
+
+    const state = this.stateForTerminalEvent(eventName);
+    if (!state || !TERMINAL_STATUS_BY_EVENT[eventName]?.includes(payment.status)) return null;
+    return state;
+  }
+
+  private stateForTerminalEvent(eventName: string): InternalBillingState | null {
     if (eventName === 'PAYMENT_REFUNDED') return 'REFUNDED';
     if (eventName === 'PAYMENT_CHARGEBACK_REQUESTED') return 'CHARGEBACK';
     if (eventName === 'PAYMENT_OVERDUE') return 'OVERDUE';
     if (eventName === 'PAYMENT_DELETED') return 'CANCELED';
     if (eventName === 'PAYMENT_RESTORED') return 'RESTORED';
-    if (payment.status === 'RECEIVED' || payment.status === 'CONFIRMED') return 'PAID';
     return null;
   }
 
