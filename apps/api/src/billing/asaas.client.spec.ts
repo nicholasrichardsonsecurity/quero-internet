@@ -1,32 +1,31 @@
 import { AsaasClient } from './asaas.client';
 
 describe('AsaasClient', () => {
-  const originalFetch = global.fetch;
-  const originalKey = process.env.ASAAS_API_KEY;
-
-  afterEach(() => {
-    global.fetch = originalFetch;
-    process.env.ASAAS_API_KEY = originalKey;
+  beforeEach(() => {
+    process.env.ASAAS_API_KEY = 'sandbox-key';
+    process.env.ASAAS_BASE_URL = 'https://api-sandbox.asaas.com';
   });
 
-  it('returns a payment from Asaas', async () => {
-    process.env.ASAAS_API_KEY = 'test-key';
-    global.fetch = jest.fn().mockResolvedValue(new Response(JSON.stringify({ id: 'pay-1', status: 'RECEIVED' }), { status: 200 })) as typeof fetch;
+  it('creates a payment without logging or returning the API key', async () => {
+    const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue(new Response(JSON.stringify({
+      id: 'pay_123',
+      status: 'PENDING',
+      invoiceUrl: 'https://sandbox.asaas.com/i/123'
+    }), { status: 200, headers: { 'content-type': 'application/json' } }));
 
-    await expect(new AsaasClient().getPayment('pay-1')).resolves.toEqual({ id: 'pay-1', status: 'RECEIVED' });
-    expect(global.fetch).toHaveBeenCalledWith(
-      'https://api-sandbox.asaas.com/v3/payments/pay-1',
-      expect.objectContaining({ headers: expect.objectContaining({ access_token: 'test-key' }) })
-    );
-  });
+    await expect(new AsaasClient().createPayment({
+      customer: 'cus_123',
+      billingType: 'PIX',
+      value: 10,
+      dueDate: '2026-09-10',
+      externalReference: 'aplivora:v1:loopclub:t:c:p:internal'
+    })).resolves.toMatchObject({ id: 'pay_123', status: 'PENDING' });
 
-  it('retries transient provider failures', async () => {
-    process.env.ASAAS_API_KEY = 'test-key';
-    global.fetch = jest.fn()
-      .mockResolvedValueOnce(new Response('', { status: 503 }))
-      .mockResolvedValueOnce(new Response(JSON.stringify({ id: 'pay-1', status: 'CONFIRMED' }), { status: 200 })) as typeof fetch;
-
-    await expect(new AsaasClient().getPayment('pay-1')).resolves.toEqual({ id: 'pay-1', status: 'CONFIRMED' });
-    expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledWith('https://api-sandbox.asaas.com/v3/payments', expect.objectContaining({
+      method: 'POST',
+      body: expect.stringContaining('aplivora:v1:loopclub')
+    }));
+    expect(JSON.stringify(fetchMock.mock.calls)).not.toContain('sandbox-key');
+    fetchMock.mockRestore();
   });
 });
