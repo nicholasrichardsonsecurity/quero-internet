@@ -55,13 +55,19 @@ describe('BillingService', () => {
     expect((prisma as { $transaction: jest.Mock }).$transaction).not.toHaveBeenCalled();
   });
 
-  it('rejects invalid credentials and malformed references', async () => {
-    const { billing } = service();
+  it('rejects invalid credentials but acknowledges unrelated events', async () => {
+    const { billing, prisma } = service();
     await expect(billing.receiveAsaasWebhook('wrong', event)).rejects.toThrow('não autorizado');
+
     await expect(billing.receiveAsaasWebhook('sandbox-secret', {
       ...event,
       payment: { ...event.payment, externalReference: 'invalid' }
-    })).rejects.toThrow('externalReference incompatível');
+    })).resolves.toMatchObject({
+      status: 'accepted',
+      processing: 'ignored',
+      reason: 'unrelated_event'
+    });
+    expect((prisma as { $transaction: jest.Mock }).$transaction).not.toHaveBeenCalled();
   });
 
   it('creates an idempotent central charge with the product reference', async () => {
