@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AsaasClient, type AsaasPayment } from './asaas.client';
 import { InternalBillingService } from './internal-billing.service';
 import { PrismaService } from '../database/prisma.service';
+import { ObservabilityService } from '../observability/observability.service';
 import type { InternalBillingState } from './internal-billing.types';
 
 type ReconciliationResult = { processed: number; delivered: number; retried: number };
@@ -19,7 +20,8 @@ export class BillingReconciliationService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly asaas: AsaasClient,
-    private readonly internalBilling: InternalBillingService
+    private readonly internalBilling: InternalBillingService,
+    private readonly observability: ObservabilityService
   ) {}
 
   async runOnce(limit = 25): Promise<ReconciliationResult> {
@@ -69,6 +71,7 @@ export class BillingReconciliationService {
         result.retried += 1;
       }
     }
+    this.observability.observeReconciliation(result);
     return result;
   }
 
