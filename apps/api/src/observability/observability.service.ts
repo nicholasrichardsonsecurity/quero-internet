@@ -1,6 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
-type MetricKey = 'requests_total' | 'requests_failed' | 'request_duration_ms_total';
+type MetricKey =
+  | 'requests_total'
+  | 'requests_failed'
+  | 'request_duration_ms_total'
+  | 'billing_reconciliation_processed_total'
+  | 'billing_reconciliation_delivered_total'
+  | 'billing_reconciliation_retried_total';
+
+type ReconciliationSummary = { processed: number; delivered: number; retried: number };
 
 @Injectable()
 export class ObservabilityService {
@@ -8,7 +16,10 @@ export class ObservabilityService {
   private readonly counters: Record<MetricKey, number> = {
     requests_total: 0,
     requests_failed: 0,
-    request_duration_ms_total: 0
+    request_duration_ms_total: 0,
+    billing_reconciliation_processed_total: 0,
+    billing_reconciliation_delivered_total: 0,
+    billing_reconciliation_retried_total: 0
   };
   private readonly statusCounts = new Map<string, number>();
 
@@ -18,6 +29,12 @@ export class ObservabilityService {
     if (statusCode >= 500) this.counters.requests_failed += 1;
     const statusClass = `${Math.floor(statusCode / 100)}xx`;
     this.statusCounts.set(statusClass, (this.statusCounts.get(statusClass) ?? 0) + 1);
+  }
+
+  observeReconciliation(summary: ReconciliationSummary) {
+    this.counters.billing_reconciliation_processed_total += summary.processed;
+    this.counters.billing_reconciliation_delivered_total += summary.delivered;
+    this.counters.billing_reconciliation_retried_total += summary.retried;
   }
 
   snapshot() {
