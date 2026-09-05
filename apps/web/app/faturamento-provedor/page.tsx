@@ -1,8 +1,9 @@
 'use client';
 
 import { FormEvent, useEffect, useState } from 'react';
-import { ArrowLeft, FileText, Loader2, RefreshCcw, Send, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, FileText, Loader2, LogOut, RefreshCcw, Send, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import './billing.css';
 
 type Measurement = {
@@ -21,6 +22,7 @@ function money(value: string) { return new Intl.NumberFormat('pt-BR', { style: '
 function date(value?: string | null) { return value ? new Intl.DateTimeFormat('pt-BR').format(new Date(value)) : '—'; }
 
 export default function ProviderBillingPage() {
+  const router = useRouter();
   const [items, setItems] = useState<Measurement[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
@@ -36,6 +38,8 @@ export default function ProviderBillingPage() {
   }
 
   useEffect(() => { void load(); }, []);
+
+  async function logout() { await fetch('/api/auth/logout', { method: 'POST' }).catch(() => undefined); router.replace('/login'); router.refresh(); }
 
   async function submit(id: string) {
     setBusy(id); setMessage(null);
@@ -66,7 +70,7 @@ export default function ProviderBillingPage() {
   }
 
   return <main className="billing-page">
-    <div className="billing-top"><Link href="/" className="billing-back"><ArrowLeft size={16}/> Visão geral</Link><button className="billing-refresh" onClick={() => void load()}><RefreshCcw size={15}/> Atualizar</button></div>
+    <div className="billing-top"><Link href="/" className="billing-back"><ArrowLeft size={16}/> Visão geral</Link><div className="billing-actions"><button className="billing-refresh" onClick={() => void load()}><RefreshCcw size={15}/> Atualizar</button><button className="billing-logout" onClick={() => void logout()}><LogOut size={15}/> Sair</button></div></div>
     <section className="billing-hero"><div><span className="eyebrow">FATURAMENTO OPERACIONAL • PROVEDOR</span><h1>Medições e notas fiscais</h1><p>Registre o serviço prestado e acompanhe a aprovação municipal. O pagamento continua sendo feito diretamente pela prefeitura ao provedor.</p></div><ShieldCheck size={42}/></section>
     {message ? <div className="billing-message" role="status">{message}</div> : null}
     {loading ? <div className="billing-empty"><Loader2 className="spin" size={20}/> Carregando dados reais...</div> : items.length === 0 ? <div className="billing-empty">Nenhuma medição encontrada no contexto autorizado.</div> : <section className="billing-list">
