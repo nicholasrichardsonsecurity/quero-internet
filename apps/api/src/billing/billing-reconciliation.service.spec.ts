@@ -1,7 +1,7 @@
 import { BillingReconciliationService } from './billing-reconciliation.service';
 
 describe('BillingReconciliationService', () => {
-  const event = {
+  const baseEvent = {
     id: 'row-1',
     eventId: 'evt-1',
     eventName: 'PAYMENT_CONFIRMED',
@@ -14,7 +14,8 @@ describe('BillingReconciliationService', () => {
     receivedAt: new Date('2026-01-01T00:00:00.000Z')
   };
 
-  function createService(payment = { id: 'pay-1', status: 'CONFIRMED' }) {
+  function createService(payment = { id: 'pay-1', status: 'CONFIRMED' }, eventName = 'PAYMENT_CONFIRMED') {
+    const event = { ...baseEvent, eventName };
     const prisma = {
       billingWebhookEvent: {
         findMany: jest.fn().mockResolvedValue([event]),
@@ -38,6 +39,18 @@ describe('BillingReconciliationService', () => {
     await expect(service.runOnce()).resolves.toEqual({ processed: 1, delivered: 1, retried: 0 });
     expect(asaas.getPayment).toHaveBeenCalledWith('pay-1');
     expect(internalBilling.receive).toHaveBeenCalledWith('evt-1', 'internal-test-token', expect.objectContaining({ state: 'PAID' }));
+  });
+
+  it('requires Asaas confirmation for terminal events', async () => {
+    const { service, internalBilling } = createService({ id: 'pay-1', status: 'CONFIRMED' }, 'PAYMENT_REFUNDED');
+    await expect(service.runOnce()).resolves.toEqual({ processed: 1, delivered: 0, retried: 1 });
+    expect(internalBilling.receive).not.toHaveBeenCalled();
+  });
+
+  it('delivers a refund only when Asaas confirms it', async () => {
+    const { service, internalBilling } = createService({ id: 'pay-1', status: 'REFUNDED' }, 'PAYMENT_REFUNDED');
+    await expect(service.runOnce()).resolves.toEqual({ processed: 1, delivered: 1, retried: 0 });
+    expect(internalBilling.receive).toHaveBeenCalledWith('evt-1', 'internal-test-token', expect.objectContaining({ state: 'REFUNDED' }));
   });
 
   it('defers a payment that is not yet reconciliable', async () => {
