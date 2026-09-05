@@ -21,7 +21,7 @@ export class BillingService {
     if(existing) return {status:'accepted',eventId,paymentId,duplicate:true,processing:'recorded_for_reconciliation'};
     try {
       await this.prisma.$transaction(async(tx)=>{
-        await tx.billingWebhookEvent.create({data:{eventId,eventName:event,paymentId,paymentStatus,productKey:reference.productKey,tenantId:reference.tenantId,companyId:reference.companyId,planId:reference.planId,externalReference:externalReference as string,environment:this.environment(),payloadHash,payload:JSON.stringify(payload),processingStatus:this.normalizePaymentState(event,paymentStatus),receivedAt:new Date()}});
+        await tx.billingWebhookEvent.create({data:{eventId,eventName:event,paymentId,paymentStatus,productKey:reference.productKey,tenantId:reference.tenantId,companyId:reference.companyId,planId:reference.planId,externalReference:externalReference as string,environment:this.environment(),payloadHash,payload:JSON.stringify(payload),processingStatus:'PENDING_RECONCILIATION',receivedAt:new Date()}});
         await tx.billingAuditEntry.create({data:{eventId,action:'ASAAS_WEBHOOK_RECORDED',productKey:reference.productKey,tenantId:reference.tenantId,companyId:reference.companyId,planId:reference.planId,paymentId,environment:this.environment(),payloadHash}});
         await tx.billingDelivery.create({data:{eventId,productKey:reference.productKey,status:'PENDING',availableAt:new Date()}});
       });

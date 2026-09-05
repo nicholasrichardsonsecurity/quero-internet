@@ -42,3 +42,9 @@ A política de retry considera timeout, HTTP 429 e HTTP 5xx como transitórios, 
 ## Adaptadores de produto
 
 Quero Internet e LoopClub permanecem sistemas independentes. O Hub entrega eventos por uma allowlist de `productKey`, usando URL e token distintos por produto e ambiente. Nenhum banco ou sessão é compartilhado.
+
+## Receptor interno do Quero Internet
+
+O endpoint `POST /internal/billing/events` não é o webhook do Asaas. Ele exige `BILLING_INTERNAL_TOKEN`, o cabeçalho `x-billing-event-id`, o `productKey` `quero-internet` e o ambiente correto.
+
+O webhook público sempre grava o evento como `PENDING_RECONCILIATION`. O receptor interno rejeita esse estado. Somente após consulta bem-sucedida ao Asaas o worker poderá promover o evento e entregá-lo ao produto. Eventos já entregues retornam confirmação idempotente.
