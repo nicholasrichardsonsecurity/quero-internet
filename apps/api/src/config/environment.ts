@@ -11,6 +11,10 @@ const environmentSchema = z.object({
   S3_BUCKET: z.string().min(1),
   S3_ACCESS_KEY: z.string().min(1),
   S3_SECRET_KEY: z.string().min(1),
+  ASAAS_API_KEY: z.string().min(1).optional(),
+  ASAAS_BASE_URL: z.string().url().default('https://api-sandbox.asaas.com'),
+  ASAAS_WEBHOOK_TOKEN: z.string().min(1).optional(),
+  BILLING_INTERNAL_TOKEN: z.string().min(1).optional(),
   LOG_LEVEL: z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal']).default('info'),
   CORRELATION_HEADER: z.string().min(1).default('x-correlation-id')
 });
