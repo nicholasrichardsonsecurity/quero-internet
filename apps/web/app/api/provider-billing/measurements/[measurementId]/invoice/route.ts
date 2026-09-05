@@ -1,4 +1,4 @@
-import { proxyApi } from '../../../../../../../../lib/proxy-api';
+import { proxyApi } from '../../../../../../lib/proxy-api';
 
 export async function GET(
   _request: Request,
