@@ -16,6 +16,8 @@ const providerId = '00000000-0000-4000-8000-000000000003';
 const userId = '00000000-0000-4000-8000-000000000004';
 const programId = '00000000-0000-4000-8000-000000000005';
 const membershipId = '00000000-0000-4000-8000-000000000006';
+const providerUserId = '00000000-0000-4000-8000-000000000007';
+const providerMembershipId = '00000000-0000-4000-8000-000000000008';
 const salt = randomBytes(16).toString('hex');
 const passwordHash = `scrypt$${salt}$${scryptSync(password, salt, 64).toString('hex')}`;
 const prisma = new PrismaClient();
@@ -62,8 +64,26 @@ async function main() {
       update: { userId, organizationId: municipalityId, role: 'MUNICIPAL_MANAGER', status: 'ACTIVE' },
       create: { id: membershipId, userId, organizationId: municipalityId, role: 'MUNICIPAL_MANAGER', status: 'ACTIVE' }
     });
+    await tx.user.upsert({
+      where: { id: providerUserId },
+      update: { email: 'provedor@homolog.example.invalid', displayName: 'Provedor Sintético', passwordHash, active: true },
+      create: { id: providerUserId, email: 'provedor@homolog.example.invalid', displayName: 'Provedor Sintético', passwordHash, active: true }
+    });
+    await tx.membership.upsert({
+      where: { id: providerMembershipId },
+      update: { userId: providerUserId, organizationId: providerId, role: 'PROVIDER_MANAGER', status: 'ACTIVE' },
+      create: { id: providerMembershipId, userId: providerUserId, organizationId: providerId, role: 'PROVIDER_MANAGER', status: 'ACTIVE' }
+    });
   });
-  console.log(JSON.stringify({ status: 'seeded', tenantId, municipalityId, providerId, programId, loginEmail: 'gestor@homolog.example.invalid' }));
+  console.log(JSON.stringify({
+    status: 'seeded',
+    tenantId,
+    municipalityId,
+    providerId,
+    programId,
+    loginEmail: 'gestor@homolog.example.invalid',
+    providerLoginEmail: 'provedor@homolog.example.invalid'
+  }));
 }
 
 main().catch((error) => { console.error('seed-homolog failed', error); process.exitCode = 1; }).finally(() => prisma.$disconnect());
