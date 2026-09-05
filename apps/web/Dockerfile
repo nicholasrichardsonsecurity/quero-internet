@@ -6,9 +6,13 @@ RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 COPY apps/web/package.json apps/web/package.json
 COPY packages packages
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --prod=false
 
 COPY apps/web apps/web
+# Reify the filtered workspace explicitly; this prevents a partial root install
+# from leaving apps/web/node_modules without the Next.js executable.
+RUN pnpm --filter @quero-internet/web... install --frozen-lockfile --prod=false
+RUN test -f apps/web/node_modules/next/dist/bin/next
 RUN pnpm --filter @quero-internet/web build
 
 FROM node:22-bookworm-slim AS runtime
