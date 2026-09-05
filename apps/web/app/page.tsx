@@ -37,6 +37,8 @@ const navItems = [
   { label: 'Cadastros', icon: FileText, href: '/cadastros', section: 'cadastros' },
   { label: 'Programas', icon: Gauge, href: '/programas', section: 'programas' },
   { label: 'Provedores', icon: Building2, href: '/provedores', section: 'provedores' },
+  { label: 'Faturamento municipal', icon: FileText, href: '/faturamento-municipal', section: 'faturamento-municipal' },
+  { label: 'Faturamento provedor', icon: FileText, href: '/faturamento-provedor', section: 'faturamento-provedor' },
   { label: 'Cobertura', icon: MapPinned, href: '/cobertura', section: 'cobertura' },
   { label: 'Relatórios', icon: FileBarChart, href: '/relatorios', section: 'relatorios' },
   { label: 'Integrações', icon: Network, href: '/integracoes', section: 'integracoes' },
