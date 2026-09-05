@@ -298,7 +298,7 @@ pnpm dev
 
 ## Licença
 
-Software proprietário. Ver [`LICENSE.md`](LICENSE.md).
+Software proprietário. A licença jurídica principal está no arquivo raiz [`LICENSE`](LICENSE).
 
 Nenhum direito é concedido para copiar, distribuir, sublicenciar, revender, hospedar, modificar ou explorar comercialmente este projeto sem autorização expressa e formal do titular.
 
