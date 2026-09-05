@@ -1,6 +1,7 @@
 import { BillingReconciliationService } from './billing-reconciliation.service';
 
 describe('BillingReconciliationService', () => {
+  type Dependencies = ConstructorParameters<typeof BillingReconciliationService>;
   const baseEvent = {
     id: 'row-1',
     eventId: 'evt-1',
@@ -23,10 +24,10 @@ describe('BillingReconciliationService', () => {
         update: jest.fn().mockResolvedValue(event),
         findUnique: jest.fn().mockResolvedValue({ reconcileAttempts: 1 })
       }
-    } as never;
-    const asaas = { getPayment: jest.fn().mockResolvedValue(payment) } as never;
-    const internalBilling = { receive: jest.fn().mockResolvedValue({ status: 'accepted', duplicate: false }) } as never;
-    const observability = { observeReconciliation: jest.fn() } as never;
+    } as unknown as Dependencies[0];
+    const asaas = { getPayment: jest.fn().mockResolvedValue(payment) } as unknown as Dependencies[1];
+    const internalBilling = { receive: jest.fn().mockResolvedValue({ status: 'accepted', duplicate: false }) } as unknown as Dependencies[2];
+    const observability = { observeReconciliation: jest.fn() } as unknown as Dependencies[3];
     return { service: new BillingReconciliationService(prisma, asaas, internalBilling, observability), prisma, asaas, internalBilling, observability };
   }
 
