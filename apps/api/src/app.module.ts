@@ -9,9 +9,21 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { ObservabilityModule } from './observability/observability.module';
 import { DatabaseModule } from './database/database.module';
 import { HealthController } from './health/health.controller';
+import { MunicipalBillingModule } from './municipal-billing/municipal-billing.module';
 
 @Module({
-  imports: [DatabaseModule, BillingModule, AuthModule, BeneficiariesModule, DashboardModule, DocumentsModule, IntegrationsModule, NotificationsModule, ObservabilityModule],
+  imports: [
+    DatabaseModule,
+    BillingModule,
+    MunicipalBillingModule,
+    AuthModule,
+    BeneficiariesModule,
+    DashboardModule,
+    DocumentsModule,
+    IntegrationsModule,
+    NotificationsModule,
+    ObservabilityModule
+  ],
   controllers: [HealthController]
 })
 export class AppModule {}
