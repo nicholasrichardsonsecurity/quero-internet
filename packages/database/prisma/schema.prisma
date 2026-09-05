@@ -641,3 +641,106 @@ model BillingPayment {
   @@index([providerPaymentId, createdAt])
   @@index([status, createdAt])
 }
+
+
+model MunicipalContract {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  municipalityOrganizationId String @db.Uuid
+  programId String @db.Uuid
+  contractNumber String
+  title String
+  status String @default("DRAFT")
+  startsAt DateTime
+  endsAt DateTime?
+  monthlySaaSValue Decimal @db.Decimal(12, 2)
+  billingCustomerId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([tenantId, contractNumber])
+  @@index([municipalityOrganizationId, status])
+  @@index([programId, status])
+}
+
+model MunicipalBillingPeriod {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  contractId String @db.Uuid
+  competenceStart DateTime
+  competenceEnd DateTime
+  dueDate DateTime
+  amount Decimal @db.Decimal(12, 2)
+  status String @default("OPEN")
+  billingPaymentId String?
+  invoiceNumber String?
+  invoiceUrl String?
+  paidAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([contractId, competenceStart, competenceEnd])
+  @@index([tenantId, status, dueDate])
+  @@index([contractId, competenceStart])
+}
+
+model ProviderServiceMeasurement {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  municipalityOrganizationId String @db.Uuid
+  providerOrganizationId String @db.Uuid
+  programId String @db.Uuid
+  competenceStart DateTime
+  competenceEnd DateTime
+  status String @default("DRAFT")
+  beneficiaryCount Int @default(0)
+  activeServiceCount Int @default(0)
+  totalAmount Decimal @db.Decimal(12, 2)
+  submittedAt DateTime?
+  approvedAt DateTime?
+  rejectedAt DateTime?
+  rejectionReason String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([providerOrganizationId, programId, competenceStart, competenceEnd])
+  @@index([municipalityOrganizationId, status, competenceStart])
+  @@index([providerOrganizationId, status, competenceStart])
+}
+
+model ProviderInvoice {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  measurementId String @unique @db.Uuid
+  municipalityOrganizationId String @db.Uuid
+  providerOrganizationId String @db.Uuid
+  invoiceNumber String
+  issueDate DateTime
+  dueDate DateTime?
+  amount Decimal @db.Decimal(12, 2)
+  documentUrl String?
+  paymentUrl String?
+  externalReference String?
+  status String @default("REGISTERED")
+  paidAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([providerOrganizationId, invoiceNumber])
+  @@index([municipalityOrganizationId, status, dueDate])
+  @@index([providerOrganizationId, status, issueDate])
+}
+
+model InstallationVoucher {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @db.Uuid
+  programId String @db.Uuid
+  applicationId String @unique @db.Uuid
+  providerOrganizationId String @db.Uuid
+  codeHash String @unique
+  status String @default("ISSUED")
+  issuedAt DateTime @default(now())
+  expiresAt DateTime
+  redeemedAt DateTime?
+  canceledAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([tenantId, status, expiresAt])
+  @@index([providerOrganizationId, status, issuedAt])
+}
