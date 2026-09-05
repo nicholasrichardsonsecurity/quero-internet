@@ -6,10 +6,11 @@ import { isBillingEventName, isBillingProductKey, parseBillingReference, type As
 
 type AcceptedWebhook = {
   status: 'accepted';
-  eventId: string;
-  paymentId: string;
-  duplicate: boolean;
-  processing: 'recorded_for_reconciliation';
+  eventId?: string;
+  paymentId?: string;
+  duplicate?: boolean;
+  processing: 'recorded_for_reconciliation' | 'ignored';
+  reason?: 'unrelated_event';
 };
 
 export type CreateChargeInput = {
@@ -112,8 +113,13 @@ export class BillingService {
     const paymentStatus = this.stringValue(payload.payment?.status);
     const externalReference = payload.payment?.externalReference;
     const reference = parseBillingReference(externalReference);
+    // O webhook é compartilhado por todo o ecossistema Aplivora. Depois de
+    // autenticar o remetente, eventos de outros produtos, eventos não
+    // utilizados ou payloads sem referência do Hub devem ser confirmados sem
+    // persistência. Retornar 4xx faria o Asaas repetir indefinidamente e
+    // penalizar a configuração do webhook.
     if (!eventId || !isBillingEventName(event) || !paymentId || !reference) {
-      throw new BadRequestException('Payload Asaas inválido ou externalReference incompatível.');
+      return { status: 'accepted', processing: 'ignored', reason: 'unrelated_event', ...(eventId ? { eventId } : {}), ...(paymentId ? { paymentId } : {}) };
     }
     const payloadHash = createHash('sha256').update(JSON.stringify(payload)).digest('hex');
     const existing = await this.prisma.billingWebhookEvent.findUnique({ where: { eventId } });
