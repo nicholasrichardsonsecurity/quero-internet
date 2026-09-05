@@ -59,6 +59,49 @@ jobs:
             exit 1
           done
 
+  license-policy:
+    name: Production license policy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+      - run: pnpm install --frozen-lockfile=false
+      - name: Generate production dependency license inventory
+        run: pnpm dlx license-checker-rseidelsohn --production --excludePrivatePackages --json > third-party-license-report.json
+      - name: Reject unapproved copyleft licenses
+        shell: node {0}
+        run: |
+          const fs = require('node:fs');
+          const report = JSON.parse(fs.readFileSync('third-party-license-report.json', 'utf8'));
+          const blocked = [];
+          const pattern = /AGPL|GPL(?:-|\b)|SSPL|BUSINESS SOURCE|BSL|COMMONS CLAUSE/i;
+
+          for (const [packageName, metadata] of Object.entries(report)) {
+            const licenses = Array.isArray(metadata.licenses) ? metadata.licenses.join(', ') : String(metadata.licenses ?? '');
+            if (pattern.test(licenses)) {
+              blocked.push(`${packageName}: ${licenses}`);
+            }
+          }
+
+          if (blocked.length > 0) {
+            console.error('Dependências com licenças copyleft não aprovadas:');
+            console.error(blocked.join('\\n'));
+            process.exit(1);
+          }
+
+          console.log(`Política de licenças aprovada para ${Object.keys(report).length} dependências de produção.`);
+      - name: Upload license inventory
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-license-inventory
+          path: third-party-license-report.json
+
   sast:
     name: SAST and secret patterns
     runs-on: ubuntu-latest
