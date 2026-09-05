@@ -23,3 +23,12 @@ export function normalizedPaymentState(eventName: string, providerStatus?: strin
   if (providerStatus === 'RECEIVED' || providerStatus === 'CONFIRMED') return 'PAID';
   return 'PENDING_RECONCILIATION';
 }
+
+export const DEFAULT_RECONCILIATION_INTERVAL_MS = 60_000;
+export const MIN_RECONCILIATION_INTERVAL_MS = 10_000;
+
+export function reconciliationInterval(value: string | undefined): number {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return DEFAULT_RECONCILIATION_INTERVAL_MS;
+  return Math.max(MIN_RECONCILIATION_INTERVAL_MS, Math.floor(parsed));
+}
