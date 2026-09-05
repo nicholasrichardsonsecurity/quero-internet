@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, CheckCircle2, Loader2, RefreshCcw, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
-import './billing.css';
+import '../faturamento-provedor/billing.css';
 
 type Measurement = { id:string; competenceStart:string; competenceEnd:string; status:string; beneficiaryCount:number; activeServiceCount:number; totalAmount:string; submittedAt?:string|null; approvedAt?:string|null };
 function money(value:string){return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(value));}
