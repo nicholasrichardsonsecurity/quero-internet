@@ -26,7 +26,8 @@ describe('BillingReconciliationService', () => {
     } as never;
     const asaas = { getPayment: jest.fn().mockResolvedValue(payment) } as never;
     const internalBilling = { receive: jest.fn().mockResolvedValue({ status: 'accepted', duplicate: false }) } as never;
-    return { service: new BillingReconciliationService(prisma, asaas, internalBilling), prisma, asaas, internalBilling };
+    const observability = { observeReconciliation: jest.fn() } as never;
+    return { service: new BillingReconciliationService(prisma, asaas, internalBilling, observability), prisma, asaas, internalBilling, observability };
   }
 
   beforeEach(() => {
@@ -35,10 +36,11 @@ describe('BillingReconciliationService', () => {
   });
 
   it('reconciles and delivers a confirmed payment', async () => {
-    const { service, asaas, internalBilling } = createService();
+    const { service, asaas, internalBilling, observability } = createService();
     await expect(service.runOnce()).resolves.toEqual({ processed: 1, delivered: 1, retried: 0 });
     expect(asaas.getPayment).toHaveBeenCalledWith('pay-1');
     expect(internalBilling.receive).toHaveBeenCalledWith('evt-1', 'internal-test-token', expect.objectContaining({ state: 'PAID' }));
+    expect(observability.observeReconciliation).toHaveBeenCalledWith({ processed: 1, delivered: 1, retried: 0 });
   });
 
   it('requires Asaas confirmation for terminal events', async () => {
