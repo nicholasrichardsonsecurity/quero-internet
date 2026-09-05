@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { INTERNAL_BILLING_STATES, type InternalBillingEvent, type InternalBillingState } from './internal-billing.types';
+import { isBillingProductKey } from './billing.types';
 
 @Injectable()
 export class InternalBillingService {
@@ -15,7 +16,7 @@ export class InternalBillingService {
     const paymentId = this.value(input.paymentId);
     const state = input.state;
     const environment = this.value(input.environment);
-    if (!eventId || eventIdHeader !== eventId || productKey !== 'quero-internet' || !paymentId ||
+    if (!eventId || eventIdHeader !== eventId || !isBillingProductKey(productKey) || !paymentId ||
         !this.isState(state) || environment !== this.environment()) {
       throw new BadRequestException('Evento interno de billing inválido.');
     }
