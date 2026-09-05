@@ -17,13 +17,13 @@ describe('InternalBillingService', () => {
     process.env.NODE_ENV = 'test';
   });
 
-  function createService(deliveryStatus = 'PENDING') {
+  function createService(deliveryStatus = 'PENDING', productKey = source.productKey) {
     const tx = {
       billingDelivery: { updateMany: jest.fn().mockResolvedValue({ count: 1 }) },
       billingAuditEntry: { create: jest.fn() }
     };
     const prisma = {
-      billingWebhookEvent: { findUnique: jest.fn().mockResolvedValue(source) },
+      billingWebhookEvent: { findUnique: jest.fn().mockResolvedValue({ ...source, productKey }) },
       billingDelivery: { findUnique: jest.fn().mockResolvedValue({ eventId: 'evt-1', status: deliveryStatus }) },
       $transaction: jest.fn((fn: (client: unknown) => Promise<unknown>) => fn(tx))
     } as never;
@@ -48,5 +48,13 @@ describe('InternalBillingService', () => {
     })).resolves.toMatchObject({ duplicate: true });
     expect((prisma as { $transaction: jest.Mock }).$transaction).toHaveBeenCalled();
     expect(tx.billingAuditEntry.create).not.toHaveBeenCalled();
+  });
+
+  it('accepts a reconciled event from another Aplivora product', async () => {
+    const { service, tx } = createService('PENDING', 'loopclub');
+    await expect(service.receive('evt-1', 'internal-test-token', {
+      eventId: 'evt-1', productKey: 'loopclub', paymentId: 'pay-1', state: 'PAID', environment: 'sandbox'
+    })).resolves.toMatchObject({ duplicate: false });
+    expect(tx.billingDelivery.updateMany).toHaveBeenCalled();
   });
 });
