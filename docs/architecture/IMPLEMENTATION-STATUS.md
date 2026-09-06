@@ -124,3 +124,29 @@ Programa municipal ativo
 3. **Gate 1.13 — Notificações transacionais:** base governada implementada inicialmente; conexão com fornecedor e envio real permanecem pendentes.
 4. **Gate 1.14 — Observabilidade operacional:** baseline implementado inicialmente; retenção centralizada, OpenTelemetry e alertas persistentes permanecem pendentes.
 5. **Gate de piloto:** segurança, privacidade, backup/restore, observabilidade, acessibilidade e operação — em avaliação, não aprovado.
+
+
+## Atualização de estado — 2026-09-05
+
+| Bloco | Estado | Evidência / pendência |
+|---|---|---|
+| Contrato municipal SaaS | Implementado inicialmente | Contrato e período de competência criados e consultados em homologação. Cobrança Asaas real ainda pendente. |
+| Medição do provedor | Implementado inicialmente | Fluxo DRAFT → SUBMITTED → APPROVED validado com RBAC municipal/provedor. |
+| NF própria do provedor | Implementado inicialmente | Registro e consulta da NF validados; recebimento permanece fora da Aplivora. |
+| Separação financeira | Decisão consolidada | Aplivora cobra somente o SaaS; provedor cobra diretamente seu serviço. |
+| Dashboards municipal/provedor | Implementado inicialmente | Painéis conectados a dados reais e personas distintas. |
+| Logout dos painéis | Implementado no código | Mergeado em main; precisa validação no container web publicado. |
+| Deploy web homologação | Pendente de evidência final | Container manual, compose sem serviço web e lockfile não versionado exigem runbook específico. |
+
+### Regra de evidência do frontend
+
+Código mergeado não equivale a frontend publicado. O item “Dashboards e faturamento web” somente pode avançar para “validado em homologação” quando as rotas públicas exibirem as páginas dedicadas, o botão `Sair` funcionar e o logout redirecionar para `/login`. A mensagem “Módulo não encontrado” deve ser tratada como falha de imagem/deploy até prova em contrário.
+
+### Ordem de execução recomendada
+
+1. corrigir e validar a imagem web;
+2. validar logout nos dois perfis;
+3. integrar o período municipal à cobrança Aplivora;
+4. adicionar tela de cobrança e reconciliação;
+5. executar E2E completo município → provedor → NF;
+6. executar o gate de piloto controlado.

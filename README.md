@@ -91,6 +91,7 @@ Documentos centrais:
 
 - [`docs/architecture/FOUNDATION.md`](docs/architecture/FOUNDATION.md)
 - [`docs/architecture/IMPLEMENTATION-STATUS.md`](docs/architecture/IMPLEMENTATION-STATUS.md)
+- [`docs/architecture/PRODUCT-STATE-2026-09-05.md`](docs/architecture/PRODUCT-STATE-2026-09-05.md)
 - [`docs/architecture/BENEFICIARIES-APPLICATIONS.md`](docs/architecture/BENEFICIARIES-APPLICATIONS.md)
 - [`docs/missions/1.5-installation-activation.md`](docs/missions/1.5-installation-activation.md)
 - [`docs/missions/1.6-service-lifecycle-monitoring.md`](docs/missions/1.6-service-lifecycle-monitoring.md)
