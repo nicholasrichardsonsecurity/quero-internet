@@ -7,7 +7,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 COPY apps/worker/package.json apps/worker/package.json
 COPY apps/worker apps/worker
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm --filter @quero-internet/worker... install --frozen-lockfile
 RUN pnpm --filter @quero-internet/worker build
 
 FROM node:22-bookworm-slim AS runtime

@@ -1,4 +1,4 @@
-import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, InternalServerErrorException, type ArgumentsHost } from '@nestjs/common';
 import { errorCodeForStatus, safeErrorMessage } from './api-contract';
 import { ApiExceptionFilter } from './api-exception.filter';
 
@@ -44,7 +44,7 @@ describe('api contract', () => {
     const filter = new ApiExceptionFilter();
     const { host, status, json } = createHost('/provider-referrals/abc/service', 'req-123');
 
-    filter.catch(new BadRequestException('Status de serviço inválido.'), host as any);
+    filter.catch(new BadRequestException('Status de serviço inválido.'), host as unknown as ArgumentsHost);
 
     expect(status).toHaveBeenCalledWith(400);
     expect(json).toHaveBeenCalledWith(
@@ -64,7 +64,7 @@ describe('api contract', () => {
     const filter = new ApiExceptionFilter();
     const { host, status, json } = createHost('/health');
 
-    filter.catch(new InternalServerErrorException('internal stack detail'), host as any);
+    filter.catch(new InternalServerErrorException('internal stack detail'), host as unknown as ArgumentsHost);
 
     expect(status).toHaveBeenCalledWith(500);
     expect(json).toHaveBeenCalledWith(

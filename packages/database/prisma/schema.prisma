@@ -744,3 +744,13 @@ model InstallationVoucher {
   @@index([tenantId, status, expiresAt])
   @@index([providerOrganizationId, status, issuedAt])
 }
+
+// Janela de falhas de login por sujeito (hash), usada para atraso progressivo no servidor.
+// Acessada por SQL bruto em apps/api/src/auth/login-throttle.service.ts; o modelo existe
+// para o schema refletir o banco e o `migrate diff` do CI não acusar drift.
+model AuthLoginThrottle {
+  subjectHash String @id
+  failedAttempts Int @default(0)
+  windowStartedAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}

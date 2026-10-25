@@ -25,7 +25,7 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
-      - run: pnpm install --frozen-lockfile=false
+      - run: pnpm install --frozen-lockfile
       - name: Audit production high/critical vulnerabilities
         shell: bash
         run: |
@@ -71,7 +71,7 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
-      - run: pnpm install --frozen-lockfile=false
+      - run: pnpm install --frozen-lockfile
       - name: Generate production dependency license inventory
         run: pnpm dlx license-checker-rseidelsohn --production --excludePrivatePackages --json > third-party-license-report.json
       - name: Reject unapproved copyleft licenses
