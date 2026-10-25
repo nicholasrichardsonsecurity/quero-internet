@@ -88,16 +88,16 @@ describe('ErpAdapterRegistry', () => {
     { provider: 'SGP', organizationId: ORG, baseUrl: 'https://isp.sgp.net.br', token: 'token-sgp-1', app: 'QUERO' }
   ]);
 
-  it('kill switch desligado (padrão) mantém tudo simulado', () => {
+  it('kill switch desligado (padrão) mantém tudo simulado', async () => {
     const registry = ErpAdapterRegistry.fromEnvironment({ ERP_CONNECTIONS_JSON: connections });
-    expect(registry.resolve(ORG, 'IXC').mode).toBe('SIMULATED_READ_ONLY');
+    expect((await registry.resolve(ORG, 'IXC')).mode).toBe('SIMULATED_READ_ONLY');
   });
 
-  it('ligado, usa o adaptador real só para a organização configurada', () => {
+  it('ligado, usa o adaptador real só para a organização configurada', async () => {
     const registry = ErpAdapterRegistry.fromEnvironment({ ERP_REAL_READS_ENABLED: 'true', ERP_CONNECTIONS_JSON: connections });
-    expect(registry.resolve(ORG, 'IXC')).toBeInstanceOf(IxcAdapter);
-    expect(registry.resolve(ORG, 'SGP')).toBeInstanceOf(SgpAdapter);
-    expect(registry.resolve('00000000-0000-4000-8000-000000000000', 'IXC').mode).toBe('SIMULATED_READ_ONLY');
+    expect(await registry.resolve(ORG, 'IXC')).toBeInstanceOf(IxcAdapter);
+    expect(await registry.resolve(ORG, 'SGP')).toBeInstanceOf(SgpAdapter);
+    expect((await registry.resolve('00000000-0000-4000-8000-000000000000', 'IXC')).mode).toBe('SIMULATED_READ_ONLY');
   });
 
   it('recusa URL sem https e não cita valores na mensagem', () => {

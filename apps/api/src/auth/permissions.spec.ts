@@ -111,3 +111,14 @@ describe('RBAC — missão 2.1 (escrita separada de leitura)', () => {
     }
   });
 });
+
+describe('RBAC — credenciais de integração', () => {
+  it('só dono, admin e gestor de provedor cadastram credenciais de ERP', () => {
+    for (const role of ['ORGANIZATION_OWNER', 'ORGANIZATION_ADMIN', 'PROVIDER_MANAGER'] as MembershipRole[]) {
+      expect(hasAllPermissions([role], [PERMISSIONS.INTEGRATION_MANAGE])).toBe(true);
+    }
+    for (const role of ['PROVIDER_OPERATOR', 'MUNICIPAL_MANAGER', 'MUNICIPAL_OPERATOR', 'AUDITOR', 'SUPPORT'] as MembershipRole[]) {
+      expect(hasAllPermissions([role], [PERMISSIONS.INTEGRATION_MANAGE])).toBe(false);
+    }
+  });
+});
