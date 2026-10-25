@@ -80,3 +80,34 @@ describe('RBAC permission matrix', () => {
     expect(hasAllPermissions(roles, [PERMISSIONS.BENEFICIARY_WRITE, PERMISSIONS.AUDIT_READ])).toBe(true);
   });
 });
+
+describe('RBAC — missão 2.1 (escrita separada de leitura)', () => {
+  it('somente gestão municipal e administração decidem elegibilidade', () => {
+    expect(hasAllPermissions(['MUNICIPAL_MANAGER'], [PERMISSIONS.ELIGIBILITY_DECIDE])).toBe(true);
+    expect(hasAllPermissions(['ORGANIZATION_ADMIN'], [PERMISSIONS.ELIGIBILITY_DECIDE])).toBe(true);
+    for (const role of ['MUNICIPAL_OPERATOR', 'PROVIDER_MANAGER', 'PROVIDER_OPERATOR', 'AUDITOR', 'SUPPORT'] as MembershipRole[]) {
+      expect(hasAllPermissions([role], [PERMISSIONS.ELIGIBILITY_DECIDE])).toBe(false);
+    }
+  });
+
+  it('auditor lê documentos e notificações mas não escreve', () => {
+    expect(hasAllPermissions(['AUDITOR'], [PERMISSIONS.DOCUMENT_READ, PERMISSIONS.NOTIFICATION_READ])).toBe(true);
+    expect(hasAllPermissions(['AUDITOR'], [PERMISSIONS.DOCUMENT_WRITE])).toBe(false);
+    expect(hasAllPermissions(['AUDITOR'], [PERMISSIONS.NOTIFICATION_WRITE])).toBe(false);
+  });
+
+  it('sincronizar integração exige permissão própria, não basta ler provedor', () => {
+    expect(hasAllPermissions(['PROVIDER_MANAGER'], [PERMISSIONS.INTEGRATION_SYNC])).toBe(true);
+    for (const role of ['PROVIDER_OPERATOR', 'MUNICIPAL_MANAGER', 'MUNICIPAL_OPERATOR', 'AUDITOR', 'SUPPORT'] as MembershipRole[]) {
+      expect(hasAllPermissions([role], [PERMISSIONS.PROVIDER_READ])).toBe(true);
+      expect(hasAllPermissions([role], [PERMISSIONS.INTEGRATION_SYNC])).toBe(false);
+    }
+  });
+
+  it('nenhuma permissão nova foi concedida a quem antes não tinha audit:read', () => {
+    const nova = [PERMISSIONS.DOCUMENT_READ, PERMISSIONS.DOCUMENT_WRITE, PERMISSIONS.NOTIFICATION_READ, PERMISSIONS.NOTIFICATION_WRITE];
+    for (const role of ['MUNICIPAL_OPERATOR', 'PROVIDER_OPERATOR', 'SUPPORT'] as MembershipRole[]) {
+      for (const p of nova) expect(hasAllPermissions([role], [p])).toBe(false);
+    }
+  });
+});

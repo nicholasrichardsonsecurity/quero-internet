@@ -1,9 +1,11 @@
 import { Body, Controller, Headers, Post, UnauthorizedException } from '@nestjs/common';
+import { PublicRoute } from '../auth/require-permissions.decorator';
 import { BillingReconciliationService } from './billing-reconciliation.service';
 
 type ReconciliationInput = { limit?: unknown };
 
 @Controller('internal/billing')
+@PublicRoute('service-token')
 export class InternalReconciliationController {
   constructor(private readonly reconciliation: BillingReconciliationService) {}
 

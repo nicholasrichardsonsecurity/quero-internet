@@ -1,22 +1,29 @@
-import type { IntegrationAdapter, IntegrationHealth, IntegrationProvider, NormalizedCustomer } from './integration.types';
+import type { ErpServiceObservation, IntegrationAdapter, IntegrationHealth, IntegrationProvider } from './integration.types';
 
-abstract class SimulatedAdapter implements IntegrationAdapter {
-  abstract readonly provider: IntegrationProvider;
+/** Usado quando a leitura real está desligada ou o provedor não tem conexão configurada. */
+export class SimulatedAdapter implements IntegrationAdapter {
+  readonly mode = 'SIMULATED_READ_ONLY' as const;
 
-  health(): IntegrationHealth {
-    return { provider: this.provider, mode: 'SIMULATED_READ_ONLY', writesEnabled: false, status: 'available', checkedAt: new Date().toISOString() };
+  constructor(readonly provider: IntegrationProvider) {}
+
+  async health(): Promise<IntegrationHealth> {
+    return {
+      provider: this.provider,
+      mode: this.mode,
+      writesEnabled: false,
+      status: 'available',
+      message: 'Modo simulado: nenhuma chamada ao ERP.',
+      checkedAt: new Date().toISOString()
+    };
   }
 
-  async listCustomers(tenantId: string): Promise<NormalizedCustomer[]> {
-    return [{
-      externalId: `${this.provider.toLowerCase()}-demo-${tenantId.slice(0, 8)}`,
-      name: `Beneficiário de demonstração ${this.provider}`,
+  async observeServices(externalIds: readonly string[]): Promise<ErpServiceObservation[]> {
+    return externalIds.map((externalId) => ({
+      externalId,
+      found: true,
       planName: this.provider === 'IXC' ? 'Fibra 300' : 'Conecta Cidade 300',
       serviceStatus: 'ACTIVE',
-      activatedAt: '2026-01-15T12:00:00.000Z'
-    }];
+      activatedAt: '2026-01-15'
+    }));
   }
 }
-
-export class SimulatedIxcAdapter extends SimulatedAdapter { readonly provider = 'IXC' as const; }
-export class SimulatedSgpAdapter extends SimulatedAdapter { readonly provider = 'SGP' as const; }

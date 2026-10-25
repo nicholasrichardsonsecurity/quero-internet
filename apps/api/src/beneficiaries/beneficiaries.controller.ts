@@ -1,12 +1,10 @@
-import { Body, Controller, Get, Headers, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Param, Post, Query } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { PERMISSIONS } from '../auth/permissions';
-import { PermissionsGuard } from '../auth/permissions.guard';
 import { RequirePermissions } from '../auth/require-permissions.decorator';
 import { BeneficiariesService } from './beneficiaries.service';
 
 @Controller('beneficiaries')
-@UseGuards(PermissionsGuard)
 export class BeneficiariesController {
   constructor(
     private readonly authService: AuthService,

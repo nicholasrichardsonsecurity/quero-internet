@@ -1,13 +1,11 @@
-import { BadRequestException, Body, Controller, Get, Headers, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Headers, Param, Patch, Post, Query } from '@nestjs/common';
 import { ProviderReferralStatus } from '@prisma/client';
 import { AuthService } from '../auth/auth.service';
 import { PERMISSIONS } from '../auth/permissions';
-import { PermissionsGuard } from '../auth/permissions.guard';
 import { RequirePermissions } from '../auth/require-permissions.decorator';
 import { ReferralsService } from './referrals.service';
 
 @Controller()
-@UseGuards(PermissionsGuard)
 export class ReferralsController {
   constructor(
     private readonly authService: AuthService,

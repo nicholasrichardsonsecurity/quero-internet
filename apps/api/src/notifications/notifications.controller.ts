@@ -1,22 +1,21 @@
-import { Body, Controller, Get, Headers, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Put } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { PERMISSIONS } from '../auth/permissions';
-import { PermissionsGuard } from '../auth/permissions.guard';
 import { RequirePermissions } from '../auth/require-permissions.decorator';
 import { NotificationsService } from './notifications.service';
 
 @Controller('notifications')
-@UseGuards(PermissionsGuard)
-@RequirePermissions(PERMISSIONS.AUDIT_READ)
 export class NotificationsController {
   constructor(private readonly authService: AuthService, private readonly notificationsService: NotificationsService) {}
 
   @Get('templates')
+  @RequirePermissions(PERMISSIONS.NOTIFICATION_READ)
   templates() {
     return this.notificationsService.templates();
   }
 
   @Put('consents')
+  @RequirePermissions(PERMISSIONS.NOTIFICATION_WRITE)
   async consent(
     @Headers('authorization') authorization: string | undefined,
     @Body() body: { tenantId?: string; recipientRef?: string; channel?: string; purpose?: string; granted?: boolean }
@@ -26,6 +25,7 @@ export class NotificationsController {
   }
 
   @Post('dispatch-preview')
+  @RequirePermissions(PERMISSIONS.NOTIFICATION_WRITE)
   async dispatchPreview(
     @Headers('authorization') authorization: string | undefined,
     @Headers('x-idempotency-key') idempotencyKey: string | undefined,

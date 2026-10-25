@@ -1,8 +1,10 @@
 import { Body, Controller, Headers, Post } from '@nestjs/common';
+import { PublicRoute } from '../auth/require-permissions.decorator';
 import { InternalBillingService } from './internal-billing.service';
 import type { InternalBillingEvent } from './internal-billing.types';
 
 @Controller('internal/billing')
+@PublicRoute('service-token')
 export class InternalBillingController {
   constructor(private readonly service: InternalBillingService) {}
 
