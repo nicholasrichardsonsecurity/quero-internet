@@ -2,8 +2,12 @@ import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@
 import { Reflector } from '@nestjs/core';
 import { AuthService } from './auth.service';
 import { hasAllPermissions, type Permission } from './permissions';
-import { REQUIRED_PERMISSIONS_KEY } from './require-permissions.decorator';
+import { PUBLIC_ROUTE_KEY, REQUIRED_PERMISSIONS_KEY } from './require-permissions.decorator';
 
+/**
+ * Guard global (APP_GUARD) e deny-by-default: toda rota precisa declarar
+ * @RequirePermissions(...) ou @PublicRoute(motivo). Rota sem nenhum dos dois é negada.
+ */
 @Injectable()
 export class PermissionsGuard implements CanActivate {
   constructor(
@@ -12,12 +16,13 @@ export class PermissionsGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const required = this.reflector.getAllAndOverride<Permission[]>(REQUIRED_PERMISSIONS_KEY, [
-      context.getHandler(),
-      context.getClass()
-    ]);
+    const targets = [context.getHandler(), context.getClass()];
+    if (this.reflector.getAllAndOverride<string>(PUBLIC_ROUTE_KEY, targets)) return true;
 
-    if (!required || required.length === 0) return true;
+    const required = this.reflector.getAllAndOverride<Permission[]>(REQUIRED_PERMISSIONS_KEY, targets);
+    if (!required || required.length === 0) {
+      throw new ForbiddenException('Rota sem política de autorização declarada.');
+    }
 
     const request = context.switchToHttp().getRequest<{ headers?: { authorization?: string } }>();
     const session = await this.authService.resolveAuthorization(request.headers?.authorization);

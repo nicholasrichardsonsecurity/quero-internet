@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Headers, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Param, Post } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { PERMISSIONS } from '../auth/permissions';
-import { PermissionsGuard } from '../auth/permissions.guard';
 import { RequirePermissions } from '../auth/require-permissions.decorator';
 import { ProviderBillingService } from './provider-billing.service';
 
@@ -28,7 +27,6 @@ type InvoiceBody = {
 };
 
 @Controller('provider-billing')
-@UseGuards(PermissionsGuard)
 export class ProviderBillingController {
   constructor(
     private readonly authService: AuthService,

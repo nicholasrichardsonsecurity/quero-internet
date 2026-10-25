@@ -1,14 +1,12 @@
-import { BadRequestException, Body, Controller, Get, Headers, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Headers, Param, Patch, Query } from '@nestjs/common';
 import { ApplicationStatus } from '@prisma/client';
 import { AuthService } from '../auth/auth.service';
 import { PERMISSIONS } from '../auth/permissions';
-import { PermissionsGuard } from '../auth/permissions.guard';
 import { RequirePermissions } from '../auth/require-permissions.decorator';
 import { BeneficiariesService } from './beneficiaries.service';
 import { EligibilityReviewService } from './eligibility-review.service';
 
 @Controller('applications')
-@UseGuards(PermissionsGuard)
 export class ApplicationsController {
   constructor(
     private readonly authService: AuthService,
@@ -29,7 +27,7 @@ export class ApplicationsController {
   }
 
   @Patch(':applicationId/status')
-  @RequirePermissions(PERMISSIONS.BENEFICIARY_WRITE)
+  @RequirePermissions(PERMISSIONS.ELIGIBILITY_DECIDE)
   async changeStatus(
     @Headers('authorization') authorization: string | undefined,
     @Param('applicationId') applicationId: string,

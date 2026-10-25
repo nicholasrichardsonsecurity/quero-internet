@@ -1,13 +1,10 @@
-import { Body, Controller, Get, Headers, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { PERMISSIONS } from '../auth/permissions';
-import { PermissionsGuard } from '../auth/permissions.guard';
 import { RequirePermissions } from '../auth/require-permissions.decorator';
 import { DocumentsService } from './documents.service';
 
 @Controller('documents')
-@UseGuards(PermissionsGuard)
-@RequirePermissions(PERMISSIONS.AUDIT_READ)
 export class DocumentsController {
   constructor(
     private readonly authService: AuthService,
@@ -15,6 +12,7 @@ export class DocumentsController {
   ) {}
 
   @Post()
+  @RequirePermissions(PERMISSIONS.DOCUMENT_WRITE)
   async register(
     @Headers('authorization') authorization: string | undefined,
     @Body() body: {
@@ -36,6 +34,7 @@ export class DocumentsController {
   }
 
   @Get()
+  @RequirePermissions(PERMISSIONS.DOCUMENT_READ)
   async list(
     @Headers('authorization') authorization: string | undefined,
     @Query('tenantId') tenantId?: string,

@@ -1,14 +1,12 @@
-import { BadRequestException, Body, Controller, Get, Headers, Param, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Headers, Param, Post } from '@nestjs/common';
 import { FtthFeasibilityResult } from '@prisma/client';
 import { AuthService } from '../auth/auth.service';
 import { PERMISSIONS } from '../auth/permissions';
-import { PermissionsGuard } from '../auth/permissions.guard';
 import { RequirePermissions } from '../auth/require-permissions.decorator';
 import { FtthFeasibilityService } from './ftth-feasibility.service';
 import { isFtthFeasibilityResult } from './ftth-feasibility-state';
 
 @Controller('provider-referrals/:referralId/feasibility')
-@UseGuards(PermissionsGuard)
 export class FtthFeasibilityController {
   constructor(private readonly authService: AuthService, private readonly service: FtthFeasibilityService) {}
 
