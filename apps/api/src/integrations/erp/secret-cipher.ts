@@ -1,7 +1,7 @@
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
+import { ServiceUnavailableException } from '@nestjs/common';
 
 const TAG_LENGTH = 16;
-import { ServiceUnavailableException } from '@nestjs/common';
 
 /**
  * Cifra segredos de integração (tokens de ERP) com AES-256-GCM.
