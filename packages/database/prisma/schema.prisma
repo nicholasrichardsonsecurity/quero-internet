@@ -196,6 +196,7 @@ model Organization {
   integrationSyncRuns IntegrationSyncRun[]
   notificationConsents NotificationConsent[]
   notificationDeliveries NotificationDelivery[]
+  integrationConnections IntegrationConnection[]
   @@index([type, status])
 }
 
@@ -532,6 +533,28 @@ model IntegrationSyncRun {
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
   @@unique([tenantId, provider, idempotencyKey])
   @@index([organizationId, provider, createdAt])
+}
+
+// Credenciais de leitura do ERP (IXC/SGP) de cada organização provedora.
+// O token nunca é guardado em claro: tokenCiphertext é AES-256-GCM (formato v1) com a chave
+// INTEGRATION_ENCRYPTION_KEY do ambiente; só os 4 últimos caracteres ficam visíveis na tela.
+model IntegrationConnection {
+  id String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  provider IntegrationProvider
+  baseUrl String
+  apiUser String?
+  apiApp String?
+  tokenCiphertext String
+  tokenLast4 String @db.VarChar(4)
+  status String @default("UNTESTED")
+  lastTestedAt DateTime?
+  lastTestMessage String?
+  updatedByUserId String? @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@unique([organizationId, provider])
 }
 
 model EvidenceDocument {

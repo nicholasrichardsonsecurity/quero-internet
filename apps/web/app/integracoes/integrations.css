@@ -1,0 +1,33 @@
+.integrations-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+.connection-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px;box-shadow:0 12px 35px rgba(15,23,42,.06);display:flex;flex-direction:column;gap:14px}
+.connection-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.connection-head h2{margin:0;font-size:18px;letter-spacing:-.02em}
+.connection-head p{margin:4px 0 0;color:#64748b;font-size:12px;line-height:1.5}
+.conn-status{padding:7px 10px;border-radius:999px;font-size:10px;font-weight:900;white-space:nowrap}
+.conn-status.none{background:#f1f5f9;color:#475569}
+.conn-status.untested{background:#fef3c7;color:#92400e}
+.conn-status.ok{background:#dcfce7;color:#166534}
+.conn-status.failed{background:#fee2e2;color:#991b1b}
+.conn-status.env{background:#dbeafe;color:#1d4ed8}
+.connection-form{display:grid;gap:12px}
+.field{display:grid;gap:6px}
+.field label{font-size:12px;font-weight:800;color:#334155}
+.field input{border:1px solid #cbd5e1;border-radius:10px;padding:11px 12px;font-size:13px;min-width:0;background:#fff;color:#0f172a}
+.field input:focus-visible{outline:2px solid #2563eb;outline-offset:1px;border-color:#2563eb}
+.field input:disabled{background:#f8fafc;color:#64748b}
+.field small{color:#64748b;font-size:11px;line-height:1.45}
+.connection-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn-secondary,.btn-danger{display:inline-flex;align-items:center;gap:7px;border-radius:10px;padding:10px 13px;font-size:12px;font-weight:800;cursor:pointer;background:#fff}
+.btn-secondary{border:1px solid #cbd5e1;color:#334155}
+.btn-danger{border:1px solid #fecaca;color:#b91c1c;margin-left:auto}
+.btn-secondary:disabled,.btn-danger:disabled{opacity:.55;cursor:not-allowed}
+.connection-result{border-radius:12px;padding:11px 13px;font-size:12px;line-height:1.5}
+.connection-result.ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
+.connection-result.failed{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
+.integrations-banner{display:flex;gap:10px;align-items:flex-start;margin-top:16px;padding:13px 15px;border-radius:12px;font-size:12px;line-height:1.55}
+.integrations-banner.warn{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
+.integrations-banner.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+.integrations-banner svg{flex:0 0 auto;margin-top:2px}
+.help-steps{margin:0;padding-left:18px;color:#475569;font-size:12px;line-height:1.6}
+@media(max-width:860px){.integrations-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.btn-danger{margin-left:0}}

@@ -38,7 +38,7 @@ export class IntegrationsService {
   async health(context: AuthenticatedSession, value: string) {
     const provider = this.resolveProvider(value);
     await this.resolveTenant(context);
-    return this.registry.resolve(context.organizationId, provider).health();
+    return (await this.registry.resolve(context.organizationId, provider)).health();
   }
 
   /**
@@ -51,7 +51,7 @@ export class IntegrationsService {
     const key = idempotencyKey?.trim();
     if (!key || !/^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$/.test(key)) throw new BadRequestException('x-idempotency-key inválido ou ausente.');
 
-    const adapter = this.registry.resolve(context.organizationId, provider);
+    const adapter = await this.registry.resolve(context.organizationId, provider);
     const existing = await this.prisma.integrationSyncRun.findUnique({
       where: { tenantId_provider_idempotencyKey: { tenantId, provider: provider as PrismaIntegrationProvider, idempotencyKey: key } }
     });

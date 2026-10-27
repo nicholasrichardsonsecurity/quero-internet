@@ -27,7 +27,8 @@ export const PERMISSIONS = {
   DOCUMENT_WRITE: 'document:write',
   NOTIFICATION_READ: 'notification:read',
   NOTIFICATION_WRITE: 'notification:write',
-  INTEGRATION_SYNC: 'integration:sync'
+  INTEGRATION_SYNC: 'integration:sync',
+  INTEGRATION_MANAGE: 'integration:manage'
 } as const;
 
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
@@ -64,7 +65,8 @@ export const ROLE_PERMISSIONS: Record<MembershipRole, readonly Permission[]> = {
     PERMISSIONS.DOCUMENT_WRITE,
     PERMISSIONS.NOTIFICATION_READ,
     PERMISSIONS.NOTIFICATION_WRITE,
-    PERMISSIONS.INTEGRATION_SYNC
+    PERMISSIONS.INTEGRATION_SYNC,
+    PERMISSIONS.INTEGRATION_MANAGE
   ],
   ORGANIZATION_ADMIN: [
     ...commonSession,
@@ -90,7 +92,8 @@ export const ROLE_PERMISSIONS: Record<MembershipRole, readonly Permission[]> = {
     PERMISSIONS.DOCUMENT_WRITE,
     PERMISSIONS.NOTIFICATION_READ,
     PERMISSIONS.NOTIFICATION_WRITE,
-    PERMISSIONS.INTEGRATION_SYNC
+    PERMISSIONS.INTEGRATION_SYNC,
+    PERMISSIONS.INTEGRATION_MANAGE
   ],
   MUNICIPAL_MANAGER: [
     ...commonSession,
@@ -145,7 +148,8 @@ export const ROLE_PERMISSIONS: Record<MembershipRole, readonly Permission[]> = {
     PERMISSIONS.DOCUMENT_WRITE,
     PERMISSIONS.NOTIFICATION_READ,
     PERMISSIONS.NOTIFICATION_WRITE,
-    PERMISSIONS.INTEGRATION_SYNC
+    PERMISSIONS.INTEGRATION_SYNC,
+    PERMISSIONS.INTEGRATION_MANAGE
   ],
   PROVIDER_OPERATOR: [
     ...commonSession,
