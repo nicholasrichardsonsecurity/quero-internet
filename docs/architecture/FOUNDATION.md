@@ -149,3 +149,22 @@ Regras permanentes:
 5. Ícones não devem ser usados como único meio de comunicação: ações críticas precisam de texto, tooltip acessível ou nome semântico.
 6. Novos ícones devem respeitar a grade visual, espessura consistente e contraste do sistema de marca.
 7. Não adicionar bibliotecas concorrentes para o mesmo propósito sem ADR e justificativa de manutenção.
+
+
+## Faturamento municipal e separação financeira — baseline 2026-09-05
+
+A Aplivora é a contratada e proprietária do SaaS Quero Internet. O modelo financeiro aprovado separa a mensalidade do SaaS da remuneração do provedor:
+
+- a Aplivora cobra da prefeitura a mensalidade do SaaS;
+- o provedor registra a medição do serviço e emite sua própria NF;
+- a prefeitura visualiza a documentação do provedor no Quero Internet;
+- o pagamento do serviço do provedor ocorre diretamente entre prefeitura e provedor;
+- a Aplivora não recebe nem repassa valores pertencentes ao provedor.
+
+A fundação implementa contratos municipais, períodos de competência, medições, aprovação municipal e registro de NF do provedor. A emissão e reconciliação da cobrança real da mensalidade Aplivora, inclusive cliente pagador, boleto/Pix e webhook de pagamento, permanecem como próximo incremento controlado.
+
+## Estado web e deploy
+
+As páginas dedicadas de faturamento municipal e do provedor, incluindo logout, fazem parte do código principal. O container web de homologação é criado manualmente e não possui serviço `web` no compose usado para banco, Redis e MinIO. Portanto, build e publicação exigem contexto raiz, lockfile temporário e recriação explícita do container. Uma rota exibindo “Módulo não encontrado” é evidência de imagem desatualizada, não de ausência da implementação no repositório.
+
+A conclusão do incremento exige validar local e publicamente as rotas `/faturamento-provedor` e `/faturamento-municipal`, a presença do botão `Sair` e o redirecionamento para `/login`. Até essa validação, o recurso deve ser considerado implementado no código, porém pendente de deploy comprovado.
