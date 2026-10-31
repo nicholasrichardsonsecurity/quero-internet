@@ -328,3 +328,28 @@ import { Icon } from '@/components/ui/icon';
 ```
 
 A biblioteca de ícones não substitui texto, estados de carregamento, skeletons, feedback de progresso ou requisitos de acessibilidade. Ela é parte do sistema visual e deve ser aplicada com parcimônia.
+
+
+## Padrão de domínios do Hub Aplivora
+
+O Hub Aplivora utiliza subdomínios de primeiro nível para separar os produtos SaaS:
+
+| Serviço | Endereço oficial |
+|---|---|
+| Hub institucional | `https://aplivora.com.br` |
+| Quero Internet | `https://querointernet.aplivora.com.br` |
+| LoopClub | `https://loopclub.aplivora.com.br` |
+| LinkOps | `https://linkops.aplivora.com.br` |
+| API central / Billing | `https://api.aplivora.com.br` |
+
+### Regra de certificados e DNS
+
+Não criar endereços aninhados como `api.linkops.aplivora.com.br` ou `api.querointernet.aplivora.com.br` sem verificar previamente a cobertura do certificado TLS no Cloudflare e no proxy de origem. O padrão preferencial é usar a API central:
+
+```text
+https://api.aplivora.com.br/linkops/*
+https://api.aplivora.com.br/querointernet/*
+https://api.aplivora.com.br/billing/*
+```
+
+Subdomínios de um nível, como `linkops.aplivora.com.br`, são o padrão para aplicações web. A API de cada produto deve ser diferenciada por caminho no domínio central, salvo decisão formal em ADR com certificado, DNS, Caddy, CORS, cookies e observabilidade validados.
